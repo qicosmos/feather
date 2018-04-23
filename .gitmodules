@@ -1,0 +1,12 @@
+[submodule "cinatra"]
+	path = cinatra
+	url = https://github.com/qicosmos/cinatra.git
+[submodule "ormpp"]
+	path = ormpp
+	url = https://github.com/qicosmos/ormpp.git
+[submodule "iguana"]
+	path = iguana
+	url = https://github.com/qicosmos/iguana.git
+[submodule "inja"]
+	path = inja
+	url = https://github.com/pantor/inja.git
