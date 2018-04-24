@@ -5,7 +5,7 @@
 #ifndef FEATHER_UTIL_HPP
 #define FEATHER_UTIL_HPP
 
-#include "inja/test/thirdparty/nlohmann/json.hpp"
+#include "inja/json.hpp"
 
 namespace feather{
 
