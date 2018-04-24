@@ -25,10 +25,11 @@ namespace feather{
         int id;
         int visible;
         std::string content;
+        std::string abstract;
         int user_id;
         int64_t post_time;
     };
-    REFLECTION(article, id, visible, content, user_id, post_time);
+    REFLECTION(article, id, visible, content, abstract, user_id, post_time);
 }
 
 #endif //FEATHER_ENTITY_H

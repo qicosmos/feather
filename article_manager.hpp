@@ -34,7 +34,7 @@ namespace feather{
         }
 
         //get article by id
-        void get_article(const cinatra::request& req, cinatra::response& res){
+        void get_article_list(const cinatra::request& req, cinatra::response& res){
             auto id_s = req.get_query_value("id");
             if (id_s.empty()) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
@@ -57,6 +57,10 @@ namespace feather{
                 iguana::json::to_json(ss, v);
                 res.set_status_and_content(status_type::ok, std::move(ss.str()));
             }
+        }
+
+        void article_detail(const cinatra::request& req, cinatra::response& res){
+
         }
 
         void remove_article(const cinatra::request& req, cinatra::response& res){
