@@ -7,3 +7,6 @@
 [submodule "iguana"]
 	path = iguana
 	url = https://github.com/qicosmos/iguana.git
+[submodule "inja"]
+	path = inja
+	url = https://github.com/qicosmos/inja.git
