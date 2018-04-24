@@ -43,24 +43,24 @@ void init_db(bool clear_all){
         assert(r1&&r2);
     }
 
-//    {
-//        //add some test data to tables
-//        user u1{0, "tom"};
-//        user u2{0, "mike"};
-//        std::vector<user> v{u1, u2};
-//        int n = dao.add_objects(v);
-//        assert(n==2);
-//        bool r1 = dao.add_object(u1);
-//        bool r2 = dao.add_object(u2);
-//    }
+    {
+        //add some test data to tables
+        user u1{0, "tom"};
+        user u2{0, "mike"};
+        std::vector<user> v{u1, u2};
+        int n = dao.add_objects(v);
+        assert(n==2);
+        bool r1 = dao.add_object(u1);
+        bool r2 = dao.add_object(u2);
+    }
 
-//    {
-//        article ar1{0, 1, "test", 1, std::time(nullptr)};
-//        article ar2{0, 1, "hello", 2, std::time(nullptr)};
-//        bool r1 = dao.add_object(ar1);
-//        bool r2 = dao.add_object(ar2);
-//        assert(r1&&r2);
-//    }
+    {
+        article ar1{0, 1, "title1", "test", "", 1, std::time(nullptr)};
+        article ar2{0, 1, "title2", "hello", "", 2, std::time(nullptr)};
+        bool r1 = dao.add_object(ar1);
+        bool r2 = dao.add_object(ar2);
+        assert(r1&&r2);
+    }
 //
 //    {
 //        std::vector<user> v;
@@ -103,7 +103,7 @@ int main(){
 
     article_manager article_mgr;
     server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_mgr);
-    server.set_http_handler<GET, POST>("/get_article_list", &article_manager::get_article_list, &article_mgr);
+    server.set_http_handler<GET, POST>("/", &article_manager::index, &article_mgr);
     server.set_http_handler<GET, POST>("/article_detail", &article_manager::article_detail, &article_mgr);
 
     server.set_http_handler<GET, POST>("/remove_article", &article_manager::remove_article, &article_mgr);

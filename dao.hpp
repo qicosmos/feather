@@ -116,6 +116,11 @@ namespace feather{
             return n;
         }
 
+        template<typename T>
+        auto query(const std::string& sql){
+            return conn_->template query<T>(sql);
+        }
+
         //non query sql, such as update, delete, insert
         bool execute(const std::string& sql) {
             if (!conn_)
