@@ -77,7 +77,7 @@ void init(const feather_cfg& cfg){
 
     nanolog::initialize(nanolog::GuaranteedLogger(), cfg.log_path, cfg.log_name, cfg.roll_file_size);
 
-    dao_t<dbng<mysql>>::init(cfg.db_conn_num, cfg.db_ip.data(), cfg.db_name.data(), cfg.pwd.data(),
+    dao_t<dbng<mysql>>::init(cfg.db_conn_num, cfg.db_ip.data(), cfg.user_name.data(), cfg.pwd.data(),
                              cfg.db_name.data(), cfg.timeout);
     init_db(cfg.clear_all_table);
 }
