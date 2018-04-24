@@ -7,6 +7,8 @@
 
 #include "cinatra/http_server.hpp"
 #include "ormpp/dbng.hpp"
+#include "ormpp/mysql.hpp"
+#include "ormpp/connection_pool.hpp"
 #include "iguana/iguana/json.hpp"
 #include "util.hpp"
 #endif //FEATHER_FEATHER_H
