@@ -8,7 +8,7 @@
 using namespace ormpp;
 using namespace cinatra;
 namespace feather{
-class user_manager{
+class user_controller{
 public:
     void add_user(const cinatra::request& req, cinatra::response& res){
         auto body = req.body();

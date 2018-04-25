@@ -6,8 +6,8 @@
 #include "feather_cfg.hpp"
 #include "entity.h"
 #include "dao.hpp"
-#include "user_manager.hpp"
-#include "article_manager.hpp"
+#include "user_controller.hpp"
+#include "article_controller.hpp"
 using namespace feather;
 using namespace ormpp;
 using namespace cinatra;
@@ -106,18 +106,18 @@ int main(){
         return -1;
     }
 
-    user_manager user_mgr;
-    server.set_http_handler<POST>("/add_user", &user_manager::add_user, &user_mgr);
+    user_controller user_ctl;
+    server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 
-    article_manager article_mgr;
-    server.set_http_handler<GET, POST>("/", &article_manager::index, &article_mgr);
-    server.set_static_res_handler<GET,POST>(&article_manager::static_resource, &article_mgr);
+    article_manager article_ctl;
+    server.set_http_handler<GET, POST>("/", &article_manager::index, &article_ctl);
+    server.set_static_res_handler<GET,POST>(&article_manager::static_resource, &article_ctl);
 
-    server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_mgr);
-    server.set_http_handler<GET, POST>("/get_article_list", &article_manager::get_article_list, &article_mgr);
-    server.set_http_handler<GET, POST>("/get_article_detail", &article_manager::get_article_detail, &article_mgr);
-    server.set_http_handler<GET, POST>("/remove_article", &article_manager::remove_article, &article_mgr);
-    server.set_http_handler<POST>("/update_article", &article_manager::update_article, &article_mgr);
+    server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_ctl);
+    server.set_http_handler<GET, POST>("/get_article_list", &article_manager::get_article_list, &article_ctl);
+    server.set_http_handler<GET, POST>("/get_article_detail", &article_manager::get_article_detail, &article_ctl);
+    server.set_http_handler<GET, POST>("/remove_article", &article_manager::remove_article, &article_ctl);
+    server.set_http_handler<POST>("/update_article", &article_manager::update_article, &article_ctl);
 
     server.run();
 
