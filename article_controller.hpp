@@ -180,6 +180,8 @@ namespace feather{
                 return;
             }
 
+            auto title = req.get_query_value("title");
+
             std::vector<article_detail> v;
 
             bool r = false;
@@ -196,11 +198,10 @@ namespace feather{
                 if(!v.empty())
                     at = std::move(v[0]);
 
-                iguana::string_stream ss;
-                iguana::json::to_json(ss, at);
-
+                nlohmann::json result = struct_to_json(at);
+                result["title"] = std::string(title.data(), title.length());
                 res.add_header("Access-Control-Allow-origin", "*");
-                res.set_status_and_content(status_type::ok, ss.str());
+                res.set_status_and_content(status_type::ok, render("/show.html", result));
             }
         }
 
