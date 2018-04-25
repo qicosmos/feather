@@ -23,12 +23,8 @@ namespace feather{
     inline nlohmann::json struct_to_json(const std::vector<T>& v){
         nlohmann::json list;
         for(auto& t : v){
-            iguana::for_each(t, [&t, &list](const auto& v, auto i){
-                auto name = iguana::get_name<T>(decltype(i)::value);
-                nlohmann::json val;
-                val[name.data()] = t.*v;
-                list.push_back(val);
-            });
+            nlohmann::json val = struct_to_json(t);
+            list.push_back(val);
         }
 
         return list;

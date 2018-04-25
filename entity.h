@@ -23,14 +23,21 @@ namespace feather{
 
     struct article{
         int id;
-        int visible;
         std::string title;
-        std::string content;
         std::string introduce;
         int user_id;
-        int64_t post_time;
+        int visible;
+        int64_t create_time;
     };
-    REFLECTION(article, id, visible, title, content, introduce, user_id, post_time);
+    REFLECTION(article, id, title, introduce, user_id, visible, create_time);
+
+    struct article_detail{
+        int id;
+        int parant_id;
+        std::string content;
+        int64_t update_time;
+    };
+    REFLECTION(article_detail, id, parant_id, content, update_time);
 }
 
 #endif //FEATHER_ENTITY_H

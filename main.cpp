@@ -34,13 +34,15 @@ void init_db(bool clear_all){
     if(clear_all){
         bool r1 = dao.drop_table<user>();
         bool r2 = dao.drop_table<article>();
-        assert(r1&&r2);
+        bool r3 = dao.drop_table<article_detail>();
+        assert(r1&&r2&&r3);
     }
 
     {
         bool r1 = dao.create_table<user>({ ID(user::id) });
         bool r2 = dao.create_table<article>({ ID(article::id) });
-        assert(r1&&r2);
+        bool r3 = dao.create_table<article_detail>({ ID(article_detail::id) });
+        assert(r1&&r2&&r3);
     }
 
     {
@@ -55,10 +57,16 @@ void init_db(bool clear_all){
     }
 
     {
-        article ar1{0, 1, "title1", "test", "", 1, std::time(nullptr)};
-        article ar2{0, 1, "title2", "hello", "", 2, std::time(nullptr)};
+        article ar1{0, "title1", "test", 1, 1, std::time(nullptr)};
+        article ar2{0, "title2", "hello", 2, 1, std::time(nullptr)};
         bool r1 = dao.add_object(ar1);
         bool r2 = dao.add_object(ar2);
+        assert(r1&&r2);
+
+        article_detail detail1{0, ar1.id, "it is a test", std::time(nullptr)};
+        article_detail detail2{0, ar2.id, "hello world", std::time(nullptr)};
+        r1 = dao.add_object(detail1);
+        r2 = dao.add_object(detail2);
         assert(r1&&r2);
     }
 //
@@ -102,10 +110,12 @@ int main(){
     server.set_http_handler<POST>("/add_user", &user_manager::add_user, &user_mgr);
 
     article_manager article_mgr;
-    server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_mgr);
     server.set_http_handler<GET, POST>("/", &article_manager::index, &article_mgr);
-    server.set_http_handler<GET, POST>("/article_detail", &article_manager::article_detail, &article_mgr);
+    server.set_static_res_handler<GET,POST>(&article_manager::static_resource, &article_mgr);
 
+    server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_mgr);
+    server.set_http_handler<GET, POST>("/get_article_list", &article_manager::get_article_list, &article_mgr);
+    server.set_http_handler<GET, POST>("/get_article_detail", &article_manager::get_article_detail, &article_mgr);
     server.set_http_handler<GET, POST>("/remove_article", &article_manager::remove_article, &article_mgr);
     server.set_http_handler<POST>("/update_article", &article_manager::update_article, &article_mgr);
 

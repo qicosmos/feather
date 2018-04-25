@@ -8,6 +8,24 @@ using namespace cinatra;
 #define FEATHER_ARTICLE_MANAGER_HPP
 namespace feather{
 
+    struct article_from_req{
+        article arti;
+        std::string content;
+    };
+    REFLECTION(article_from_req, arti, content);
+
+    struct article_list_res{
+        std::vector<article> v;
+        int current_page;
+        int total_page;
+    };
+    REFLECTION(article_list_res, v, current_page, total_page);
+
+    struct result_res{
+        bool success;
+    };
+    REFLECTION(result_res, success);
+
     class article_manager{
     public:
         void add_article(const cinatra::request& req, cinatra::response& res){
@@ -17,24 +35,39 @@ namespace feather{
                 return;
             }
 
-            article ar;
-            bool r = iguana::json::from_json(ar, body.data(), body.length());
+            article_from_req ar;
+            bool r = iguana::json::from_json0(ar, body.data(), body.length());
             if (!r) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
                 return;
             }
 
-            dao_t<dbng<mysql>> dao;
-            r = dao.add_object(ar);
-            if (!r) {
-                res.set_status_and_content(status_type::internal_server_error);
-            }
-            else {
-                res.set_status_and_content(status_type::ok);
+            //add to article and article_detail
+            article arti = ar.arti;
+            res.add_header("Access-Control-Allow-origin", "*");
+            r = add_to_db(arti, res);
+            if (r) {
+                article_detail detail{0, arti.id, ar.content};
+                add_to_db(detail, res);
             }
         }
 
-        //get article by id
+        bool add_to_db(auto &o, cinatra::response& res){
+            dao_t<dbng<mysql>> dao;
+            bool r = dao.add_object(o);
+            result_res result{r};
+            iguana::string_stream ss;
+            iguana::json::to_json(ss, result);
+
+            if (!r) {
+                res.set_status_and_content(status_type::internal_server_error, ss.str());
+            }
+            else {
+                res.set_status_and_content(status_type::ok, ss.str());
+            }
+            return r;
+        }
+
         void index(const cinatra::request& req, cinatra::response& res){
             int page_number = 0;
             auto page_s = req.get_query_value("page");
@@ -43,10 +76,11 @@ namespace feather{
                 page_number = atoi(page_s.data());
             }
 
-            int page_size = 1;
             dao_t<dbng<mysql>> dao;
             auto tp = dao.query<std::tuple<int>>("select count(1) from article");
             int total = std::get<0>(tp[0]);
+
+            int page_size = total_page(total);
             if(total>10){
                 page_size = total/10;
                 if(total%10!=0)
@@ -76,8 +110,98 @@ namespace feather{
             res.set_status_and_content(status_type::ok, render("/index.html", result));
         }
 
-        void article_detail(const cinatra::request& req, cinatra::response& res){
+        void static_resource(const cinatra::request& req, cinatra::response& res){
+            auto fileName =req.get_res_path();
+            if (fileName.empty()) {
+                res.set_status_and_content(cinatra::status_type::bad_request);
+                return;
+            }
 
+            std::string file_path = std::string(fileName.data(), fileName.length());
+            std::ifstream file(file_path, std::ios_base::binary);
+            if(!file.is_open()){
+                res.set_status_and_content(cinatra::status_type::bad_request);
+                return;
+            }
+
+            file.seekg(0, std::ios_base::end);
+            size_t size = file.tellg();
+            if(size>3*1024*1024){
+                res.set_status_and_content(cinatra::status_type::bad_request);
+                return;
+            }
+
+            file.seekg(0, std::ios_base::beg);
+            std::string str;
+            str.resize(size);
+
+            file.read(str.data(), size);
+            res.set_status_and_content(status_type::ok, std::move(str), content_encoding::gzip);
+        }
+
+        int total_page(size_t size){
+            if(size<=10)
+                return  1;
+
+            int total_page = size/10;
+            if(size%10!=0)
+                total_page+=1;
+
+            return total_page;
+        }
+
+        void get_article_list(const cinatra::request& req, cinatra::response& res){
+            int current_page = 0;
+            auto page_s = req.get_query_value("page");
+            if (!page_s.empty()) {
+                std::string page = std::string(page_s.data(), page_s.length());
+                current_page = atoi(page_s.data());
+            }
+
+            dao_t<dbng<mysql>> dao;
+            std::vector<article> v;
+            bool r = dao.get_object(v);
+            if (!r) {
+                res.set_status_and_content(status_type::internal_server_error);
+            }
+
+            article_list_res list{std::move(v), current_page, total_page(v.size())};
+
+            iguana::string_stream ss;
+            iguana::json::to_json(ss, list);
+            res.add_header("Access-Control-Allow-origin", "*");
+            res.set_status_and_content(status_type::ok, ss.str());
+        }
+
+        void get_article_detail(const cinatra::request& req, cinatra::response& res){
+            auto id_s = req.get_query_value("id");
+            if (id_s.empty()) {
+                res.set_status_and_content(cinatra::status_type::bad_request);
+                return;
+            }
+
+            std::vector<article_detail> v;
+
+            bool r = false;
+
+            {
+                dao_t<dbng<mysql>> dao;
+                r = dao.get_object(v, "id="+std::string(id_s.data(), id_s.length()));
+            }
+
+            if(!r){
+                res.set_status_and_content(status_type::internal_server_error);
+            }else{
+                article_detail at{};
+                if(!v.empty())
+                    at = std::move(v[0]);
+
+                iguana::string_stream ss;
+                iguana::json::to_json(ss, at);
+
+                res.add_header("Access-Control-Allow-origin", "*");
+                res.set_status_and_content(status_type::ok, ss.str());
+            }
         }
 
         void remove_article(const cinatra::request& req, cinatra::response& res){
@@ -87,18 +211,20 @@ namespace feather{
                 return;
             }
 
-            int id = atoi(id_s.data());
-            if(id==0){
-                res.set_status_and_content(cinatra::status_type::bad_request);
-                return;
-            }
 
+            std::string id = std::string(id_s.data(), id_s.length());
             dao_t<dbng<mysql>> dao;
-            bool r = dao.remove_object<article>("id="+std::string(id_s.data(), id_s.length()));
+            bool r1 = dao.remove_object<article>("id="+id);
+            bool r2 = dao.remove_object<article_detail>("parant_id="+id);
+            bool r = r1&&r2;
+            result_res result{r};
+            iguana::string_stream ss;
+            iguana::json::to_json(ss, result);
+            res.add_header("Access-Control-Allow-origin", "*");
             if(!r){
-                res.set_status_and_content(status_type::internal_server_error);
+                res.set_status_and_content(status_type::internal_server_error, ss.str());
             }else{
-                res.set_status_and_content(status_type::ok);
+                res.set_status_and_content(status_type::ok, ss.str());
             }
         }
 
@@ -109,15 +235,15 @@ namespace feather{
                 return;
             }
 
-            article ar;
-            bool r = iguana::json::from_json(ar, body.data(), body.length());
+            article_detail detail;
+            bool r = iguana::json::from_json(detail, body.data(), body.length());
             if (!r) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
                 return;
             }
 
             dao_t<dbng<mysql>> dao;
-            r = dao.update_object(ar);
+            r = dao.update_object(detail);
             if(!r){
                 res.set_status_and_content(status_type::internal_server_error);
             }else{
