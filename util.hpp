@@ -39,6 +39,13 @@ namespace feather{
         std::string result = env.render_template(temp, data);
         return result;
     }
+
+    inline std::string get_cur_time_str(){
+        std::time_t t = std::time(nullptr);
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
+        return ss.str();
+    }
 }
 
 #endif //FEATHER_UTIL_HPP

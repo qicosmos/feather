@@ -47,7 +47,7 @@ namespace feather{
             dao_t<dbng<mysql>> dao;
             r = dao.add_object(arti);
             if (r) {
-                article_detail detail{0, arti.id, ar.content};
+                article_detail detail{0, arti.id, arti.title, ar.content, arti.create_time};
                 r = dao.add_object(detail);
             }
 
@@ -146,8 +146,6 @@ namespace feather{
                 return;
             }
 
-            auto title = req.get_query_value("title");
-
             std::vector<article_detail> v;
 
             bool r = false;
@@ -165,7 +163,6 @@ namespace feather{
                     at = std::move(v[0]);
 
                 nlohmann::json result = struct_to_json(at);
-                result["title"] = std::string(title.data(), title.length());
                 res.add_header("Access-Control-Allow-origin", "*");
                 res.set_status_and_content(status_type::ok, render("/show.html", result));
             }

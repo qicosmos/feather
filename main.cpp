@@ -32,30 +32,30 @@ void init_db(bool clear_all){
         assert(r1&&r2&&r3);
     }
 
-    {
-        //add some test data to tables
-        user u1{0, "tom"};
-        user u2{0, "mike"};
-        std::vector<user> v{u1, u2};
-        int n = dao.add_objects(v);
-        assert(n==2);
-        bool r1 = dao.add_object(u1);
-        bool r2 = dao.add_object(u2);
-    }
-
-    {
-        article ar1{0, "title1", "test", 1, 1, std::time(nullptr)};
-        article ar2{0, "title2", "hello", 2, 1, std::time(nullptr)};
-        bool r1 = dao.add_object(ar1);
-        bool r2 = dao.add_object(ar2);
-        assert(r1&&r2);
-
-        article_detail detail1{0, ar1.id, "it is a test", std::time(nullptr)};
-        article_detail detail2{0, ar2.id, "hello world", std::time(nullptr)};
-        r1 = dao.add_object(detail1);
-        r2 = dao.add_object(detail2);
-        assert(r1&&r2);
-    }
+//    {
+//        //add some test data to tables
+//        user u1{0, "tom"};
+//        user u2{0, "mike"};
+//        std::vector<user> v{u1, u2};
+//        int n = dao.add_objects(v);
+//        assert(n==2);
+//        bool r1 = dao.add_object(u1);
+//        bool r2 = dao.add_object(u2);
+//    }
+//
+//    {
+//        article ar1{0, "title1", "test", 1, 1, get_cur_time_str()};
+//        article ar2{0, "title2", "hello", 2, 1, get_cur_time_str()};
+//        bool r1 = dao.add_object(ar1);
+//        bool r2 = dao.add_object(ar2);
+//        assert(r1&&r2);
+//
+//        article_detail detail1{0, ar1.id, "title1", "it is a test", get_cur_time_str()};
+//        article_detail detail2{0, ar2.id, "title2", "hello world", get_cur_time_str()};
+//        r1 = dao.add_object(detail1);
+//        r2 = dao.add_object(detail2);
+//        assert(r1&&r2);
+//    }
 //
 //    {
 //        std::vector<user> v;
@@ -74,7 +74,7 @@ void init(const feather_cfg& cfg){
 
     dao_t<dbng<mysql>>::init(cfg.db_conn_num, cfg.db_ip.data(), cfg.user_name.data(), cfg.pwd.data(),
                              cfg.db_name.data(), cfg.timeout);
-    init_db(cfg.clear_all_table);
+    init_db(cfg.drop_all_table);
 }
 
 int main(){

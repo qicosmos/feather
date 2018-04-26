@@ -14,13 +14,13 @@ namespace feather{
         std::string db_name;
         int timeout;
         int db_conn_num;
-        bool clear_all_table;
+        bool drop_all_table;
         std::string log_path;
         std::string log_name;
         int roll_file_size;
     };
     REFLECTION(feather_cfg, thread_num, port, db_ip, user_name, pwd, db_name, timeout, db_conn_num,
-               clear_all_table, log_path, log_name, roll_file_size);
+               drop_all_table, log_path, log_name, roll_file_size);
 
     class config_manager {
     public:
