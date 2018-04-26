@@ -9,26 +9,11 @@
 #include "user_controller.hpp"
 #include "article_controller.hpp"
 #include "upload_controller.hpp"
+#include "static_res_controller.hpp"
 
 using namespace feather;
 using namespace ormpp;
 using namespace cinatra;
-
-struct person{
-    std::string name;
-    int age;
-    std::string address;
-};
-
-REFLECTION(person, name, age, address);
-
-void test_struct_to_json(){
-    person p{"aa", 20, "zhu"};
-    auto o = feather::struct_to_json(p);
-    for (auto it = o.begin(); it != o.end(); ++it) {
-        std::cout << it.key() << " : " << it.value() << "\n";
-    }
-}
 
 void init_db(bool clear_all){
     dao_t<dbng<mysql>> dao;
@@ -112,10 +97,11 @@ int main(){
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 
+    static_res_controller res_ctl;
+    server.set_static_res_handler<GET,POST>(&static_res_controller::static_resource, &res_ctl);
+
     article_manager article_ctl;
     server.set_http_handler<GET, POST>("/", &article_manager::index, &article_ctl);
-    server.set_static_res_handler<GET,POST>(&article_manager::static_resource, &article_ctl);
-
     server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_ctl);
     server.set_http_handler<GET, POST>("/get_article_list", &article_manager::get_article_list, &article_ctl);
     server.set_http_handler<GET, POST>("/get_article_detail", &article_manager::get_article_detail, &article_ctl);

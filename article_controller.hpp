@@ -105,35 +105,6 @@ namespace feather{
             res.set_status_and_content(status_type::ok, render("/index.html", result));
         }
 
-        void static_resource(const cinatra::request& req, cinatra::response& res){
-            auto fileName =req.get_res_path();
-            if (fileName.empty()) {
-                res.set_status_and_content(cinatra::status_type::bad_request);
-                return;
-            }
-
-            std::string file_path = std::string(fileName.data(), fileName.length());
-            std::ifstream file(file_path, std::ios_base::binary);
-            if(!file.is_open()){
-                res.set_status_and_content(cinatra::status_type::bad_request);
-                return;
-            }
-
-            file.seekg(0, std::ios_base::end);
-            size_t size = file.tellg();
-            if(size>3*1024*1024){
-                res.set_status_and_content(cinatra::status_type::bad_request);
-                return;
-            }
-
-            file.seekg(0, std::ios_base::beg);
-            std::string str;
-            str.resize(size);
-
-            file.read(str.data(), size);
-            res.set_status_and_content(status_type::ok, std::move(str), content_encoding::gzip);
-        }
-
         int total_page(size_t size){
             if(size<=10)
                 return  1;
