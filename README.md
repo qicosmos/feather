@@ -29,6 +29,11 @@ Feather框架的核心包括：
 
 ![Feather的架构图](https://github.com/qicosmos/feather/blob/master/framework.png)：
 
+1. http组件：  cinatra
+2. ORM组件：   ormpp
+3. 序列化组件： iguana
+4. html 模版： inja
+
 Feather内部的四个核心组件是松耦合的，Feather只是把它们像搭积木一样搭在一起。
 
 ## Feather的使用
