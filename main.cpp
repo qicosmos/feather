@@ -8,6 +8,8 @@
 #include "dao.hpp"
 #include "user_controller.hpp"
 #include "article_controller.hpp"
+#include "upload_controller.hpp"
+
 using namespace feather;
 using namespace ormpp;
 using namespace cinatra;
@@ -100,6 +102,7 @@ int main(){
     init(cfg);
 
     cinatra::http_server server(cfg.thread_num);
+    server.set_static_dir("/static/");
     bool r = server.listen("0.0.0.0", cfg.port);
     if (!r) {
         LOG_INFO << "listen failed";
@@ -118,6 +121,9 @@ int main(){
     server.set_http_handler<GET, POST>("/get_article_detail", &article_manager::get_article_detail, &article_ctl);
     server.set_http_handler<GET, POST>("/remove_article", &article_manager::remove_article, &article_ctl);
     server.set_http_handler<POST>("/update_article", &article_manager::update_article, &article_ctl);
+
+    upload_controller up;
+    server.set_http_handler<POST>("/upload", &upload_controller::upload, &up);
 
     server.run();
 
