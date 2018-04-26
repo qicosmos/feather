@@ -44,28 +44,23 @@ namespace feather{
 
             //add to article and article_detail
             article arti = ar.arti;
-            res.add_header("Access-Control-Allow-origin", "*");
-            r = add_to_db(arti, res);
+            dao_t<dbng<mysql>> dao;
+            r = dao.add_object(arti);
             if (r) {
                 article_detail detail{0, arti.id, ar.content};
-                add_to_db(detail, res);
+                r = dao.add_object(detail);
             }
-        }
 
-        bool add_to_db(auto &o, cinatra::response& res){
-            dao_t<dbng<mysql>> dao;
-            bool r = dao.add_object(o);
             result_res result{r};
             iguana::string_stream ss;
             iguana::json::to_json(ss, result);
-
+            res.add_header("Access-Control-Allow-origin", "*");
             if (!r) {
                 res.set_status_and_content(status_type::internal_server_error, ss.str());
             }
             else {
                 res.set_status_and_content(status_type::ok, ss.str());
             }
-            return r;
         }
 
         void index(const cinatra::request& req, cinatra::response& res){
