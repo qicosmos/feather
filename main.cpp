@@ -100,13 +100,13 @@ int main(){
     static_res_controller res_ctl;
     server.set_static_res_handler<GET,POST>(&static_res_controller::static_resource, &res_ctl);
 
-    article_manager article_ctl;
-    server.set_http_handler<GET, POST>("/", &article_manager::index, &article_ctl);
-    server.set_http_handler<POST>("/add_article", &article_manager::add_article, &article_ctl);
-    server.set_http_handler<GET, POST>("/get_article_list", &article_manager::get_article_list, &article_ctl);
-    server.set_http_handler<GET, POST>("/get_article_detail", &article_manager::get_article_detail, &article_ctl);
-    server.set_http_handler<GET, POST>("/remove_article", &article_manager::remove_article, &article_ctl);
-    server.set_http_handler<POST>("/update_article", &article_manager::update_article, &article_ctl);
+    article_controller article_ctl;
+    server.set_http_handler<GET, POST>("/", &article_controller::index, &article_ctl);
+    server.set_http_handler<POST>("/add_article", &article_controller::add_article, &article_ctl);
+    server.set_http_handler<GET, POST>("/get_article_list", &article_controller::get_article_list, &article_ctl);
+    server.set_http_handler<GET, POST>("/get_article_detail", &article_controller::get_article_detail, &article_ctl);
+    server.set_http_handler<GET, POST>("/remove_article", &article_controller::remove_article, &article_ctl);
+    server.set_http_handler<POST>("/update_article", &article_controller::update_article, &article_ctl);
 
     upload_controller up;
     server.set_http_handler<POST>("/upload", &upload_controller::upload, &up);

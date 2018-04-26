@@ -26,7 +26,7 @@ namespace feather{
     };
     REFLECTION(result_res, success);
 
-    class article_manager{
+    class article_controller{
     public:
         void add_article(const cinatra::request& req, cinatra::response& res){
             auto body = req.body();
