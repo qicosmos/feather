@@ -126,6 +126,9 @@ dao.create_table< article >将会在testdb数据库中自动创建一个article�
 Feather社区：
 ![Feather社区](https://github.com/qicosmos/feather/blob/master/demo.png)
 
+## benchmark
+![feather benchmark](https://github.com/qicosmos/feather/blob/master/qps.png)
+
 ## 致谢
 
 Feather社区网站由我和网友[XMH](https://github.com/xmh0511/)共同开发完成（花了两天的业余时间），XMH也是cinatra的忠实用户，不但贡献了很多代码，还提供了很多宝贵的建议，在此表示衷心的感谢！
