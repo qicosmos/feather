@@ -33,7 +33,7 @@ namespace feather{
             str.resize(size);
 
             file.read(str.data(), size);
-            res.set_status_and_content(status_type::ok, std::move(str), content_encoding::gzip);
+            res.set_status_and_content(status_type::ok, std::move(str), res_content_type::none, content_encoding::gzip);
         }
     };
 }

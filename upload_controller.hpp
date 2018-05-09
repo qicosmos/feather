@@ -9,7 +9,7 @@ namespace feather{
     public:
         void upload(const request& req,response &res)
         {
-            assert(req.get_http_type() == content_type::multipart);
+            assert(req.get_content_type() == content_type::multipart);
             auto state = req.get_state();
             switch (state)
             {

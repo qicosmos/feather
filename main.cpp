@@ -97,9 +97,6 @@ int main(){
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 
-    static_res_controller res_ctl;
-    server.set_static_res_handler<GET,POST>(&static_res_controller::static_resource, &res_ctl);
-
     article_controller article_ctl;
     server.set_http_handler<GET, POST>("/", &article_controller::index, &article_ctl);
     server.set_http_handler<POST>("/add_article", &article_controller::add_article, &article_ctl);
