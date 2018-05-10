@@ -94,11 +94,37 @@ int main(){
         return -1;
     }
 
+    //for performance
+    server.set_http_handler<GET, POST>("/", [](const request& req, response& res){
+        auto id_s = req.get_query_value("id");
+
+        std::vector<article_detail> v;
+
+        bool r = false;
+
+        {
+            dao_t<dbng<mysql>> dao;
+            r = dao.get_object(v, "id="+std::string(id_s.data(), id_s.length()));
+        }
+
+        if(!r){
+            res.set_status_and_content(status_type::internal_server_error);
+        }else{
+            article_detail at{};
+            if(!v.empty())
+                at = std::move(v[0]);
+
+            nlohmann::json result = struct_to_json(at);
+            res.add_header("Access-Control-Allow-origin", "*");
+            res.set_status_and_content(status_type::ok, render("/show.html", result));
+        }
+    });
+
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 
     article_controller article_ctl;
-    server.set_http_handler<GET, POST>("/", &article_controller::index, &article_ctl);
+    server.set_http_handler<GET, POST>("/index", &article_controller::index, &article_ctl);
     server.set_http_handler<POST>("/add_article", &article_controller::add_article, &article_ctl);
     server.set_http_handler<GET, POST>("/get_article_list", &article_controller::get_article_list, &article_ctl);
     server.set_http_handler<GET, POST>("/get_article_detail", &article_controller::get_article_detail, &article_ctl);
