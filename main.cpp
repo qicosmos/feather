@@ -100,24 +100,14 @@ int main(){
 
         std::vector<article_detail> v;
 
-        bool r = false;
-
         {
             dao_t<dbng<mysql>> dao;
-            r = dao.get_object(v, "id="+std::string(id_s.data(), id_s.length()));
+            dao.get_object(v, "id="+std::string(id_s.data(), id_s.length()));
         }
 
-        if(!r){
-            res.set_status_and_content(status_type::internal_server_error);
-        }else{
-            article_detail at{};
-            if(!v.empty())
-                at = std::move(v[0]);
-
-            nlohmann::json result = struct_to_json(at);
-            res.add_header("Access-Control-Allow-origin", "*");
-            res.set_status_and_content(status_type::ok, render("/show.html", result));
-        }
+        iguana::string_stream ss;
+        iguana::json::to_json(ss, v);
+        res.set_status_and_content(status_type::ok, ss.str());
     });
 
     user_controller user_ctl;
