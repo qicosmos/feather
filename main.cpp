@@ -92,29 +92,12 @@ int main(){
     if (!r) {
         LOG_INFO << "listen failed";
         return -1;
-    }
-
-    //for performance
-    server.set_http_handler<GET, POST>("/", [](const request& req, response& res){
-        auto id_s = req.get_query_value("id");
-
-        std::vector<article_detail> v;
-
-        {
-            dao_t<dbng<mysql>> dao;
-            dao.get_object(v, "id="+std::string(id_s.data(), id_s.length()));
-        }
-
-        iguana::string_stream ss;
-        iguana::json::to_json(ss, v);
-        res.set_status_and_content(status_type::ok, ss.str());
-    });
 
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 
     article_controller article_ctl;
-    server.set_http_handler<GET, POST>("/index", &article_controller::index, &article_ctl);
+    server.set_http_handler<GET, POST>("/", &article_controller::index, &article_ctl);
     server.set_http_handler<POST>("/add_article", &article_controller::add_article, &article_ctl);
     server.set_http_handler<GET, POST>("/get_article_list", &article_controller::get_article_list, &article_ctl);
     server.set_http_handler<GET, POST>("/get_article_detail", &article_controller::get_article_detail, &article_ctl);
