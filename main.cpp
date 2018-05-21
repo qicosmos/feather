@@ -92,6 +92,7 @@ int main(){
     if (!r) {
         LOG_INFO << "listen failed";
         return -1;
+	}
 
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
