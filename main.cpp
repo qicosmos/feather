@@ -88,7 +88,7 @@ int main(){
 
     cinatra::http_server server(cfg.thread_num);
     server.set_static_dir("/static/");
-	server.enable_cache(true);//set global cache
+	server.enable_http_cache(true);//set global cache
     bool r = server.listen("0.0.0.0", cfg.port);
     if (!r) {
         LOG_INFO << "listen failed";
