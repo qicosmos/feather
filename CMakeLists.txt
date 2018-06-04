@@ -14,4 +14,4 @@ set(SOURCE_FILES
 )
 
 add_executable(feather ${SOURCE_FILES})
-target_link_libraries(feather mysqlclient sqlite3 pq ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${EXTRA_LIB})
+target_link_libraries(feather mysqlclient sqlite3 pq -lstdc++fs ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${EXTRA_LIB})
