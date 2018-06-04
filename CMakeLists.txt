@@ -7,6 +7,8 @@ project(feather)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++17")
 SET(ENABLE_MYSQL ON)
+SET(ENABLE_PG OFF)
+SET(ENABLE_SQLITE3 OFF)
 find_package(Boost 1.65 REQUIRED COMPONENTS system filesystem)
 
 set(SOURCE_FILES
