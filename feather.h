@@ -10,6 +10,5 @@
 #include "ormpp/mysql.hpp"
 #include "ormpp/connection_pool.hpp"
 #include "iguana/iguana/json.hpp"
-#include "inja/inja.hpp"
 #include "util.hpp"
 #endif //FEATHER_FEATHER_H
