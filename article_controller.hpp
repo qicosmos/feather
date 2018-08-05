@@ -28,7 +28,7 @@ namespace feather{
 
     class article_controller{
     public:
-        void add_article(const cinatra::request& req, cinatra::response& res){
+        void add_article(cinatra::request& req, cinatra::response& res){
             auto body = req.body();
             if (body.empty()) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
@@ -63,7 +63,7 @@ namespace feather{
             }
         }
 
-        void index(const cinatra::request& req, cinatra::response& res){
+        void index(cinatra::request& req, cinatra::response& res){
             int page_number = 0;
             auto page_s = req.get_query_value("page");
             if (!page_s.empty()) {
@@ -116,7 +116,7 @@ namespace feather{
             return total_page;
         }
 
-        void get_article_list(const cinatra::request& req, cinatra::response& res){
+        void get_article_list(cinatra::request& req, cinatra::response& res){
             int current_page = 0;
             auto page_s = req.get_query_value("page");
             if (!page_s.empty()) {
@@ -139,7 +139,7 @@ namespace feather{
             res.set_status_and_content(status_type::ok, ss.str());
         }
 
-        void get_article_detail(const cinatra::request& req, cinatra::response& res){
+        void get_article_detail(cinatra::request& req, cinatra::response& res){
             auto id_s = req.get_query_value("id");
             if (id_s.empty()) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
@@ -168,7 +168,7 @@ namespace feather{
             }
         }
 
-        void remove_article(const cinatra::request& req, cinatra::response& res){
+        void remove_article(cinatra::request& req, cinatra::response& res){
             auto id_s = req.get_query_value("id");
             if (id_s.empty()) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
@@ -192,7 +192,7 @@ namespace feather{
             }
         }
 
-        void update_article(const cinatra::request& req, cinatra::response& res){
+        void update_article(cinatra::request& req, cinatra::response& res){
             auto body = req.body();
             if (body.empty()) {
                 res.set_status_and_content(cinatra::status_type::bad_request);

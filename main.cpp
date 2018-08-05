@@ -26,9 +26,9 @@ void init_db(bool clear_all){
     }
 
     {
-        bool r1 = dao.create_table<user>({ ID(user::id) });
-        bool r2 = dao.create_table<article>({ ID(article::id) });
-        bool r3 = dao.create_table<article_detail>({ ID(article_detail::id) });
+        bool r1 = dao.create_table<user>({ SID(user::id) });
+        bool r2 = dao.create_table<article>({ SID(article::id) });
+        bool r3 = dao.create_table<article_detail>({ SID(article_detail::id) });
         assert(r1&&r2&&r3);
     }
 

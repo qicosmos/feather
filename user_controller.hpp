@@ -10,7 +10,7 @@ using namespace cinatra;
 namespace feather{
 class user_controller{
 public:
-    void add_user(const cinatra::request& req, cinatra::response& res){
+    void add_user(cinatra::request& req, cinatra::response& res){
         auto body = req.body();
         if (body.empty()) {
             res.set_status_and_content(cinatra::status_type::bad_request);

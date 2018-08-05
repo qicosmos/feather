@@ -7,7 +7,7 @@
 namespace feather{
     class static_res_controller{
     public:
-        void static_resource(const cinatra::request& req, cinatra::response& res){
+        void static_resource(cinatra::request& req, cinatra::response& res){
             auto fileName =req.get_res_path();
             if (fileName.empty()) {
                 res.set_status_and_content(cinatra::status_type::bad_request);
