@@ -33,7 +33,7 @@ namespace feather{
     inline std::string render(std::string tpl_filepath, nlohmann::json data)
     {
         using namespace inja;
-        Environment env = Environment("./www");
+        Environment env = Environment("./");
         env.set_element_notation(ElementNotation::Dot);
         Template temp = env.parse_template(tpl_filepath);
         std::string result = env.render_template(temp, data);
