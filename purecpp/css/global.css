@@ -460,8 +460,8 @@ body {
     }
 
         .article > .article-left > img {
-            width: 100%;
-            height: auto;
+            width: 120px;
+            height: 120px;
         }
 
     .article > .article-right {

@@ -6,22 +6,22 @@
     <meta http-equiv="Content-Language" content="zh-CN">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>purecpp - a cool open source modern c++ community</title>
-    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./purecpp/images/favicon.ico" type="image/x-icon">
     <!--Layui-->
-    <link href="../plug/layui/css/layui.css" rel="stylesheet" />
+    <link href="./purecpp/plug/layui/css/layui.css" rel="stylesheet" />
     <!--font-awesome-->
-    <link href="../plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="./purecpp/plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <!--全局样式表-->
-    <link href="../css/global.css" rel="stylesheet" />
+    <link href="./purecpp/css/global.css" rel="stylesheet" />
     <!-- 本页样式表 -->
-    <link href="../css/home.css" rel="stylesheet" />
+    <link href="./purecpp/css/home.css" rel="stylesheet" />
 </head>
 <body>
     <!-- 导航 -->
     <nav class="blog-nav layui-header">
         <div class="blog-container">
             <!-- 不落阁 -->
-            <a class="blog-logo" href="home.html"><div>PURECPP<div>Newer is Better</div></div></a>
+            <a class="blog-logo" href="home.html"><div>PURECPP</div></a>
             <!-- 导航菜单 -->
             <ul class="layui-nav" lay-filter="nav">
                 <li class="layui-nav-item layui-this">
@@ -48,6 +48,7 @@
     </nav>
     <!-- 主体（一般只改变这里的内容） -->
     <div class="blog-body">
+		<a style="position: absolute;top:10%;color:white;left:17%;" class="blog-logo" href="home.html"><font color="yellow" size="5"><b>Newer is Better</b></font></a>
         <!-- canvas -->
         <canvas id="canvas-banner" style="background: #393D49;"></canvas>
         <!--为了及时效果需要立即设置canvas宽高，否则就在home.js中设置-->
@@ -74,151 +75,51 @@
                 </div>
                 <!--左边文章列表-->
                 <div class="blog-main-left">
+				{% for item in article_list %}
                     <div class="article shadow">
                         <div class="article-left">
-                            <img src="../images/cover/timg.jpg" alt="purecpp" />
+                            <img src="./purecpp/images/cover/logo6.png" alt="purecpp" />
                         </div>
                         <div class="article-right">
                             <div class="article-title">
-                                <a href="detail.html">cppcon2018日程确定</a>
+                                <a href="detail.html">{{item.post_title}}</a>
                             </div>
                             <div class="article-abstract">
-                                随着cppcon2018的时间越来越近，今年的cppcon日程终于确定了，一百多位来自世界各地的讲师将给大家带来精彩的演讲，c++爱好者不可错过。大会详细日程在这里，大家可以根据自己的兴趣选择自己感兴趣的话题。
+                                {{item.content_abstract}}
                             </div>
                         </div>
                         <div class="clear"></div>
                         <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;2018-08-4</span>
-                            <span class="article-author"><i class="fa fa-user"></i>qicosmos</span>
+                            <span><i class="fa fa-clock-o"></i>{{item.post_date}}</span>
+                            <span class="article-author"><i class="fa fa-user"></i>{{item.post_author}}</span>
                             <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
                             <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
                             <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
                         </div>
                     </div>
-					<div class="article shadow">
-                        <div class="article-left">
-                            <img src="../images/cover/timg.jpg" alt="purecpp" />
-                        </div>
-                        <div class="article-right">
-                            <div class="article-title">
-                                <a href="detail.html">cppcon2018日程确定</a>
-                            </div>
-                            <div class="article-abstract">
-                                随着cppcon2018的时间越来越近，今年的cppcon日程终于确定了，一百多位来自世界各地的讲师将给大家带来精彩的演讲，c++爱好者不可错过。大会详细日程在这里，大家可以根据自己的兴趣选择自己感兴趣的话题。
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;2018-08-4</span>
-                            <span class="article-author"><i class="fa fa-user"></i>qicosmos</span>
-                            <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
-                            <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
-                            <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
-                        </div>
-                    </div>
-					<div class="article shadow">
-                        <div class="article-left">
-                            <img src="../images/cover/timg.jpg" alt="purecpp" />
-                        </div>
-                        <div class="article-right">
-                            <div class="article-title">
-                                <a href="detail.html">cppcon2018日程确定</a>
-                            </div>
-                            <div class="article-abstract">
-                                随着cppcon2018的时间越来越近，今年的cppcon日程终于确定了，一百多位来自世界各地的讲师将给大家带来精彩的演讲，c++爱好者不可错过。大会详细日程在这里，大家可以根据自己的兴趣选择自己感兴趣的话题。
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;2018-08-4</span>
-                            <span class="article-author"><i class="fa fa-user"></i>qicosmos</span>
-                            <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
-                            <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
-                            <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
-                        </div>
-                    </div>
-					<div class="article shadow">
-                        <div class="article-left">
-                            <img src="../images/cover/timg.jpg" alt="purecpp" />
-                        </div>
-                        <div class="article-right">
-                            <div class="article-title">
-                                <a href="detail.html">cppcon2018日程确定</a>
-                            </div>
-                            <div class="article-abstract">
-                                随着cppcon2018的时间越来越近，今年的cppcon日程终于确定了，一百多位来自世界各地的讲师将给大家带来精彩的演讲，c++爱好者不可错过。大会详细日程在这里，大家可以根据自己的兴趣选择自己感兴趣的话题。
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;2018-08-4</span>
-                            <span class="article-author"><i class="fa fa-user"></i>qicosmos</span>
-                            <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
-                            <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
-                            <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
-                        </div>
-                    </div>
-					<div class="article shadow">
-                        <div class="article-left">
-                            <img src="../images/cover/timg.jpg" alt="purecpp" />
-                        </div>
-                        <div class="article-right">
-                            <div class="article-title">
-                                <a href="detail.html">cppcon2018日程确定</a>
-                            </div>
-                            <div class="article-abstract">
-                                随着cppcon2018的时间越来越近，今年的cppcon日程终于确定了，一百多位来自世界各地的讲师将给大家带来精彩的演讲，c++爱好者不可错过。大会详细日程在这里，大家可以根据自己的兴趣选择自己感兴趣的话题。
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;2018-08-4</span>
-                            <span class="article-author"><i class="fa fa-user"></i>qicosmos</span>
-                            <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
-                            <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
-                            <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
-                        </div>
-                    </div>
-					<div class="article shadow">
-                        <div class="article-left">
-                            <img src="../images/cover/timg.jpg" alt="purecpp" />
-                        </div>
-                        <div class="article-right">
-                            <div class="article-title">
-                                <a href="detail.html">cppcon2018日程确定</a>
-                            </div>
-                            <div class="article-abstract">
-                                随着cppcon2018的时间越来越近，今年的cppcon日程终于确定了，一百多位来自世界各地的讲师将给大家带来精彩的演讲，c++爱好者不可错过。大会详细日程在这里，大家可以根据自己的兴趣选择自己感兴趣的话题。
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;2018-08-4</span>
-                            <span class="article-author"><i class="fa fa-user"></i>qicosmos</span>
-                            <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
-                            <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
-                            <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
-                        </div>
-                    </div>
+					{% endfor %}
                 </div>
                 <!--右边小栏目-->
                 <div class="blog-main-right">
                     <div class="blogerinfo shadow">
+						<div class="blogerinfo-figure">
+                            <img src="./purecpp/images/cover/logo6.png" alt="Absolutely" />
+                        </div>
                         <p class="blogerinfo-nickname">purecpp</p>
                         <p class="blogerinfo-introduce">一个很酷的modern c++开源社区</p>
                         <hr />
                         <div class="blogerinfo-contact">
-                            这里有创新的idea，这里有最酷的modern c++代码，这里有很棒的modern c++开源项目
+                            这里有创新的idea，这里有最酷的modern c++代码，这里有很棒的modern c++开源项目。purecpp社区邮箱 purecpp@163.com
                         </div>
                     </div>
 					<div class="blog-search">
                         <form class="layui-form" action="">
-                            <div class="layui-form-item">
+                            <div class="layui-form-item" style="position: relative;">
                                 <div class="search-keywords  shadow">
                                     <input type="text" name="keywords" lay-verify="required" placeholder="输入关键词搜索" autocomplete="off" class="layui-input">
                                 </div>
-                                <div class="search-submit  shadow">
-                                    <a class="search-btn" lay-submit="formSearch" lay-filter="formSearch"><i class="fa fa-search"></i></a>
+                                <div class="search-submit  shadow" style="position: absolute;top:2px;right:5px;">
+                                    <a class="search-btn" lay-submit="formSearch" lay-filter="formSearch" style="font-size: 30px;"><i class="fa fa-search"></i></a>
                                 </div>
                             </div>
                         </form>
@@ -287,10 +188,10 @@
     <!--遮罩-->
     <div class="blog-mask animated layui-hide"></div>
     <!-- layui.js -->
-    <script src="../plug/layui/layui.js"></script>
+    <script src="./purecpp/plug/layui/layui.js"></script>
     <!-- 全局脚本 -->
-    <script src="../js/global.js"></script>
+    <script src="./purecpp/js/global.js"></script>
     <!-- 本页脚本 -->
-    <script src="../js/home.js"></script>
+    <script src="./purecpp/js/home.js"></script>
 </body>
 </html>
