@@ -95,6 +95,42 @@ int main(){
         return -1;
 	}
 
+	server.set_http_handler<GET>("/home", [](request& req, response& res) {
+		/*{
+			dao_t<dbng<mysql>> dao;
+			std::vector<pp_post_views> v;
+			dao.get_object(v, "limit 4");
+		}
+		{
+			dao_t<dbng<mysql>> dao;
+			std::vector<pp_comment> v;
+			dao.get_object(v, "limit 4");
+		}
+		{
+			dao_t<dbng<mysql>> dao;
+			std::vector<pp_user> v;
+			dao.get_object(v, "limit 4");
+		}*/
+		dao_t<dbng<mysql>> dao;
+		std::vector<pp_posts> v;
+		dao.get_object(v, "post_status='publish'", "order by post_date desc", "limit 4");
+
+		nlohmann::json article_list;
+		for (auto& post : v) {
+			nlohmann::json item;
+			item["post_author"] = post.post_author;
+			item["content_abstract"] = post.content_abstract;
+			item["post_date"] = post.post_date;
+			item["post_title"] = post.post_title;
+			article_list.push_back(item);
+		}
+		
+		nlohmann::json result;
+		result["article_list"] = article_list;
+		res.add_header("Content-Type", "text/html; charset=utf-8");
+		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
+	}, enable_cache{ false });
+
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 

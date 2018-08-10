@@ -30,16 +30,6 @@ namespace feather{
         return list;
     }
 
-    inline std::string render(std::string tpl_filepath, nlohmann::json data)
-    {
-        using namespace inja;
-        Environment env = Environment("./");
-        env.set_element_notation(ElementNotation::Dot);
-        Template temp = env.parse_template(tpl_filepath);
-        std::string result = env.render_template(temp, data);
-        return result;
-    }
-
     inline std::string get_cur_time_str(){
         std::time_t t = std::time(nullptr);
         std::stringstream ss;

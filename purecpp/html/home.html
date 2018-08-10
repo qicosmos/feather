@@ -75,29 +75,29 @@
                 </div>
                 <!--左边文章列表-->
                 <div class="blog-main-left">
-				{% for item in article_list %}
+				$for item in article_list{{
                     <div class="article shadow">
                         <div class="article-left">
                             <img src="./purecpp/images/cover/logo6.png" alt="purecpp" />
                         </div>
                         <div class="article-right">
                             <div class="article-title">
-                                <a href="detail.html">{{item.post_title}}</a>
+                                <a href="detail.html">${item.post_title}</a>
                             </div>
                             <div class="article-abstract">
-                                {{item.content_abstract}}
+                                ${item.content_abstract}
                             </div>
                         </div>
                         <div class="clear"></div>
                         <div class="article-footer">
-                            <span><i class="fa fa-clock-o"></i>{{item.post_date}}</span>
-                            <span class="article-author"><i class="fa fa-user"></i>{{item.post_author}}</span>
+                            <span><i class="fa fa-clock-o"></i>${item.post_date}</span>
+                            <span class="article-author"><i class="fa fa-user"></i>${item.post_author}</span>
                             <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="#">社区活动</a></span>
                             <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;0</span>
                             <span class="article-viewinfo"><i class="fa fa-commenting"></i>104</span>
                         </div>
                     </div>
-					{% endfor %}
+					}}
                 </div>
                 <!--右边小栏目-->
                 <div class="blog-main-right">
