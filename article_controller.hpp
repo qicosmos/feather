@@ -102,7 +102,8 @@ namespace feather{
             result["articleList"] = article_list;
             result["page"] = page_number;
 
-            res.set_status_and_content(status_type::ok, render::render_file("/index.html", result));
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+            res.set_status_and_content(status_type::ok, render::render_file("./www/index.html", result));
         }
 
         int total_page(size_t size){
@@ -164,7 +165,8 @@ namespace feather{
 
                 nlohmann::json result = struct_to_json(at);
                 res.add_header("Access-Control-Allow-origin", "*");
-                res.set_status_and_content(status_type::ok, render::render_file("/show.html", result));
+				res.add_header("Content-Type", "text/html; charset=utf-8");
+                res.set_status_and_content(status_type::ok, render::render_file("./www/show.html", result));
             }
         }
 

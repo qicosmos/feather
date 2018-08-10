@@ -84,26 +84,26 @@
   <div class="title">
 	<h3>最新发布</h3>
   </div>
-	{% for item in articleList %}
+	$for item in articleList {{
   <article class="excerpt-minic excerpt-minic-index" style="">
 		<header>
-			<h1><a href="get_article_detail?id={{item.id}}" title="" target="_blank" >{{item.title}}</a>
+			<h1><a href="get_article_detail?id=${item.id}" title="" target="_blank" >${item.title}</a>
 			</h1>
 		</header>
 		<p class="meta">
-			<time class="time"><i class="glyphicon glyphicon-time"></i>{{item.create_time}}</time>
+			<time class="time"><i class="glyphicon glyphicon-time"></i>${item.create_time}</time>
 			<span class="views"> qicosmos</span> <a class="comment" href="##comment" title="评论" target="_blank" ><i class="glyphicon glyphicon-comment"></i> </a>
 		</p>
-		<p class="note">{{item.introduce}}</p>
+		<p class="note">${item.introduce}</p>
   </article>
-	{% endfor %}
+	}}
   <nav class="pagination" style="display: none;">
 	<ul>
 	  <li class="prev-page"></li>
-	  <li class="active"><span>{{now_page}}</span></li>
-	  <li><a href="?page={{now_page}}">{{now_page}}</a></li>
-	  <li class="next-page"><a href="?page={{page}}">下一页</a></li>
-	  <li><span>共{{totalPage}}页</span></li>
+	  <li class="active"><span>${now_page}</span></li>
+	  <li><a href="?page=${now_page}">${now_page}</a></li>
+	  <li class="next-page"><a href="?page=${page}">下一页</a></li>
+	  <li><span>共${totalPage}页</span></li>
 	</ul>
   </nav>
 </div>
