@@ -112,16 +112,27 @@ int main(){
 			dao.get_object(v, "limit 4");
 		}*/
 		dao_t<dbng<mysql>> dao;
-		std::vector<pp_posts> v;
-		dao.get_object(v, "post_status='publish'", "order by post_date desc", "limit 4");
+		std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+		"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT 10; ";
+		auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+		//std::vector<pp_posts> v;
+		//dao.get_object(v, "post_status='publish'", "order by post_date desc", "limit 10");
 
 		nlohmann::json article_list;
-		for (auto& post : v) {
+		for (auto& o : v) {
 			nlohmann::json item;
+			auto& post = std::get<0>(o);
 			item["post_author"] = post.post_author;
 			item["content_abstract"] = post.content_abstract;
 			item["post_date"] = post.post_date;
 			item["post_title"] = post.post_title;
+			item["category"] = post.category;
+			item["comment_count"] = post.comment_count;
+
+			std::string user_login = std::get<1>(o);
+			int total = std::get<2>(o);
+			item["user_login"] = user_login;
+			item["total"] = total;
 			article_list.push_back(item);
 		}
 		
