@@ -478,10 +478,6 @@ body {
                 color: #009688;
             }
 
-        .article > .article-right > .article-abstract {
-            display: none;
-        }
-
     .article > .article-footer {
         margin-top: 5px;
         font-size: 11px;
