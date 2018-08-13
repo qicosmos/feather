@@ -2,51 +2,42 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; Charset=gb2312">
+    <meta http-equiv="Content-Type" content="text/html; Charset=utf-8">
     <meta http-equiv="Content-Language" content="zh-CN">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>不落阁 - 文章专栏 - 基于layui的laypage扩展模块！</title>
-    <link rel="shortcut icon" href="../images/Logo_40.png" type="image/x-icon">
+    <title>purecpp - a cool open source modern c++ community</title>
+    <link rel="shortcut icon" href="./purecpp/images/favicon.ico" type="image/x-icon">
     <!--Layui-->
-    <link href="../plug/layui/css/layui.css" rel="stylesheet" />
+    <link href="./purecpp/plug/layui/css/layui.css" rel="stylesheet" />
     <!--font-awesome-->
-    <link href="../plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="./purecpp/plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     <!--全局样式表-->
-    <link href="../css/global.css" rel="stylesheet" />
-    <!-- 比较好用的代码着色插件 -->
-    <link href="../css/prettify.css" rel="stylesheet" />
+    <link href="./purecpp/css/global.css" rel="stylesheet" />
     <!-- 本页样式表 -->
-    <link href="../css/detail.css" rel="stylesheet" />
+    <link href="./purecpp/css/detail.css" rel="stylesheet" />
 </head>
 <body>
     <!-- 导航 -->
     <nav class="blog-nav layui-header">
         <div class="blog-container">
-            <!-- QQ互联登陆 -->
-            <a href="javascript:;" class="blog-user">
-                <i class="fa fa-qq"></i>
-            </a>
-            <a href="javascript:;" class="blog-user layui-hide">
-                <img src="../images/Absolutely.jpg" alt="Absolutely" title="Absolutely" />
-            </a>
             <!-- 不落阁 -->
-            <a class="blog-logo" href="home.html">不落阁</a>
+            <a class="blog-logo" href="home.html"><div>PURECPP</div></a>
             <!-- 导航菜单 -->
             <ul class="layui-nav" lay-filter="nav">
-                <li class="layui-nav-item">
-                    <a href="home.html"><i class="fa fa-home fa-fw"></i>&nbsp;网站首页</a>
-                </li>
-                <li class="layui-nav-item  layui-this">
-                    <a href="article.html"><i class="fa fa-file-text fa-fw"></i>&nbsp;文章专栏</a>
+                <li class="layui-nav-item layui-this">
+                    <a href="home.html">首页</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="resource.html"><i class="fa fa-tags fa-fw"></i>&nbsp;资源分享</a>
+                    <a href="article.html">开源项目</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="timeline.html"><i class="fa fa-hourglass-half fa-fw"></i>&nbsp;点点滴滴</a>
+                    <a href="resource.html">社区活动</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="about.html"><i class="fa fa-info fa-fw"></i>&nbsp;关于本站</a>
+                    <a href="timeline.html">社区服务</a>
+                </li>
+				<li class="layui-nav-item">
+                    <a href="timeline.html">登录/注册</a>
                 </li>
             </ul>
             <!-- 手机和平板的导航开关 -->
@@ -68,107 +59,24 @@
                     <!-- 文章内容（使用Kingeditor富文本编辑器发表的） -->
                     <div class="article-detail shadow">
                         <div class="article-detail-title">
-                            基于laypage的layui扩展模块（pagesize.js）！
+                            ${post_title}
                         </div>
                         <div class="article-detail-info">
-                            <span>编辑时间：2017/3/18 17:30:22</span>
-                            <span>作者：Absolutely</span>
-                            <span>浏览量：12</span>
+                            <span>编辑时间：${post_modified}</span>
+                            <span>作者：${user_login}</span>
+                            <span>浏览量：${total}</span>
                         </div>
                         <div class="article-detail-content">
                             <p style="text-align:center;">
-                                <strong><span style="font-size:18px;">小赌为快</span></strong>
-                            </p>
-                            <p style="text-align:center;">
-                                <strong>
-                                    <span style="font-size:18px;">
-                                        <br />
-                                    </span>
-                                </strong>
-                            </p>
-                            <p style="text-align:center;">
-                                <img src="http://www.lyblogs.cn/kindeditor/attached/image/20170318/20170318175743_4625.gif" width="100%" height="auto" title="pagesize演示" alt="pagesize演示" />
-                            </p>
-                            <p style="text-align:left;">
-                                <br />
+                                <span style="font-size:18px;">${post_content}</span>
                             </p>
                             <hr />
+                            &nbsp; &nbsp; 出自：purecpp
                             <p>
-                                <br />
-                            </p>
-                            <div style="text-align:center;">
-                                &nbsp; &nbsp; <span style="color:#EE33EE;">前言</span>：如果你没使用过layui框架或是laypage模块，那么请忽略这篇文章！
-                            </div>
-                            <hr />
-                            <p>
-                                <br />
+                                &nbsp; &nbsp; 地址：<a href="http://www.purecpp.org" target="_blank">www.purecpp.org</a>
                             </p>
                             <p>
-                                &nbsp;&nbsp;&nbsp;&nbsp;pagesize.js是博主写的一个基于laypage的layui扩展模块。扩展了laypage目前未有的一个页容量控制功能！
-                            </p>
-                            <p>
-                                &nbsp;&nbsp;&nbsp;&nbsp;由于目前layui的分页laypage模块并没有控制页容量的功能（layui 2.0不知道会不会有），所以我针对我自己的后台管理系统制作了这样一个功能！
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; 起初想着自己用，就简简单单的写了个方法，后来想着layui2.0发布日期还不知道，不如把这个方法做成模块分享！
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; pageszie.js采用layui定义模块的方法定义，所以你可以以layui加载其他模块的方式加载它，<span style="color:#EE33EE;">前提</span>是你把pagesize.js放在/layui/lay/modules/目录下面。
-                            </p>
-                            <p>
-                                <br />
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; 加载方法如下：
-                            </p>
-<pre class="prettyprint linenums lang-js">layui.use('pagesize',function(){
-    var pagesize = layui.pagesize();
-});</pre>
-                            <p>
-                                &nbsp;&nbsp; &nbsp; 它主要提供两个功能，一个是原有的laypage上渲染一段控制页容量的html代码，另一个是点击确定的时候返回所确定的新的页容量。
-                            </p>
-                            <p>
-                                <br />
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; 使用方法如下：
-                            </p>
-<pre class="prettyprint linenums lang-js">//注意，这个方法须在laypage(seetiongs)方法执行之后，也就是laypage渲染之后！否则可能会出现意外
-pagesize(laypageId, pageSize).callback(function (newPageSize) {
-    //这个回调函数是在指定新的页容量后触发
-    //并返回新的页容量
-    //你可以在这里使用新的页容量重新获取分页数据！
-});</pre>
-                            &nbsp;&nbsp; &nbsp;<span style="color:#EE33EE;">参数说明</span>：
-                            <p>
-                                &nbsp; &nbsp; <span style="color:#337FE5;"><strong>laypageId</strong></span>：laypage容器元素的id属性，同于laypage(settings)的cont属性，由于作之前没看laypage的cont属性还可以传dom或jquery对象，所以这里只支持元素id属性！
-                            </p>
-                            <p>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<strong><span style="color:#337FE5;">pageSize</span></strong>：当前页容量，用于将当前页容量显示在界面上！
-                            </p>
-                            <p>
-                                <br />
-                            </p>
-                            <p>
-                                &nbsp;&nbsp;&nbsp;&nbsp;该功能是我后台分页的时候扩展的一个功能，但我又想将它分享出来，于是做成了layui扩展模块。<br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;由于它起初针对我个人后台的分页定制的扩展功能，所以我只测试了我分页的写法是能实现的，并不知道大家的分页写法是否能用！<br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;如不能用，请参考我后台的分页写法！<br />
-                                &nbsp;&nbsp;&nbsp;&nbsp;后台暂时没有源码，没时间整理，所以请自行到后台查看！
-                            </p>
-                            <hr />
-                            <p>
-                                <br />
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; 点赞不落阁：<a href="http://fly.layui.com/case/2017/" target="_blank"><span style="color:#337FE5;">点击前往</span></a>&nbsp; &nbsp; 完整演示请看后台：<span><a href="http://www.lyblogs.cn/admin" target="_blank"><span style="color:#337FE5;">点击前往</span></a></span>&nbsp; &nbsp; pagesize.js下载地址：<a href="https://pan.baidu.com/s/1kVK8UhT" target="_blank"><span style="color:#337FE5;">点击前往</span></a>
-                            </p>
-                            <hr />
-                            &nbsp; &nbsp; 出自：不落阁
-                            <p>
-                                &nbsp; &nbsp; 地址：<a href="http://www.lyblogs.cn" target="_blank">www.lyblogs.cn</a>
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; 转载请注明出处！<img src="http://www.lyblogs.cn/kindeditor/plugins/emoticons/images/0.gif" border="0" alt="" />
+                                &nbsp; &nbsp; 转载请注明出处！
                             </p>
                             <p>
                                 <br />
@@ -194,51 +102,80 @@ pagesize(laypageId, pageSize).callback(function (newPageSize) {
                         <ul class="blog-comment">
                             <li>
                                 <div class="comment-parent">
-                                    <img src="../images/Absolutely.jpg" alt="absolutely" />
+                                    <img src="./purecpp/images/cover/logo6.png" alt="qicosmos" />
                                     <div class="info">
-                                        <span class="username">Absolutely</span>
-                                        <span class="time">2017-03-18 18:46:06</span>
+                                        <span class="username">qicosmos</span>
+                                        <span class="time">2018-08-12 18:46:06</span>
                                     </div>
                                     <div class="content">
-                                        我为大家做了模拟评论功能！还有，这个评论功能也可以改成和留言一样，但是目前没改，有兴趣可以自己改
+                                        我为大家做了模拟评论功能！欢迎评论！
                                     </div>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
+                <!--右边小栏目-->
                 <div class="blog-main-right">
-                    <!--右边悬浮 平板或手机设备显示-->
-                    <div class="category-toggle"><i class="fa fa-chevron-left"></i></div><!--这个div位置不能改，否则需要添加一个div来代替它或者修改样式表-->
+                    <div class="blogerinfo shadow">
+						<div class="blogerinfo-figure">
+                            <img src="./purecpp/images/cover/logo6.png" alt="Absolutely" />
+                        </div>
+                        <p class="blogerinfo-nickname">purecpp</p>
+                        <p class="blogerinfo-introduce">一个很酷的modern c++开源社区</p>
+                        <hr />
+                        <div class="blogerinfo-contact">
+                            这里有创新的idea，这里有最酷的modern c++代码，这里有很棒的modern c++开源项目。purecpp社区邮箱 purecpp@163.com
+                        </div>
+                    </div>
+					<div class="blog-search">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item" style="position: relative;">
+                                <div class="search-keywords  shadow">
+                                    <input type="text" name="keywords" lay-verify="required" placeholder="输入关键词搜索" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="search-submit  shadow" style="position: absolute;top:2px;right:5px;">
+                                    <a class="search-btn" lay-submit="formSearch" lay-filter="formSearch" style="font-size: 30px;"><i class="fa fa-search"></i></a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="article-category shadow">
                         <div class="article-category-title">分类导航</div>
-                        <!-- 点击分类后的页面和artile.html页面一样，只是数据是某一类别的 -->
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">ASP.NET MVC</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">SQL Server</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">Entity Framework</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">Web前端</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">C#基础</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">杂文随笔</a>
+                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">C++11/14/17</a>
+                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区开源项目</a>
+                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区活动</a>
+                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">元编程</a>
+                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">代码精粹</a>
+                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">技术探讨</a>
+						<a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区精华</a>
+						<a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">modern c++资讯</a>
                         <div class="clear"></div>
                     </div>
                     <div class="blog-module shadow">
-                        <div class="blog-module-title">相似文章</div>
+                        <div class="blog-module-title">热文排行</div>
                         <ul class="fa-ul blog-module-ul">
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">基于laypage的layui扩展模块（pagesize.js）！</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">基于laypage的layui扩展模块（pagesize.js）！</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">基于laypage的layui扩展模块（pagesize.js）！</a></li>
+							<li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">cppcon2018日程确定</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">cinatra发布新版本</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">记一次C++静态反射的实践</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">从抽象谈面向对象与泛型编程 part.2 – 泛型编程的抽象</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">C++极简的插件化抽象工厂(PAF)</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">从抽象谈面向对象与泛型编程 part.1</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">解耦利器function message bus</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">purecpp社区将举办今年的C++大会（讲师报名已经开始）</a></li>
                         </ul>
                     </div>
                     <div class="blog-module shadow">
-                        <div class="blog-module-title">随便看看</div>
+                        <div class="blog-module-title">最近分享</div>
                         <ul class="fa-ul blog-module-ul">
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">一步步制作时光轴（一）（HTML篇）</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">ASP.NET MVC制作404跳转（非302和200）</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">ASP.NET MVC 防范跨站请求伪造（CSRF）</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">一步步制作时光轴（三）（JS篇）</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">基于laypage的layui扩展模块（pagesize.js）！</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">一步步制作时光轴（二）（CSS篇）</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">写了个Win10风格快捷菜单！</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="" target="_blank">cppcon2018日程确定</a></li>
+                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="" target="_blank">cinatra发布新版本</a></li>
+                        </ul>
+                    </div>                    
+                    <div class="blog-module shadow">
+                        <div class="blog-module-title">友情链接</div>
+                        <ul class="blogroll">
+                            <li><a target="_blank" href="http://isocpp.org/" title="Layui">isocpp</a></li>
                         </ul>
                     </div>
                 </div>
@@ -248,27 +185,9 @@ pagesize(laypageId, pageSize).callback(function (newPageSize) {
     </div>
     <!-- 底部 -->
     <footer class="blog-footer">
-        <p><span>Copyright</span><span>&copy;</span><span>2017</span><a href="http://www.lyblogs.cn">不落阁</a><span>Design By LY</span></p>
-        <p><a href="http://www.miibeian.gov.cn/" target="_blank">蜀ICP备16029915号-1</a></p>
+        <p><span>Copyright</span><span>&copy;</span><span>2018</span><a href="http://www.purecpp.com">purecpp</a></p>
+        <p><a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15026394号-1</a></p>
     </footer>
-    <!--侧边导航-->
-    <ul class="layui-nav layui-nav-tree layui-nav-side blog-nav-left layui-hide" lay-filter="nav">
-        <li class="layui-nav-item">
-            <a href="home.html"><i class="fa fa-home fa-fw"></i>&nbsp;网站首页</a>
-        </li>
-        <li class="layui-nav-item layui-this">
-            <a href="article.html"><i class="fa fa-file-text fa-fw"></i>&nbsp;文章专栏</a>
-        </li>
-        <li class="layui-nav-item">
-            <a href="resource.html"><i class="fa fa-tags fa-fw"></i>&nbsp;资源分享</a>
-        </li>
-        <li class="layui-nav-item">
-            <a href="timeline.html"><i class="fa fa-road fa-fw"></i>&nbsp;点点滴滴</a>
-        </li>
-        <li class="layui-nav-item">
-            <a href="about.html"><i class="fa fa-info fa-fw"></i>&nbsp;关于本站</a>
-        </li>
-    </ul>
     <!--分享窗体-->
     <div class="blog-share layui-hide">
         <div class="blog-share-body">
@@ -285,12 +204,10 @@ pagesize(laypageId, pageSize).callback(function (newPageSize) {
     <!--遮罩-->
     <div class="blog-mask animated layui-hide"></div>
     <!-- layui.js -->
-    <script src="../plug/layui/layui.js"></script>
-    <!-- 自定义全局脚本 -->
-    <script src="../js/global.js"></script>
-    <!-- 比较好用的代码着色插件 -->
-    <script src="../js/prettify.js"></script>
+    <script src="./purecpp/plug/layui/layui.js"></script>
+    <!-- 全局脚本 -->
+    <script src="./purecpp/js/global.js"></script>
     <!-- 本页脚本 -->
-    <script src="../js/detail.js"></script>
+    <script src="./purecpp/js/home.js"></script>
 </body>
 </html>

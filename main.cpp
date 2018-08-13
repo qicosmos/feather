@@ -96,21 +96,6 @@ int main(){
 	}
 
 	server.set_http_handler<GET>("/home", [](request& req, response& res) {
-		/*{
-			dao_t<dbng<mysql>> dao;
-			std::vector<pp_post_views> v;
-			dao.get_object(v, "limit 4");
-		}
-		{
-			dao_t<dbng<mysql>> dao;
-			std::vector<pp_comment> v;
-			dao.get_object(v, "limit 4");
-		}
-		{
-			dao_t<dbng<mysql>> dao;
-			std::vector<pp_user> v;
-			dao.get_object(v, "limit 4");
-		}*/
 		dao_t<dbng<mysql>> dao;
 		std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 		"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT 10; ";
@@ -122,6 +107,7 @@ int main(){
 		for (auto& o : v) {
 			nlohmann::json item;
 			auto& post = std::get<0>(o);
+			item["ID"] = post.ID;
 			item["post_author"] = post.post_author;
 			item["content_abstract"] = post.content_abstract;
 			item["post_date"] = post.post_date;
@@ -141,6 +127,34 @@ int main(){
 		res.add_header("Content-Type", "text/html; charset=utf-8");
 		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
 	}, enable_cache{ false });
+
+	server.set_http_handler<GET>("/detail", [](request& req, response& res) {
+		auto ids = req.get_query_value("id");
+		assert(!ids.empty());
+		std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+			"where post_status = 'publish' AND t1.ID = "+std::string(ids.data(), ids.length())+ " AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ; ";
+
+		dao_t<dbng<mysql>> dao;
+		auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+
+		nlohmann::json article;
+		for (auto& o : v) {
+			auto& post = std::get<0>(o);
+			article["post_title"] = post.post_title;
+			article["post_modified"] = post.post_modified;
+			std::string user_login = std::get<1>(o);
+			int total = std::get<2>(o);
+			article["user_login"] = user_login;
+			article["total"] = total;
+			article["post_content"] = std::move(post.post_content);
+			
+			//article["category"] = post.category;
+			//article["comment_count"] = post.comment_count;	
+		}
+
+		res.add_header("Content-Type", "text/html; charset=utf-8");
+		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/detail.html", article));
+	});
 
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
