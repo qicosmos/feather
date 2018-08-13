@@ -121,9 +121,35 @@ int main(){
 			item["total"] = total;
 			article_list.push_back(item);
 		}
-		
+
+    std::string hot_article_sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+		"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY total DESC LIMIT 8; ";
+		auto v1 = dao.query<std::tuple<pp_posts, std::string, int>>(hot_article_sql);
+		//std::vector<pp_posts> v;
+		//dao.get_object(v, "post_status='publish'", "order by post_date desc", "limit 10");
+
+		nlohmann::json hot_article_list;
+		for (auto& o : v1) {
+			nlohmann::json item;
+			auto& post = std::get<0>(o);
+			item["ID"] = post.ID;
+			item["post_author"] = post.post_author;
+			item["content_abstract"] = post.content_abstract;
+			item["post_date"] = post.post_date;
+			item["post_title"] = post.post_title;
+			item["category"] = post.category;
+			item["comment_count"] = post.comment_count;
+
+			std::string user_login = std::get<1>(o);
+			int total = std::get<2>(o);
+			item["user_login"] = user_login;
+			item["total"] = total;
+			hot_article_list.push_back(item);
+		}
+
 		nlohmann::json result;
 		result["article_list"] = article_list;
+    result["hot_article_list"] = hot_article_list;
 		res.add_header("Content-Type", "text/html; charset=utf-8");
 		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
 	}, enable_cache{ false });
@@ -152,6 +178,32 @@ int main(){
 			//article["comment_count"] = post.comment_count;	
 		}
 
+    std::string hot_article_sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+		"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY total DESC LIMIT 8; ";
+		auto v1 = dao.query<std::tuple<pp_posts, std::string, int>>(hot_article_sql);
+		//std::vector<pp_posts> v;
+		//dao.get_object(v, "post_status='publish'", "order by post_date desc", "limit 10");
+
+		nlohmann::json hot_article_list;
+		for (auto& o : v1) {
+			nlohmann::json item;
+			auto& post = std::get<0>(o);
+			item["ID"] = post.ID;
+			item["post_author"] = post.post_author;
+			item["content_abstract"] = post.content_abstract;
+			item["post_date"] = post.post_date;
+			item["post_title"] = post.post_title;
+			item["category"] = post.category;
+			item["comment_count"] = post.comment_count;
+
+			std::string user_login = std::get<1>(o);
+			int total = std::get<2>(o);
+			item["user_login"] = user_login;
+			item["total"] = total;
+			hot_article_list.push_back(item);
+		}
+    //todo 暂时不确定这样是否符合标准 目前考虑代码可以这样进行传值
+    article["hot_article_list"] = hot_article_list;
 		res.add_header("Content-Type", "text/html; charset=utf-8");
 		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/detail.html", article));
 	});
