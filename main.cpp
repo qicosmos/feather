@@ -140,6 +140,10 @@ int main(){
 
 		dao_t<dbng<mysql>> dao;
 		auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+		if (v.empty()) {
+			res.set_status_and_content(status_type::bad_request, "");
+			return;
+		}
 
 		nlohmann::json article;
 		for (auto& o : v) {
