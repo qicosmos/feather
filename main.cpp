@@ -156,7 +156,11 @@ int main(){
 
 	server.set_http_handler<GET>("/detail", [](request& req, response& res) {
 		auto ids = req.get_query_value("id");
-		assert(!ids.empty());
+		if (ids.empty()) {
+			res.set_status_and_content(status_type::bad_request, "");
+			return;
+		}
+
 		std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 			"where post_status = 'publish' AND t1.ID = "+std::string(ids.data(), ids.length())+ " AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ; ";
 
