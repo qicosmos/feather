@@ -13,7 +13,7 @@ layui.use(['form', 'layedit'], function () {
     layui.form().verify({
         content: function (value) {
             value = $.trim(layedit.getText(editIndex));
-            if (value == "") return "自少得有一个字吧";
+            if (value == "") return " 至少得有一个字吧";
             layedit.sync(editIndex);
         }
     });
@@ -25,7 +25,7 @@ layui.use(['form', 'layedit'], function () {
         setTimeout(function () {
             layer.close(index);
             var content = data.field.editorContent;
-            var html = '<li><div class="comment-parent"><img src="../images/Absolutely.jpg"alt="absolutely"/><div class="info"><span class="username">Absolutely</span><span class="time">2017-03-18 18:46:06</span></div><div class="content">' + content + '</div></div></li>';
+            var html = '<li><div class="comment-parent"><img src="./purecpp/images/cover/logo6.png"alt="absolutely"/><div class="info"><span class="username">Absolutely</span><span class="time">2017-03-18 18:46:06</span></div><div class="content">' + content + '</div></div></li>';
             $('.blog-comment').append(html);
             $('#remarkEditor').val('');
             editIndex = layui.layedit.build('remarkEditor', {
