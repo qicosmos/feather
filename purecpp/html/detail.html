@@ -1,213 +1,263 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; Charset=utf-8">
-    <meta http-equiv="Content-Language" content="zh-CN">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>purecpp - a cool open source modern c++ community</title>
-    <link rel="shortcut icon" href="./purecpp/images/favicon.ico" type="image/x-icon">
-    <!--Layui-->
-    <link href="./purecpp/plug/layui/css/layui.css" rel="stylesheet" />
-    <!--font-awesome-->
-    <link href="./purecpp/plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <!--全局样式表-->
-    <link href="./purecpp/css/global.css" rel="stylesheet" />
-    <!-- 本页样式表 -->
-    <link href="./purecpp/css/detail.css" rel="stylesheet" />
+  <meta http-equiv="Content-Type" content="text/html; Charset=utf-8">
+  <meta http-equiv="Content-Language" content="zh-CN">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>purecpp - a cool open source modern c++ community</title>
+  <link rel="shortcut icon" href="./purecpp/images/favicon.ico" type="image/x-icon">
+  <!--Layui-->
+  <link href="./purecpp/plug/layui/css/layui.css" rel="stylesheet" />
+  <!--font-awesome-->
+  <link href="./purecpp/plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+  <!--全局样式表-->
+  <link href="./purecpp/css/global.css" rel="stylesheet" />
+  <!-- 本页样式表 -->
+  <link href="./purecpp/css/detail.css" rel="stylesheet" />
 </head>
+
 <body>
-    <!-- 导航 -->
-    <nav class="blog-nav layui-header">
-        <div class="blog-container">
-            <!-- 不落阁 -->
-            <a class="blog-logo" href="home.html"><div>PURECPP</div></a>
-            <!-- 导航菜单 -->
-            <ul class="layui-nav" lay-filter="nav">
-                <li class="layui-nav-item layui-this">
-                    <a href="home.html">首页</a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="article.html">开源项目</a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="resource.html">社区活动</a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="timeline.html">社区服务</a>
-                </li>
-				<li class="layui-nav-item">
-                    <a href="timeline.html">登录/注册</a>
-                </li>
+  <!-- 导航 -->
+  <nav class="blog-nav layui-header">
+    <div class="blog-container">
+      <!-- 不落阁 -->
+      <a class="blog-logo" href="home.html">
+        <div>PURECPP</div>
+      </a>
+      <!-- 导航菜单 -->
+      <ul class="layui-nav" lay-filter="nav">
+        <li class="layui-nav-item layui-this">
+          <a href="home.html">首页</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="article.html">开源项目</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="resource.html">社区活动</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="timeline.html">社区服务</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="timeline.html">登录/注册</a>
+        </li>
+      </ul>
+      <!-- 手机和平板的导航开关 -->
+      <a class="blog-navicon" href="javascript:;">
+        <i class="fa fa-navicon"></i>
+      </a>
+    </div>
+  </nav>
+  <!-- 主体（一般只改变这里的内容） -->
+  <div class="blog-body">
+    <div class="blog-container">
+      <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+        <a href="home.html" title="网站首页">网站首页</a>
+        <a href="article.html" title="文章专栏">文章专栏</a>
+        <a>
+          <cite>${post_title}</cite>
+        </a>
+      </blockquote>
+      <div class="blog-main">
+        <div class="blog-main-left">
+          <!-- 文章内容（使用Kingeditor富文本编辑器发表的） -->
+          <div class="article-detail shadow">
+            <div class="article-detail-title">
+              ${post_title}
+            </div>
+            <div class="article-detail-info">
+              <span>编辑时间：${post_modified}</span>
+              <span>作者：${user_login}</span>
+              <span>浏览量：${total}</span>
+            </div>
+            <div class="article-detail-content">
+              <p style="text-align:center;">
+                <span style="font-size:18px;">${post_content}</span>
+              </p>
+              <hr /> &nbsp; &nbsp; 出自：purecpp
+              <p>
+                &nbsp; &nbsp; 地址：
+                <a href="http://www.purecpp.org" target="_blank">www.purecpp.org</a>
+              </p>
+              <p>
+                &nbsp; &nbsp; 转载请注明出处！
+              </p>
+              <p>
+                <br />
+              </p>
+            </div>
+          </div>
+          <!-- 评论区域 -->
+          <div class="blog-module shadow" style="box-shadow: 0 1px 8px #a6a6a6;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-bottom:0">
+              <legend>来说两句吧</legend>
+              <div class="layui-field-box">
+                <form class="layui-form blog-editor" action="">
+                  <div class="layui-form-item">
+                    <textarea name="editorContent" lay-verify="content" id="remarkEditor" placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
+                  </div>
+                  <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="formRemark" lay-filter="formRemark">提交评论</button>
+                  </div>
+                </form>
+              </div>
+            </fieldset>
+            <div class="blog-module-title">最新评论</div>
+            <ul class="blog-comment">
+              <li>
+                <div class="comment-parent">
+                  <img src="./purecpp/images/cover/logo6.png" alt="qicosmos" />
+                  <div class="info">
+                    <span class="username">qicosmos</span>
+                    <span class="time">2018-08-12 18:46:06</span>
+                  </div>
+                  <div class="content">
+                    我为大家做了模拟评论功能！欢迎评论！
+                  </div>
+                </div>
+              </li>
             </ul>
-            <!-- 手机和平板的导航开关 -->
-            <a class="blog-navicon" href="javascript:;">
-                <i class="fa fa-navicon"></i>
-            </a>
+          </div>
         </div>
-    </nav>
-    <!-- 主体（一般只改变这里的内容） -->
-    <div class="blog-body">
-        <div class="blog-container">
-            <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
-                <a href="home.html" title="网站首页">网站首页</a>
-                <a href="article.html" title="文章专栏">文章专栏</a>
-                <a><cite>${post_title}</cite></a>
-            </blockquote>
-            <div class="blog-main">
-                <div class="blog-main-left">
-                    <!-- 文章内容（使用Kingeditor富文本编辑器发表的） -->
-                    <div class="article-detail shadow">
-                        <div class="article-detail-title">
-                            ${post_title}
-                        </div>
-                        <div class="article-detail-info">
-                            <span>编辑时间：${post_modified}</span>
-                            <span>作者：${user_login}</span>
-                            <span>浏览量：${total}</span>
-                        </div>
-                        <div class="article-detail-content">
-                            <p style="text-align:center;">
-                                <span style="font-size:18px;">${post_content}</span>
-                            </p>
-                            <hr />
-                            &nbsp; &nbsp; 出自：purecpp
-                            <p>
-                                &nbsp; &nbsp; 地址：<a href="http://www.purecpp.org" target="_blank">www.purecpp.org</a>
-                            </p>
-                            <p>
-                                &nbsp; &nbsp; 转载请注明出处！
-                            </p>
-                            <p>
-                                <br />
-                            </p>
-                        </div>
-                    </div>
-                    <!-- 评论区域 -->
-                    <div class="blog-module shadow" style="box-shadow: 0 1px 8px #a6a6a6;">
-                        <fieldset class="layui-elem-field layui-field-title" style="margin-bottom:0">
-                            <legend>来说两句吧</legend>
-                            <div class="layui-field-box">
-                                <form class="layui-form blog-editor" action="">
-                                    <div class="layui-form-item">
-                                        <textarea name="editorContent" lay-verify="content" id="remarkEditor" placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <button class="layui-btn" lay-submit="formRemark" lay-filter="formRemark">提交评论</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </fieldset>
-                        <div class="blog-module-title">最新评论</div>
-                        <ul class="blog-comment">
-                            <li>
-                                <div class="comment-parent">
-                                    <img src="./purecpp/images/cover/logo6.png" alt="qicosmos" />
-                                    <div class="info">
-                                        <span class="username">qicosmos</span>
-                                        <span class="time">2018-08-12 18:46:06</span>
-                                    </div>
-                                    <div class="content">
-                                        我为大家做了模拟评论功能！欢迎评论！
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <!--右边小栏目-->
-                <div class="blog-main-right">
-                    <div class="blogerinfo shadow">
-						<div class="blogerinfo-figure">
-                            <img src="./purecpp/images/cover/logo6.png" alt="Absolutely" />
-                        </div>
-                        <p class="blogerinfo-nickname">purecpp</p>
-                        <p class="blogerinfo-introduce">一个很酷的modern c++开源社区</p>
-                        <hr />
-                        <div class="blogerinfo-contact">
-                            这里有创新的idea，这里有最酷的modern c++代码，这里有很棒的modern c++开源项目。purecpp社区邮箱 purecpp@163.com
-                        </div>
-                    </div>
-					<div class="blog-search">
-                        <form class="layui-form" action="">
-                            <div class="layui-form-item" style="position: relative;">
-                                <div class="search-keywords  shadow">
-                                    <input type="text" name="keywords" lay-verify="required" placeholder="输入关键词搜索" autocomplete="off" class="layui-input">
-                                </div>
-                                <div class="search-submit  shadow" style="position: absolute;top:2px;right:5px;">
-                                    <a class="search-btn" lay-submit="formSearch" lay-filter="formSearch" style="font-size: 30px;"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="article-category shadow">
-                        <div class="article-category-title">分类导航</div>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">C++11/14/17</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区开源项目</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区活动</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">元编程</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">代码精粹</a>
-                        <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">技术探讨</a>
-						<a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区精华</a>
-						<a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">modern c++资讯</a>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="blog-module shadow">
-                        <div class="blog-module-title">热文排行</div>
-                        <ul class="fa-ul blog-module-ul">
-							<li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">cppcon2018日程确定</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">cinatra发布新版本</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">记一次C++静态反射的实践</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">从抽象谈面向对象与泛型编程 part.2 – 泛型编程的抽象</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">C++极简的插件化抽象工厂(PAF)</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">从抽象谈面向对象与泛型编程 part.1</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">解耦利器function message bus</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="detail.html">purecpp社区将举办今年的C++大会（讲师报名已经开始）</a></li>
-                        </ul>
-                    </div>
-                    <div class="blog-module shadow">
-                        <div class="blog-module-title">最近分享</div>
-                        <ul class="fa-ul blog-module-ul">
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="" target="_blank">cppcon2018日程确定</a></li>
-                            <li><i class="fa-li fa fa-hand-o-right"></i><a href="" target="_blank">cinatra发布新版本</a></li>
-                        </ul>
-                    </div>                    
-                    <div class="blog-module shadow">
-                        <div class="blog-module-title">友情链接</div>
-                        <ul class="blogroll">
-                            <li><a target="_blank" href="http://isocpp.org/" title="Layui">isocpp</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="clear"></div>
+        <!--右边小栏目-->
+        <div class="blog-main-right">
+          <div class="blogerinfo shadow">
+            <div class="blogerinfo-figure">
+              <img src="./purecpp/images/cover/logo6.png" alt="Absolutely" />
             </div>
-        </div>
-    </div>
-    <!-- 底部 -->
-    <footer class="blog-footer">
-        <p><span>Copyright</span><span>&copy;</span><span>2018</span><a href="http://www.purecpp.com">purecpp</a></p>
-        <p><a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15026394号-1</a></p>
-    </footer>
-    <!--分享窗体-->
-    <div class="blog-share layui-hide">
-        <div class="blog-share-body">
-            <div style="width: 200px;height:100%;">
-                <div class="bdsharebuttonbox">
-                    <a class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
-                    <a class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-                    <a class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-                    <a class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
-                </div>
+            <p class="blogerinfo-nickname">purecpp</p>
+            <p class="blogerinfo-introduce">一个很酷的modern c++开源社区</p>
+            <hr />
+            <div class="blogerinfo-contact">
+              这里有创新的idea，这里有最酷的modern c++代码，这里有很棒的modern c++开源项目。purecpp社区邮箱 purecpp@163.com
             </div>
+          </div>
+          <div class="blog-search">
+            <form class="layui-form" action="">
+              <div class="layui-form-item" style="position: relative;">
+                <div class="search-keywords  shadow">
+                  <input type="text" name="keywords" lay-verify="required" placeholder="输入关键词搜索" autocomplete="off" class="layui-input">
+                </div>
+                <div class="search-submit  shadow" style="position: absolute;top:2px;right:5px;">
+                  <a class="search-btn" lay-submit="formSearch" lay-filter="formSearch" style="font-size: 30px;">
+                    <i class="fa fa-search"></i>
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="blog-module shadow">
+            <div class="article-category">
+              <div class="article-category-title">分类导航</div>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">C++11/14/17</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区开源项目</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区活动</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">元编程</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">代码精粹</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">技术探讨</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">社区精华</a>
+              <a href="javascript:layer.msg(&#39;切换到相应分类&#39;)">modern c++资讯</a>
+              <div class="clear"></div>
+            </div>
+          </div>
+          <div class="blog-module shadow">
+            <div class="blog-module-title">热文排行</div>
+            <ul class="fa-ul blog-module-ul">
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">cppcon2018日程确定</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">cinatra发布新版本</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">记一次C++静态反射的实践</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">从抽象谈面向对象与泛型编程 part.2 – 泛型编程的抽象</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">C++极简的插件化抽象工厂(PAF)</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">从抽象谈面向对象与泛型编程 part.1</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">解耦利器function message bus</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="detail.html">purecpp社区将举办今年的C++大会（讲师报名已经开始）</a>
+              </li>
+            </ul>
+          </div>
+          <div class="blog-module shadow">
+            <div class="blog-module-title">最近分享</div>
+            <ul class="fa-ul blog-module-ul">
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="" target="_blank">cppcon2018日程确定</a>
+              </li>
+              <li>
+                <i class="fa-li fa fa-hand-o-right"></i>
+                <a href="" target="_blank">cinatra发布新版本</a>
+              </li>
+            </ul>
+          </div>
+          <div class="blog-module shadow">
+            <div class="blog-module-title">友情链接</div>
+            <ul class="blogroll">
+              <li>
+                <a target="_blank" href="http://isocpp.org/" title="Layui">isocpp</a>
+              </li>
+            </ul>
+          </div>
         </div>
+        <div class="clear"></div>
+      </div>
     </div>
-    <!--遮罩-->
-    <div class="blog-mask animated layui-hide"></div>
-    <!-- layui.js -->
-    <script src="./purecpp/plug/layui/layui.js"></script>
-    <!-- 全局脚本 -->
-    <script src="./purecpp/js/global.js"></script>
-    <!-- 本页脚本 -->
-    <script src="./purecpp/js/home.js"></script>
+  </div>
+  <!-- 底部 -->
+  <footer class="blog-footer">
+    <p>
+      <span>Copyright</span>
+      <span>&copy;</span>
+      <span>2018</span>
+      <a href="http://www.purecpp.com">purecpp</a>
+    </p>
+    <p>
+      <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备15026394号-1</a>
+    </p>
+  </footer>
+  <!--分享窗体-->
+  <div class="blog-share layui-hide">
+    <div class="blog-share-body">
+      <div style="width: 200px;height:100%;">
+        <div class="bdsharebuttonbox">
+          <a class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+          <a class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+          <a class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+          <a class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--遮罩-->
+  <div class="blog-mask animated layui-hide"></div>
+  <!-- layui.js -->
+  <script src="./purecpp/plug/layui/layui.js"></script>
+  <!-- 全局脚本 -->
+  <script src="./purecpp/js/global.js"></script>
+  <!-- 本页脚本 -->
+  <script src="./purecpp/js/home.js"></script>
 </body>
+
 </html>

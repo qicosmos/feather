@@ -580,7 +580,7 @@ body {
 
 /*文章分类导航*/
 .article-category {
-    position: fixed;
+    /* position: fixed; */
     top: 64px;
     right: 0;
     bottom: 0;
@@ -588,14 +588,14 @@ body {
     color: #eee;
     width: 130px;
     font-size: 11px;
-    padding: 10px;
+    /*padding: 10px;*/
     display: none;
     margin: 0;
     z-index: 999;
 }
 
     .article-category > .article-category-title {
-        text-align: center;
+        /* text-align: center; */
         border-bottom: 1px solid #009688;
         font-size: 15px;
         font-weight: 500;
