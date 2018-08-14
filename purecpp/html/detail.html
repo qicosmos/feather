@@ -25,25 +25,25 @@
   <nav class="blog-nav layui-header">
     <div class="blog-container">
       <!-- 不落阁 -->
-      <a class="blog-logo" href="home.html">
+      <a class="blog-logo" href="home">
         <div>PURECPP</div>
       </a>
       <!-- 导航菜单 -->
       <ul class="layui-nav" lay-filter="nav">
         <li class="layui-nav-item layui-this">
-          <a href="home.html">首页</a>
+          <a href="home">首页</a>
         </li>
         <li class="layui-nav-item">
-          <a href="article.html">开源项目</a>
+          <a href="article">开源项目</a>
         </li>
         <li class="layui-nav-item">
-          <a href="resource.html">社区活动</a>
+          <a href="resource">社区活动</a>
         </li>
         <li class="layui-nav-item">
-          <a href="timeline.html">社区服务</a>
+          <a href="timeline">社区服务</a>
         </li>
         <li class="layui-nav-item">
-          <a href="timeline.html">登录/注册</a>
+          <a href="timeline">登录/注册</a>
         </li>
       </ul>
       <!-- 手机和平板的导航开关 -->
@@ -57,7 +57,7 @@
     <div class="blog-container">
       <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
         <a href="home" title="网站首页">网站首页</a>
-        <a href="article.html" title="文章专栏">文章专栏</a>
+        <a href="article" title="文章专栏">文章专栏</a>
         <a>
           <cite>${post_title}</cite>
         </a>
@@ -167,38 +167,12 @@
           <div class="blog-module shadow">
             <div class="blog-module-title">热文排行</div>
             <ul class="fa-ul blog-module-ul">
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">cppcon2018日程确定</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">cinatra发布新版本</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">记一次C++静态反射的实践</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">从抽象谈面向对象与泛型编程 part.2 – 泛型编程的抽象</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">C++极简的插件化抽象工厂(PAF)</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">从抽象谈面向对象与泛型编程 part.1</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">解耦利器function message bus</a>
-              </li>
-              <li>
-                <i class="fa-li fa fa-hand-o-right"></i>
-                <a href="detail.html">purecpp社区将举办今年的C++大会（讲师报名已经开始）</a>
-              </li>
+              $for item in hot_article_list{{
+                <li>
+                  <i class="fa-li fa fa-hand-o-right"></i>
+                  <a href="detail?id=${item.ID}">${item.post_title}</a>
+                </li>
+              }}              
             </ul>
           </div>
           <div class="blog-module shadow">
