@@ -124,6 +124,7 @@ int main(){
 		
 		nlohmann::json result;
 		result["article_list"] = article_list;
+
 		res.add_header("Content-Type", "text/html; charset=utf-8");
 		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
 	}, enable_cache{ false });
@@ -131,7 +132,12 @@ int main(){
 	server.set_http_handler<GET>("/detail", [](request& req, response& res) {
 		auto ids = req.get_query_value("id");
 		if (ids.empty()) {
-			res.set_status_and_content(status_type::bad_request, "");
+			res.set_status_and_content(status_type::bad_request);
+			return;
+		}
+
+		if (!is_integer(std::string(ids.data(), ids.length()))) {
+			res.set_status_and_content(status_type::bad_request);
 			return;
 		}
 
@@ -162,6 +168,38 @@ int main(){
 
 		res.add_header("Content-Type", "text/html; charset=utf-8");
 		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/detail.html", article));
+	});
+
+	server.set_http_handler<GET>("/category", [](request& req, response& res) {
+		auto category = req.get_query_value("category");
+		if (category.empty()) {
+			res.set_status_and_content(status_type::bad_request);
+			return;
+		}
+
+		if (has_special_char(category)) {
+			res.set_status_and_content(status_type::bad_request);
+			return;
+		}
+
+		std::string str = std::string(category.data(), category.length());
+		std::map<std::string, std::string> map{ {"essence", "社区精华"},{"opensource", "社区开源项目"}, 
+												{"activity","社区活动"},{ "mp", "元编程" },
+												{ "succinct", "代码精粹" },{ "discuss","技术探讨" },
+												{ "Cpp17", "C++17" },{ "focus", "今日关注" }
+		};
+
+		auto it = map.find(str);
+		if (it == map.end()) {
+			res.set_status_and_content(status_type::bad_request);
+			return;
+		}
+
+		std::vector<pp_posts> v;
+		dao_t<dbng<mysql>> dao;
+		dao.get_object(v, "post_status = 'publish'", " and category='"+ it->second+"'");
+		std::cout << v.size() << std::endl;;
+		res.set_status_and_content(status_type::ok);
 	});
 
     user_controller user_ctl;

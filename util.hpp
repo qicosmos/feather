@@ -36,6 +36,27 @@ namespace feather{
         ss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
         return ss.str();
     }
+
+	inline bool is_integer(const std::string& str) {
+		char* p;
+		long converted = strtol(str.data(), &p, 10);
+		if (*p) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	inline bool has_special_char(std::string_view str) {
+		for (char ch : str) {
+			if (ch == ';' || ch == ',' || ch == '%' || ch == '"'|| ch == '\\'||
+				ch == '-' || ch == '|' || ch == '(' || ch == ')' || ch == '[' || ch == ']' ||
+				ch == '{' || ch == '}' || ch == '@' || ch == '*' || ch == '!')
+				return true;
+		}
+
+		return false;
+	}
 }
 
 #endif //FEATHER_UTIL_HPP
