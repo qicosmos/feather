@@ -218,6 +218,55 @@ int main(){
 		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
 	});
 
+	server.set_http_handler<GET, POST>("/search", [](request& req, response& res) {
+		auto key_word = req.get_query_value("keywords");
+		if (key_word.empty()) {
+			res.set_status_and_content(status_type::bad_request);
+			return;
+		}
+
+		if (has_special_char(key_word)) {
+			res.set_status_and_content(status_type::bad_request);
+			return;
+		}
+
+		std::string key_word_s = std::string(key_word.data(), key_word.length());
+		
+		std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+			"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID AND post_content like \"%"+ key_word_s +"%\""+" ORDER BY post_date; ";
+
+		dao_t<dbng<mysql>> dao;
+		auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+		if (v.empty()) {
+			res.set_status_and_content(status_type::ok, "");
+			return;
+		}
+		nlohmann::json article_list;
+		for (auto& o : v) {
+			nlohmann::json item;
+			auto& post = std::get<0>(o);
+			item["ID"] = post.ID;
+			item["post_author"] = post.post_author;
+			item["content_abstract"] = post.content_abstract;
+			item["post_date"] = post.post_date;
+			item["post_title"] = post.post_title;
+			item["category"] = post.category;
+			item["comment_count"] = post.comment_count;
+
+			std::string user_login = std::get<1>(o);
+			int total = std::get<2>(o);
+			item["user_login"] = user_login;
+			item["total"] = total;
+			article_list.push_back(item);
+		}
+
+		nlohmann::json result;
+		result["article_list"] = article_list;
+
+		res.add_header("Content-Type", "text/html; charset=utf-8");
+		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
+	});
+
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);
 
