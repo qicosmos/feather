@@ -177,29 +177,45 @@ int main(){
 			return;
 		}
 
-		if (has_special_char(category)) {
+		std::string category_s = std::string(category.data(), category.length());
+
+		if (!is_integer(category_s)) {
 			res.set_status_and_content(status_type::bad_request);
 			return;
 		}
 
-		std::string str = std::string(category.data(), category.length());
-		std::map<std::string, std::string> map{ {"essence", "社区精华"},{"opensource", "社区开源项目"}, 
-												{"activity","社区活动"},{ "mp", "元编程" },
-												{ "succinct", "代码精粹" },{ "discuss","技术探讨" },
-												{ "Cpp17", "C++17" },{ "focus", "今日关注" }
-		};
-
-		auto it = map.find(str);
-		if (it == map.end()) {
-			res.set_status_and_content(status_type::bad_request);
-			return;
-		}
-
-		std::vector<pp_posts> v;
+		std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+			"where post_status = 'publish' AND t1.category="+ category_s+" AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC; ";
 		dao_t<dbng<mysql>> dao;
-		dao.get_object(v, "post_status = 'publish'", " and category='"+ it->second+"'");
-		std::cout << v.size() << std::endl;;
-		res.set_status_and_content(status_type::ok);
+		auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+		if (v.empty()) {
+			res.set_status_and_content(status_type::ok, "");
+			return;
+		}
+		nlohmann::json article_list;
+		for (auto& o : v) {
+			nlohmann::json item;
+			auto& post = std::get<0>(o);
+			item["ID"] = post.ID;
+			item["post_author"] = post.post_author;
+			item["content_abstract"] = post.content_abstract;
+			item["post_date"] = post.post_date;
+			item["post_title"] = post.post_title;
+			item["category"] = post.category;
+			item["comment_count"] = post.comment_count;
+
+			std::string user_login = std::get<1>(o);
+			int total = std::get<2>(o);
+			item["user_login"] = user_login;
+			item["total"] = total;
+			article_list.push_back(item);
+		}
+
+		nlohmann::json result;
+		result["article_list"] = article_list;
+
+		res.add_header("Content-Type", "text/html; charset=utf-8");
+		res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
 	});
 
     user_controller user_ctl;
