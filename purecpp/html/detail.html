@@ -96,7 +96,12 @@
             <fieldset class="layui-elem-field layui-field-title" style="margin-bottom:0">
               <legend>来说两句吧</legend>
               <div class="layui-field-box">
-                <form class="layui-form blog-editor" action="">
+                <form class="layui-form blog-editor" method="post" action="/comment">
+				  <div class="layui-form-item layui-form-text">
+					<div class="layui-input-block">
+					  <textarea name="user_login" placeholder="请输入内容" class="layui-textarea layui-hide">${user_login}</textarea>
+					</div>
+				  </div>
                   <div class="layui-form-item">
                     <textarea name="editorContent" lay-verify="content" id="remarkEditor" placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
                   </div>
