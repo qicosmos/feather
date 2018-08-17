@@ -195,6 +195,10 @@ namespace feather {
 		void render_home(const std::string& sql, response& res) {
 			dao_t<dbng<mysql>> dao;
 			auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+			if (v.empty()) {
+				res.set_status_and_content(status_type::ok, "");
+				return;
+			}
 
 			nlohmann::json article_list;
 			for (auto& o : v) {
