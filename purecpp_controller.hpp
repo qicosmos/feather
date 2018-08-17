@@ -119,7 +119,46 @@ namespace feather {
 			res.set_status_and_content(status_type::ok);
 		}
 
+		void login_page(request& req, response& res) {
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+			nlohmann::json result;
+			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/login.html", result));
+		}
+
 		void login(request& req, response& res) {
+			auto user_name = req.get_query_value("user_name");
+			if (user_name.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (has_special_char(user_name)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto password = req.get_query_value("password");
+			if (password.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (has_special_char(password)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			std::string user_name_s = std::string(user_name.data(), user_name.length());
+			std::string password_s = std::string(password.data(), password.length());
+
+			std::string sql = "select count(1) from pp_user where user_login=" + user_name_s + " and user_pass=" + password_s;
+			dao_t<dbng<mysql>> dao;
+			auto r = dao.query<std::tuple<int>>(sql);
+			if (r.empty()) {
+				res.set_status_and_content(status_type::ok, "用户名或密码不正确");
+				return;
+			}
+
 			auto session = res.start_session();
 			session->set_data("userid", std::string("1"));
 			session->set_max_age(-1);
