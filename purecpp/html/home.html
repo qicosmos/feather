@@ -35,9 +35,6 @@
           <a href="category?category=3">开源项目</a>
         </li>
         <li class="layui-nav-item">
-          <a href="category?category=7">社区活动</a>
-        </li>
-        <li class="layui-nav-item">
           <a href="category?category=60">社区服务</a>
         </li>
         <li class="layui-nav-item">
@@ -46,9 +43,16 @@
 		<li class="layui-nav-item">
           <a href="login_out">注册</a>
         </li>
-		<li class="layui-nav-item">
-          <a href="new_post">新建文章</a>
-        </li>
+		  $if has_login{{
+		  <li class="layui-nav-item">
+			<a href="">个人中心</a>
+			<dl class="layui-nav-child">
+			  <dd><a href="javascript:;">修改信息</a></dd>
+			  <dd><a href="javascript:;">新建文章</a></dd>
+			  <dd><a href="javascript:;">退出</a></dd>
+			</dl>
+		</li>
+		}}
       </ul>
       <!-- 手机和平板的导航开关 -->
       <a class="blog-navicon" href="javascript:;">
@@ -121,6 +125,7 @@
             </div>
           </div>
           }}
+		  <div id="test1" class="article-right"></div>
         </div>
         <!--右边小栏目-->
         <div class="blog-main-right">
@@ -269,5 +274,28 @@
         });
         //各种基于事件的操作，下面会有进一步介绍
     });
+</script>
+<script>
+layui.use('laypage', function(){
+  var laypage = layui.laypage;
+  
+  //执行一个laypage实例
+  laypage.render({
+    elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+    ,count: ${total} //数据总数，从服务端得到
+	 ,curr: ${current_page}
+	  ,jump: function(obj, first){
+    //obj包含了当前分页的所有参数，比如：
+    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+    console.log(obj.limit); //得到每页显示的条数
+    
+    //首次不执行
+    if(!first){
+      //do something
+	   window.location.href=  "/home?start="+(obj.curr-1)*10+"&len="+obj.limit;
+    }
+  }
+  });
+});
 </script>
 </html>
