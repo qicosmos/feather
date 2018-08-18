@@ -37,13 +37,12 @@ namespace feather {
 				total_post_count_ = std::get<0>(v[0]);
 			}
 			
-			char* p;
-			size_t cur_page = strtol(s.data(), &p, 10)/10+1;
+			size_t cur_page = atoi(s.data())/10+1;
 
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT "+s+","+lens;
 			
-			render_home(sql, res, cur_page, total_post_count_);
+			render_page(sql, res, "./purecpp/html/home.html", "all", cur_page, total_post_count_);
 		}
 
 		void detail(request& req, response& res) {
@@ -85,6 +84,21 @@ namespace feather {
 		}
 
 		void category(request& req, response& res) {
+			std::string s = "0";
+			std::string lens = "10";
+
+			auto start = req.get_query_value("start");
+			auto len = req.get_query_value("len");
+			if (!start.empty() && !start.empty()) {
+				s = std::string(start.data(), start.length());
+				lens = std::string(len.data(), len.length());
+
+				if (!is_integer(s) || !is_integer(lens)) {
+					res.set_status_and_content(status_type::bad_request);
+					return;
+				}
+			}
+
 			auto category = req.get_query_value("category");
 			if (category.empty()) {
 				res.set_status_and_content(status_type::bad_request);
@@ -98,14 +112,40 @@ namespace feather {
 				return;
 			}
 
-			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
-				"where post_status = 'publish' AND t1.category=" + category_s + " AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC; ";
+			dao_t<dbng<mysql>> dao;
+			auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1,pp_post_views t3  where post_status = 'publish' "
+				"AND t3.period = 'total' AND t3.ID = t1.ID AND t1.category=" + category_s);
+			if (v.empty()) {
+				res.set_status_and_content(status_type::internal_server_error);
+				return;
+			}
 
-			render_home(sql, res);
+			size_t cur_page = atoi(s.data()) / 10 + 1;
+			size_t total = std::get<0>(v[0]);
+
+			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+				"where post_status = 'publish' AND t1.category=" + category_s + " AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT " + s + "," + lens;
+
+			render_page(sql, res, "./purecpp/html/category.html", category_s, cur_page, total);
 		}
 
 		void search(request& req, response& res) {
-			auto key_word = req.get_query_value("keywords");
+			std::string s = "0";
+			std::string lens = "10";
+
+			auto start = req.get_query_value("start");
+			auto len = req.get_query_value("len");
+			if (!start.empty() && !start.empty()) {
+				s = std::string(start.data(), start.length());
+				lens = std::string(len.data(), len.length());
+
+				if (!is_integer(s) || !is_integer(lens)) {
+					res.set_status_and_content(status_type::bad_request);
+					return;
+				}
+			}
+
+			auto key_word = req.get_query_value("category");
 			if (key_word.empty()) {
 				res.set_status_and_content(status_type::bad_request);
 				return;
@@ -118,10 +158,23 @@ namespace feather {
 
 			std::string key_word_s = std::string(key_word.data(), key_word.length());
 
-			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+			dao_t<dbng<mysql>> dao;
+			std::string count_sql = "SELECT count(1) from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID AND post_content like \"%" + key_word_s + "%\"" + " ORDER BY post_date; ";
 
-			render_home(sql, res);
+			auto v = dao.query<std::tuple<int>>(count_sql);
+			if (v.empty()) {
+				res.set_status_and_content(status_type::internal_server_error);
+				return;
+			}
+
+			size_t cur_page = atoi(s.data()) / 10 + 1;
+			size_t total = std::get<0>(v[0]);
+
+			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID AND post_content like \"%" + key_word_s + "%\"" + " ORDER BY post_date LIMIT " + s + "," + lens;
+
+			render_page(sql, res, "./purecpp/html/search.html", key_word_s, cur_page, total);
 		}
 
 		void comment(request& req, response& res) {
@@ -252,7 +305,7 @@ namespace feather {
 		}
 
 	private:
-		void render_home(const std::string& sql, response& res, size_t cur_page=0, size_t total=0) {
+		void render_page(const std::string& sql, response& res, std::string html_file, std::string categroy, size_t cur_page=0, size_t total=0) {
 			dao_t<dbng<mysql>> dao;
 			auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
 			if (v.empty()) {
@@ -288,8 +341,9 @@ namespace feather {
 			result["has_login"] = true;
 			result["current_page"] = cur_page;
 			result["total"] = total;
+			result["category"] = categroy;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
-			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
+			res.set_status_and_content(status_type::ok, render::render_file(html_file, result));
 		}
 
 		template<typename T>
