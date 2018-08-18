@@ -299,13 +299,14 @@ namespace feather {
 		}
 
 		void new_post(request& req, response& res) {
-			bool has_login = check_login(req);
-			if (!has_login) {
-				res.set_status_and_content(status_type::ok, "ÇëÏÈµÇÂ¼");
-			}
-			else {
-				res.set_status_and_content(status_type::ok);
-			}
+			//bool has_login = check_login(req);
+			//if (!has_login) {
+			//	res.set_status_and_content(status_type::ok, "ÇëÏÈµÇÂ¼");
+			//	return;
+			//}
+			
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+			res.render_view("./purecpp/html/create_post.html");
 		}
 
 	private:
