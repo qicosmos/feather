@@ -79,7 +79,7 @@ namespace feather {
 				article["total"] = total;
 				article["post_content"] = std::move(post.post_content);
 			}
-
+			article["has_login"] = false;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/detail.html", article));
 		}
