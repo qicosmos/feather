@@ -25,22 +25,25 @@ namespace feather {
 				}
 			}
 
-			dao_t<dbng<mysql>> dao;
-			auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1,pp_post_views t3  where post_status = 'publish' "
-				"AND t3.period = 'total' AND t3.ID = t1.ID");
-			if (v.empty()) {
-				res.set_status_and_content(status_type::internal_server_error);
-				return;
-			}
+			if (total_post_count_ == 0) {
+				dao_t<dbng<mysql>> dao;
+				auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1,pp_post_views t3  where post_status = 'publish' "
+					"AND t3.period = 'total' AND t3.ID = t1.ID");
+				if (v.empty()) {
+					res.set_status_and_content(status_type::internal_server_error);
+					return;
+				}
 
-			size_t total = std::get<0>(v[0]);
+				total_post_count_ = std::get<0>(v[0]);
+			}
+			
 			char* p;
 			size_t cur_page = strtol(s.data(), &p, 10)/10+1;
 
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT "+s+","+lens;
 			
-			render_home(sql, res, cur_page, total);
+			render_home(sql, res, cur_page, total_post_count_);
 		}
 
 		void detail(request& req, response& res) {
@@ -123,24 +126,8 @@ namespace feather {
 
 		void comment(request& req, response& res) {
 			auto key_word = req.get_query_value("editorContent");
-			if (key_word.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(key_word)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
 			auto user_login = req.get_query_value("user_login");
-			if (user_login.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(user_login)) {
-				res.set_status_and_content(status_type::bad_request);
+			if (!check_input(res, key_word, user_login)) {
 				return;
 			}
 
@@ -154,24 +141,8 @@ namespace feather {
 
 		void login(request& req, response& res) {
 			auto user_name = req.get_query_value("user_name");
-			if (user_name.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(user_name)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
 			auto password = req.get_query_value("password");
-			if (password.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(password)) {
-				res.set_status_and_content(status_type::bad_request);
+			if (!check_input(res, user_name, password)) {
 				return;
 			}
 
@@ -211,45 +182,20 @@ namespace feather {
 
 		void logout(request& req, response& res) {
 			auto user_name = req.get_query_value("user_name");
-			if (user_name.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(user_name)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
 			auto email = req.get_query_value("email");
+			auto answer = req.get_query_value("answer");
+			auto pwd = req.get_query_value("user_pwd");
+
+			if (!check_input(res, user_name, answer, pwd)) {
+				return;
+			}
+			
 			if (email.empty()) {
 				res.set_status_and_content(status_type::bad_request);
 				return;
 			}
 
 			if (has_special_char(email, true)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			auto answer = req.get_query_value("answer");
-			if (answer.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(answer)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			auto pwd = req.get_query_value("user_pwd");
-			if (pwd.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(pwd)) {
 				res.set_status_and_content(status_type::bad_request);
 				return;
 			}
@@ -346,6 +292,29 @@ namespace feather {
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/home.html", result));
 		}
 
+		template<typename T>
+		bool check_input0(response& res, T t) {
+			if (t.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (has_special_char(t)) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			return true;
+		}
+
+		template<typename... T>
+		bool check_input(response& res, T... args) {
+			bool r = true;
+			((r = r&&check_input0(res, args)), ...);
+
+			return r;
+		}
+
 		bool check_login(request& req) {
 			auto ptr = req.get_session();
 			auto session = ptr.lock();
@@ -355,5 +324,8 @@ namespace feather {
 
 			return true;
 		}
+
+		private:
+			std::atomic<size_t> total_post_count_ = 0;
 	};
 }
