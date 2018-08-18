@@ -106,6 +106,8 @@ int main(){
 	server.set_http_handler<GET, POST>("/login", &purecpp_controller::login, &purecpp_ctl, enable_cache{ false });
 	server.set_http_handler<GET, POST>("/is_login", &purecpp_controller::is_login, &purecpp_ctl, enable_cache{ false });
 	server.set_http_handler<GET, POST>("/new_post", &purecpp_controller::new_post, &purecpp_ctl, enable_cache{ false });
+	server.set_http_handler<GET, POST>("/logout_page", &purecpp_controller::logout_page, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/logout", &purecpp_controller::logout, &purecpp_ctl, enable_cache{ false });
 
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);

@@ -2,6 +2,7 @@
 #include "dao.hpp"
 #include "entity.h"
 #include "feather.h"
+#include "md5.hpp"
 using namespace ormpp;
 using namespace cinatra;
 
@@ -148,8 +149,7 @@ namespace feather {
 
 		void login_page(request& req, response& res) {
 			res.add_header("Content-Type", "text/html; charset=utf-8");
-			nlohmann::json result;
-			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/login.html", result));
+			res.render_view("./purecpp/html/login.html");
 		}
 
 		void login(request& req, response& res) {
@@ -181,7 +181,7 @@ namespace feather {
 			std::string sql = "select count(1) from pp_user where user_login='" + user_name_s + "' and user_pass=md5('" + password_s+"')";
 			dao_t<dbng<mysql>> dao;
 			auto r = dao.query<std::tuple<int>>(sql);
-			if (r.empty()) {
+			if (std::get<0>(r[0])==0) {
 				res.set_status_and_content(status_type::ok, "用户名或密码不正确");
 				return;
 			}
@@ -190,6 +190,11 @@ namespace feather {
 			session->set_data("userid", user_name_s);
 			session->set_max_age(-1);
 			res.set_status_and_content(status_type::ok, "login");
+		}
+
+		void logout_page(request& req, response& res) {
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+			res.render_view("./purecpp/html/logout.html");
 		}
 
 		void is_login(request& req, response& res) {
@@ -204,8 +209,90 @@ namespace feather {
 			
 		}
 
-		void log_out(request& req, response& res) {
+		void logout(request& req, response& res) {
+			auto user_name = req.get_query_value("user_name");
+			if (user_name.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
 
+			if (has_special_char(user_name)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto email = req.get_query_value("email");
+			if (email.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (has_special_char(email, true)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto answer = req.get_query_value("answer");
+			if (answer.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (has_special_char(answer)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto pwd = req.get_query_value("user_pwd");
+			if (pwd.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (has_special_char(pwd)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			std::string user_name_s = std::string(user_name.data(), user_name.length());
+			std::string email_s = std::string(email.data(), email.length());
+			std::string answer_s = std::string(answer.data(), answer.length());
+			std::string pwd_s = std::string(pwd.data(), pwd.length());
+
+			std::string sql = "select count(1) from pp_user where user_login='" + user_name_s + "' or user_email='" + email_s + "'";
+			dao_t<dbng<mysql>> dao;
+			auto r = dao.query<std::tuple<int>>(sql);
+			if (std::get<0>(r[0]) > 0) {
+				res.set_status_and_content(status_type::ok, "用户名或邮箱已经存在");
+				return;
+			}
+
+			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_logout_answer where ID=1 and answer like \"%"+ answer_s+"%\"");
+			if (std::get<0>(r1[0]) == 0) {
+				res.set_status_and_content(status_type::ok, "验证问题答案错误");
+				return;
+			}
+			
+			std::string data = pwd_s;
+			std::string data_hex_digest;
+
+			md5 hash;
+			hash.update(data.begin(), data.end());
+			hash.hex_digest(data_hex_digest);
+
+			pp_user user = {};
+			user.user_email = email_s;
+			user.user_login = user_name_s;
+			user.user_nickname = user_name_s;
+			user.user_pass = data_hex_digest;
+
+			bool ok = dao.add_object(user);
+			if (!ok) {
+				res.set_status_and_content(status_type::internal_server_error);
+				return;
+			}
+			
+			res.set_status_and_content(status_type::ok, "注册成功");
 		}
 
 		void new_post(request& req, response& res) {
