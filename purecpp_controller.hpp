@@ -42,7 +42,7 @@ namespace feather {
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT "+s+","+lens;
 			
-			render_page(sql, res, "./purecpp/html/home.html", "all", cur_page, total_post_count_);
+			render_page(sql, res, "./purecpp/html/home.html", "all", "",false, total_post_count_);
 		}
 
 		void detail(request& req, response& res) {
@@ -126,7 +126,7 @@ namespace feather {
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.category=" + category_s + " AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT " + s + "," + lens;
 
-			render_page(sql, res, "./purecpp/html/category.html", category_s, cur_page, total);
+			render_page(sql, res, "./purecpp/html/category.html", category_s, "", cur_page, total);
 		}
 
 		void search(request& req, response& res) {
@@ -174,7 +174,7 @@ namespace feather {
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID AND post_content like \"%" + key_word_s + "%\"" + " ORDER BY post_date LIMIT " + s + "," + lens;
 
-			render_page(sql, res, "./purecpp/html/search.html", key_word_s, cur_page, total);
+			render_page(sql, res, "./purecpp/html/search.html", key_word_s, "", cur_page, total);
 		}
 
 		void comment(request& req, response& res) {
@@ -213,7 +213,11 @@ namespace feather {
 			auto session = res.start_session();
 			session->set_data("userid", user_name_s);
 			session->set_max_age(-1);
-			res.set_status_and_content(status_type::ok, "login");
+
+			std::string sql1 = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
+				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT 0, 10";
+
+			render_page(sql1, res, "./purecpp/html/home.html", "all", user_name_s, 0, total_post_count_);
 		}
 
 		void logout_page(request& req, response& res) {
@@ -305,7 +309,7 @@ namespace feather {
 		}
 
 	private:
-		void render_page(const std::string& sql, response& res, std::string html_file, std::string categroy, size_t cur_page=0, size_t total=0) {
+		void render_page(const std::string& sql, response& res, std::string html_file, std::string categroy, std::string login_user_name, size_t cur_page=0, size_t total=0) {
 			dao_t<dbng<mysql>> dao;
 			auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
 			if (v.empty()) {
@@ -338,7 +342,8 @@ namespace feather {
 
 			nlohmann::json result;
 			result["article_list"] = article_list;
-			result["has_login"] = true;
+			result["has_login"] = !login_user_name.empty();
+			result["login_user_name"] = login_user_name;
 			result["current_page"] = cur_page;
 			result["total"] = total;
 			result["category"] = categroy;
@@ -370,9 +375,14 @@ namespace feather {
 		}
 
 		bool check_login(request& req) {
+			auto user_name = req.get_query_value("user_name");
+			if (user_name.empty())
+				return false;
+
+			std::string user_name_s = std::string(user_name.data(), user_name.length());
 			auto ptr = req.get_session();
 			auto session = ptr.lock();
-			if (session == nullptr || session->get_data<std::string>("userid") != "1") {
+			if (session == nullptr || session->get_data<std::string>("userid") != user_name_s) {
 				return false;
 			}
 
