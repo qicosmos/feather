@@ -454,24 +454,41 @@ body {
         transition: all 0.3s linear;
     }
 
+/*非手机屏 首页文章列表自适应*/
+@media (min-width: 450px) {
     .article > .article-left {
         width: 25%;
         float: left;
     }
 
         .article > .article-left > img {
-            width: 120px;
-            height: 120px;
+            width: 100%;
+            height: 100%;
         }
-
     .article > .article-right {
         width: 73%;
         float: right;
         padding-left: 2%;
     }
+}
+/*全局样式END*/
 
+/*手机屏 首页文章列表适配*/
+@media (max-width: 450px) {
+    .article > .article-left {
+        display:none;
+    }
+
+    .article > .article-right {
+        width: 100%;
+        float: right;
+        padding-left: 2%;
+    }
+}
+/*全局样式end*/
         .article > .article-right > .article-title a {
             font-size: 14px;
+            font-weight:bold;
         }
 
             .article > .article-right > .article-title a:hover {
