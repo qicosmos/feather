@@ -28,8 +28,9 @@ namespace feather{
 		std::string user_email; 
 		std::string user_registered; 
 		std::string user_icon;
+		std::string user_pass;
 	};
-	REFLECTION(pp_user, ID, user_login, user_nickname, user_email, user_registered, user_icon);
+	REFLECTION(pp_user, ID, user_login, user_nickname, user_email, user_registered, user_icon, user_pass);
 
 	struct pp_comment {
 		int ID; 
@@ -40,6 +41,14 @@ namespace feather{
 		std::string comment_date;
 	};
 	REFLECTION(pp_comment, ID, user_id, post_id, comment_parant, comment_content, comment_date);
+
+	struct pp_terms {
+		int term_id;
+		std::string name;
+		std::string slug;
+		std::string term_group;
+	};
+	REFLECTION(pp_terms, term_id, name, slug, term_group);
 
 	struct pp_post_views {
 		int ID; 

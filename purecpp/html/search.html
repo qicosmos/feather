@@ -119,7 +119,7 @@ layui.use('laypage', function(){
     //首次不执行
     if(!first){
       //do something
-	   window.location.href=  "/home?start="+(obj.curr-1)*10+"&len="+obj.limit;
+	   window.location.href=  "/search?category=${category}&start="+(obj.curr-1)*10+"&len="+obj.limit;
     }
   }
   });

@@ -58,8 +58,8 @@ namespace feather{
                 return false;
             }
             conn_->commit();
-            int seq = std::get<0>(v[0]);
-            t.id = seq;
+            //int seq = std::get<0>(v[0]);
+            //t.id = seq;
             return true;
         }
 

@@ -20,20 +20,7 @@ layui.use(['form', 'layedit'], function () {
 
     //监听评论提交
     form.on('submit(formRemark)', function (data) {
-        var index = layer.load(1);
-        //模拟评论提交
-        setTimeout(function () {
-            layer.close(index);
-            var content = data.field.editorContent;
-            var html = '<li><div class="comment-parent"><img src="./purecpp/images/cover/logo6.png"alt="absolutely"/><div class="info"><span class="username">Absolutely</span><span class="time">2017-03-18 18:46:06</span></div><div class="content">' + content + '</div></div></li>';
-            $('.blog-comment').append(html);
-            $('#remarkEditor').val('');
-            editIndex = layui.layedit.build('remarkEditor', {
-                height: 150,
-                tool: ['face', '|', 'left', 'center', 'right', '|', 'link'],
-            });
-            layer.msg("评论成功", { icon: 1 });
-        }, 500);
+        data.form.submit();
         return false;
     });
 });

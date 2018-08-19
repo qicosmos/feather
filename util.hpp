@@ -47,11 +47,11 @@ namespace feather{
 		return true;
 	}
 
-	inline bool has_special_char(std::string_view str) {
+	inline bool has_special_char(std::string_view str, bool is_email=false) {
 		for (char ch : str) {
 			if (ch == ';' || ch == ',' || ch == '%' || ch == '"'|| ch == '\\'||
 				ch == '-' || ch == '|' || ch == '(' || ch == ')' || ch == '[' || ch == ']' ||
-				ch == '{' || ch == '}' || ch == '@' || ch == '*' || ch == '!')
+				ch == '{' || ch == '}' || (!is_email&&ch == '@') || ch == '*' || ch == '!')
 				return true;
 		}
 

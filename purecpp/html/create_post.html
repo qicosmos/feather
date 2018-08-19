@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+$inline {{
+./purecpp/html/header.html
+}}
+
+<body>
+  <!-- 导航 -->
+  $include {{
+  ./purecpp/html/navigator1.html
+  }}
+  <!-- 主体（一般只改变这里的内容） -->
+  <div class="blog-body">
+    <!-- 这个一般才是真正的主体内容 -->
+    <div class="blog-container">
+      <div class="blog-main">
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 70px;">
+		  <legend>撰写新文章</legend>
+		</fieldset>
+		<form class="layui-form blog-editor" method="post" action="/comment">
+		
+			  <div class="layui-form-item">
+				<label class="layui-form-label" style="text-align: left;">文章标题</label>
+				<div class="layui-input-block">
+				  <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+				    <div class="layui-form-item">
+						<label class="layui-form-label" style="text-align: left;">文章类型</label>
+						<div class="layui-input-inline">
+						  <select name="city" lay-verify="required">
+							<option value=""></option>
+							<option value="0">C++17</option>
+							<option value="1">技术探讨</option>
+							<option value="2">元编程</option>
+							<option value="3">社区活动</option>
+							<option value="4">社区开源项目</option>
+						  </select>
+						</div>
+				  </div>
+				<div class="layui-form-item layui-form-text">
+						
+						<div class="layui-input-block">
+							<textarea id="demo" name="LAY_demo1" placeholder="请输入内容" class="layui-textarea"></textarea>
+						</div>
+				</div>
+					
+				  <div class="clear"></div>
+                  <div class="layui-form-item">
+				<div class="layui-input-block">
+				  <button class="layui-btn" lay-submit="submit" lay-filter="submit">发布</button>
+				  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			  </div>
+        </form>
+		</div>
+		</div>
+		</div>
+</body>
+  <!--遮罩-->
+  <div class="blog-mask animated layui-hide"></div>
+  <!-- layui.js -->
+  <script src="./purecpp/plug/layui/layui.all.js"></script>
+  <!-- 全局脚本 -->
+  <script src="./purecpp/js/global.js"></script>
+  <!-- 本页脚本 -->
+  <script src="./purecpp/js/home.js"></script>
+<script>
+    layui.use(['form', 'layedit'], function () {
+		var layedit = layui.layedit;
+		
+		//构建一个默认的编辑器
+		var index = layedit.build('demo', {tool: [  'strong' //加粗
+		  ,'italic' //斜体
+		  ,'underline' //下划线
+		  ,'del' //删除线
+		  ,'|' //分割线
+		  ,'left' //左对齐
+		  ,'center' //居中对齐
+		  ,'right' //右对齐
+		  ,'link' //超链接
+		  ,'unlink' //清除链接
+		  ,'face' //表情
+		  ,'image' //插入图片
+		  ,'code'  //代码
+		  ]});
+  
+        var form = layui.form;
+        form.on('submit(submit)', function(data){
+		data.field['LAY_demo1'] = layedit.getContent(index);
+			data.form.submit();
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</html>
