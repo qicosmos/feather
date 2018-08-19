@@ -43,7 +43,7 @@ $inline {{
 				<div class="layui-form-item layui-form-text">
 						
 						<div class="layui-input-block">
-							<textarea name="LAY_demo1" placeholder="请输入内容" class="layui-textarea"></textarea>
+							<textarea id="demo" name="LAY_demo1" placeholder="请输入内容" class="layui-textarea layui-bg-blue"></textarea>
 						</div>
 				</div>
 					
@@ -68,36 +68,28 @@ $inline {{
   <!-- 本页脚本 -->
   <script src="./purecpp/js/home.js"></script>
 <script>
-layui.use('layedit', function(){
-  var layedit = layui.layedit;  
+    layui.use(['form', 'layedit'], function () {
+		var layedit = layui.layedit;
+		
+		//构建一个默认的编辑器
+		var index = layedit.build('demo', {tool: [  'strong' //加粗
+		  ,'italic' //斜体
+		  ,'underline' //下划线
+		  ,'del' //删除线
+		  ,'|' //分割线
+		  ,'left' //左对齐
+		  ,'center' //居中对齐
+		  ,'right' //右对齐
+		  ,'link' //超链接
+		  ,'unlink' //清除链接
+		  ,'face' //表情
+		  ,'image' //插入图片
+		  ,'code'  //代码
+		  ]});
   
-  //构建一个默认的编辑器
-  var index = layedit.build('LAY_demo1');
-  
-  //编辑器外部操作
-  var active = {
-    content: function(){
-      alert(layedit.getContent(index)); //获取编辑器内容
-    }
-    ,text: function(){
-      alert(layedit.getText(index)); //获取编辑器纯文本内容
-    }
-    ,selection: function(){
-      alert(layedit.getSelection(index));
-    }
-  };
-  
-  layui.jquery('.site-demo-layedit').on('click', function(){
-    var type = layui.jquery(this).data('type');
-    active[type] ? active[type].call(this) : '';
-  });
-}); //建立编辑器
-</script>
-<script>
-    layui.use('form', function () {
         var form = layui.form;
         form.on('submit(submit)', function(data){
-		console.log(data.field);
+		data.field['LAY_demo1'] = layedit.getContent(index);
 			data.form.submit();
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
