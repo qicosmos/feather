@@ -462,8 +462,8 @@ body {
     }
 
         .article > .article-left > img {
-            width: 100%;
-            height: 100%;
+            width: 120px;
+            height: 110px;
         }
     .article > .article-right {
         width: 73%;
