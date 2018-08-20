@@ -42,7 +42,7 @@ namespace feather {
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ORDER BY post_date DESC LIMIT "+s+","+lens;
 			
-			render_page(sql, res, "./purecpp/html/home.html", "all", "",false, total_post_count_);
+			render_page(sql, res, "./purecpp/html/home.html", "all", "", cur_page, total_post_count_);
 		}
 
 		void detail(request& req, response& res) {
@@ -327,7 +327,7 @@ namespace feather {
 				item["content_abstract"] = post.content_abstract;
 				item["post_date"] = post.post_date;
 				item["post_title"] = post.post_title;
-				item["category"] = post.category;
+				item["category"] = category_map_[post.category];
 				item["comment_count"] = post.comment_count;
 
 				std::string user_login = std::get<1>(o);
@@ -386,11 +386,13 @@ namespace feather {
 			if (session == nullptr || session->get_data<std::string>("userid") != user_name_s) {
 				return false;
 			}
-
+			
 			return true;
 		}
 
 		private:
 			std::atomic<size_t> total_post_count_ = 0;
+			std::map<std::string, std::string> category_map_ = { { "2",u8"公告" },{"3",u8"社区开源项目"},{"4", u8"代码精粹"},{"5",u8"modern c++资讯"},
+			{"7", u8"社区活动"}, {"8", u8"社区开源项目"},{ "25", u8"技术探讨" },{ "47", u8"C++11/14/17" },{ "58", u8"元编程" } };
 	};
 }
