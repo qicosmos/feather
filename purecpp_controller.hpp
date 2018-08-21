@@ -57,6 +57,14 @@ namespace feather {
 				return;
 			}
 
+			auto login_user_name = req.get_query_value("user_name");
+			if (has_special_char(login_user_name)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			bool has_login = check_login(req);
+
 			std::string sql = "SELECT t1.*, t2.user_login, t3.count from pp_posts t1, pp_user t2, pp_post_views t3  "
 				"where post_status = 'publish' AND t1.ID = " + std::string(ids.data(), ids.length()) + " AND t1.post_author = t2.ID AND t3.period = 'total' AND t3.ID = t1.ID ; ";
 
@@ -78,7 +86,8 @@ namespace feather {
 				article["total"] = total;
 				article["post_content"] = std::move(post.post_content);
 			}
-			article["has_login"] = false;
+			article["has_login"] = has_login;
+			article["login_user_name"] = std::string(login_user_name.data(), login_user_name.length());
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/detail.html", article));
 		}

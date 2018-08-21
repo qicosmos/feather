@@ -7,7 +7,7 @@
       <!-- 导航菜单 -->
       <ul class="layui-nav" lay-filter="nav">
         <li class="layui-nav-item layui-this">
-          <a href="home">首页</a>
+          <a href="home$if has_login{{?user_name=${login_user_name}}}">首页</a>
         </li>
         <li class="layui-nav-item">
           <a href="category?category=3">开源项目</a>
