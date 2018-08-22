@@ -44,7 +44,8 @@ $inline {{
 						</div>
 				</div>
 				<div class="layui-form-item" pane="">
-					<div id="md_editor"># 初始数据放这里</div>
+					<div id="md_post_content"># 初始数据放这里</div>
+					<textarea name="post_content" id="post_content" class="layui-hide"></textarea>
 				</div>
 				  <div class="clear"></div>
                   <div class="layui-form-item">
@@ -68,12 +69,12 @@ $inline {{
   <script src="./purecpp/js/home.js"></script>
   <script src="./purecpp/plug/laymd/marked.min.js"></script>
 	<script>
-		layui.config({base: './purecpp/plug/laymd/'}).use(['layer', 'laymd'], function(){
+		layui.config({base: './purecpp/plug/laymd/'}).use(['form', 'layer', 'laymd'], function(){
 			var layer = layui.layer,
 				laymd = layui.laymd;
-
+			
 			//实例化编辑器,可以多个实例
-			var md = laymd.init('md_editor', {
+			var md = laymd.init('md_post_content', {
 				tools: [
 					'bold', 'italic', 'underline', 'del',
 					'|',
@@ -87,13 +88,15 @@ $inline {{
 					'|',
 					'full', 'preview'
 				],
-				height: 280
+				height: 350
 			});
 
 			//内容改变事件
 			md.on('change', function () {
 				//这里借用marked.js解析效率比HyperDown快,用户可自行找解析器
-				this.setPreview(marked(this.getText()));
+				var html = marked(this.getText());
+				this.setPreview(html);
+				layui.jquery('#post_content').val(html);
 			});
 
 			//初始化数据预览
