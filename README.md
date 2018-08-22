@@ -52,6 +52,19 @@ Feather内部的四个核心组件是松耦合的，Feather只是把它们像搭
 
 ### 获取文章列表的http接口
 
+```
+    int foo(){
+        std::cout<<""<<std::endl;
+        return 0;
+    }
+```
+
+```
+    template<typename T>
+    void foo(){
+		std::cout<<""<<std::endl;
+    }
+```
 	const int max_thread_num = 4;
 	http_server server(max_thread_num);
 	server.listen("0.0.0.0", "http");
