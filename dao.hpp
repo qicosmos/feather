@@ -40,27 +40,26 @@ namespace feather{
         }
 
         template<typename T>
-        bool add_object(T& t) {
+        int add_object(T& t) {
             if (!conn_)
-                return false;
+                return -1;
 
             conn_->begin();
             int n = conn_->insert(t);
             if (n < 0) {
                 conn_->rollback();
                 LOG_WARN << "insert role failed";
-                return false;
+                return -1;
             }
             auto v = conn_->template query<std::tuple<int>>("SELECT LAST_INSERT_ID();");
             if (v.empty()) {
                 conn_->rollback();
                 LOG_WARN << "db failed";
-                return false;
+                return -1;
             }
             conn_->commit();
-            //int seq = std::get<0>(v[0]);
-            //t.id = seq;
-            return true;
+            int seq = std::get<0>(v[0]);
+            return seq;
         }
 
         template<typename T>
