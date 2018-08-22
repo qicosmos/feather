@@ -216,7 +216,7 @@ body {
         width: 50%;
         text-align: center;
         margin: 0 auto;
-        line-height: 30px;
+        line-height: 64px;
         font-size: 30px;
         color: white;
         font-weight: bold;
@@ -261,8 +261,21 @@ body {
         display: none !important;
     }
 }
-/* 顶部导航End */
 
+.layui-badge-dot {
+    position: absolute;
+    top: 50%;
+    margin: -8px 6px 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    font-size: 12px;
+    text-align: center;
+    background-color: #FF5722;
+    color: #fff;
+}
+/* 顶部导航End */
 /*网站底部*/
 .blog-footer {
     text-align: center;

@@ -13,6 +13,13 @@ $inline {{
   }}
   <!-- 主体（一般只改变这里的内容） -->
   <div class="blog-body">
+    <span style="position: absolute; top:15%;color:white;width:100%;text-align:center">
+        <a class="blog-logo" href="home">
+            <font color="yellow" size="5">
+		<b>Newer is Better</b>
+            </font>
+        </a>
+    </span>
     <!-- canvas -->
     <canvas id="canvas-banner" style="background: #393D49;"></canvas>
     <!--为了及时效果需要立即设置canvas宽高，否则就在home.js中设置-->
@@ -21,7 +28,9 @@ $inline {{
       canvas.width = window.document.body.clientWidth - 10;//减去滚动条的宽度
       if (screen.width >= 992) {
         canvas.height = window.innerHeight * 1 / 4;
-      } else {
+      }else if(screen.width <=450){
+		canvas.height = 180;
+	  }else {
         canvas.height = window.innerHeight * 2 / 7;
       }
     </script>
@@ -96,7 +105,7 @@ $inline {{
         <div class="clear"></div>
       </div>
     </div>
-  </div>
+  </span>
   <!-- 底部 -->
 $inline {{
 	./purecpp/html/footer.html
