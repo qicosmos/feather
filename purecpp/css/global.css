@@ -263,17 +263,10 @@ body {
 }
 
 .layui-badge-dot {
-    position: absolute;
-    top: 50%;
-    margin: -8px 6px 0;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    font-size: 12px;
-    text-align: center;
-    background-color: #FF5722;
-    color: #fff;
+    top: 45%;
+}
+.layui-nav-more{
+	top: 55%;
 }
 /* 顶部导航End */
 /*网站底部*/
