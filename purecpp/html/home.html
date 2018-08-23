@@ -13,6 +13,14 @@ $inline {{
   }}
   <!-- 主体（一般只改变这里的内容） -->
   <div class="blog-body">
+      <span style="position: absolute; top:15%;color:white;width:100%;text-align:center">
+        <a class="blog-logo" href="home">
+            <font color="yellow" size="5">
+				<b>Newer is Better</b>
+            </font>
+        </a>
+    </span>
+    </span>
     <!-- canvas -->
     <canvas id="canvas-banner" style="background: #393D49;"></canvas>
     <!--为了及时效果需要立即设置canvas宽高，否则就在home.js中设置-->
@@ -81,8 +89,6 @@ $inline {{
                 <a href="#">${item.category}</a>
               </span>
               <span class="article-viewinfo">
-                <i class="fa fa-eye"></i>${item.total}</span>
-              <span class="article-viewinfo">
                 <i class="fa fa-commenting"></i>${item.comment_count}</span>
             </div>
           </div>
@@ -130,9 +136,6 @@ layui.use('laypage', function(){
     ,count: ${total} //数据总数，从服务端得到
 	 ,curr: ${current_page}
 	  ,jump: function(obj, first){
-    //obj包含了当前分页的所有参数，比如：
-    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-    console.log(obj.limit); //得到每页显示的条数
     
     //首次不执行
     if(!first){

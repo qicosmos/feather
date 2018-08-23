@@ -51,7 +51,7 @@ function DrawCanvas() {
     } 
     //默认鼠标位置 canvas 中间
     var mousePosition = {
-        x: 50 * canvas.width / 100,
+        x: 25 * canvas.width / 100,
         y: 50 * canvas.height / 100
     };
     //小圆点
