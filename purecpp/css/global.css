@@ -261,6 +261,12 @@ body {
         display: none !important;
     }
 }
+.layui-badge-dot {
+    top: 45%;
+}
+.layui-nav-more{
+	top: 55%;
+}
 /* 顶部导航End */
 
 /*网站底部*/
