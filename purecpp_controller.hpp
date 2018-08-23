@@ -281,18 +281,25 @@ namespace feather {
 				return;
 			}
 
+			auto old_password = req.get_query_value("old_password");
 			auto new_pwd = req.get_query_value("new_password");
 			if (new_pwd.empty()) {
 				res.set_status_and_content(status_type::bad_request);
 				return;
 			}
 
-			if (!check_input(res, new_pwd)) {
+			if (!check_input(res, old_password, new_pwd)) {
 				return;
 			}
-			std::string sql = "select ID from pp_user where user_login='" + login_user_name + "'";
+			std::string old_pwd_s = std::string(old_password.data(), old_password.length());
+			std::string sql = "select ID from pp_user where user_login='" + login_user_name + "' and user_pass=md5('" + old_pwd_s + "')";
 			dao_t<dbng<mysql>> dao;
 			auto r = dao.query<std::tuple<std::string>>(sql);
+			if (r.empty()) {
+				res.set_status_and_content(status_type::ok, "æ…√‹¬Î≤ª∂‘");
+				return;
+			}
+
 			std::string id = std::get<0>(r[0]);
 			std::string new_pwd_s = std::string(new_pwd.data(), new_pwd.length());
 			std::string sql1 = "update pp_user set user_pass=md5('"+ new_pwd_s +"')"+" where ID="+id;
