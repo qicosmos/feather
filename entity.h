@@ -29,8 +29,9 @@ namespace feather{
 		std::string user_registered; 
 		std::string user_icon;
 		std::string user_pass;
+		int user_role;
 	};
-	REFLECTION(pp_user, ID, user_login, user_nickname, user_email, user_registered, user_icon, user_pass);
+	REFLECTION(pp_user, ID, user_login, user_nickname, user_email, user_registered, user_icon, user_pass, user_role);
 
 	struct pp_comment {
 		int ID; 

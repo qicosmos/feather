@@ -245,6 +245,17 @@ namespace feather {
 			res.redirect("/home");
 		}
 
+		void quit(request& req, response& res) {
+			auto ptr = req.get_session();
+			auto session = ptr.lock();
+			if (session) {
+				session->set_max_age(0);
+				//session->set_data("userid", std::string(""));
+			}
+
+			res.set_status_and_content(status_type::ok, "退出成功");
+		}
+
 		void logout_page(request& req, response& res) {
 			auto login_user_name = get_user_name_from_session(req);
 			nlohmann::json result;
@@ -252,6 +263,46 @@ namespace feather {
 			result["login_user_name"] = login_user_name;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/logout.html", result));
+		}
+
+		void member_edit_page(request& req, response& res) {
+			auto login_user_name = get_user_name_from_session(req);
+			nlohmann::json result;
+			result["has_login"] = !login_user_name.empty();
+			result["login_user_name"] = login_user_name;
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/member_edit.html", result));
+		}
+
+		void member_edit(request& req, response& res) {
+			auto login_user_name = get_user_name_from_session(req);
+			if (login_user_name.empty()) {
+				res.set_status_and_content(status_type::ok, "请先登录");
+				return;
+			}
+
+			auto new_pwd = req.get_query_value("new_password");
+			if (new_pwd.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (!check_input(res, new_pwd)) {
+				return;
+			}
+			std::string sql = "select ID from pp_user where user_login='" + login_user_name + "'";
+			dao_t<dbng<mysql>> dao;
+			auto r = dao.query<std::tuple<std::string>>(sql);
+			std::string id = std::get<0>(r[0]);
+			std::string new_pwd_s = std::string(new_pwd.data(), new_pwd.length());
+			std::string sql1 = "update pp_user set user_pass=md5('"+ new_pwd_s +"')"+" where ID="+id;
+			bool result = dao.execute(sql1);
+			if (result) {
+				res.redirect("/home");
+			}
+			else {
+				res.set_status_and_content(status_type::bad_request);
+			}
 		}
 
 		void is_login(request& req, response& res) {
@@ -305,12 +356,7 @@ namespace feather {
 				return;
 			}
 			
-			std::string data = pwd_s;
-			std::string data_hex_digest;
-
-			md5 hash;
-			hash.update(data.begin(), data.end());
-			hash.hex_digest(data_hex_digest);
+			std::string data_hex_digest = md5::md5_string(pwd_s);
 
 			pp_user user = {};
 			user.user_email = email_s;
@@ -318,8 +364,8 @@ namespace feather {
 			user.user_nickname = user_name_s;
 			user.user_pass = data_hex_digest;
 
-			bool ok = dao.add_object(user);
-			if (!ok) {
+			int ret = dao.add_object(user);
+			if (ret<0) {
 				res.set_status_and_content(status_type::internal_server_error);
 				return;
 			}
