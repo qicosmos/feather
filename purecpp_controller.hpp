@@ -45,7 +45,7 @@ namespace feather {
 			}
 			
 			auto session = req.get_session().lock();
-			if (session == nullptr || session->get_data<std::string>("userid").empty()) {
+			if (session == nullptr || session->get_data<std::string>("user_name").empty()) {
 				auto new_session = res.start_session();
 				new_session->set_max_age(-1);
 			}
@@ -103,17 +103,8 @@ namespace feather {
 			std::string s = "0";
 			std::string lens = "10";
 
-			auto start = req.get_query_value("start");
-			auto len = req.get_query_value("len");
-			if (!start.empty() && !start.empty()) {
-				s = std::string(start.data(), start.length());
-				lens = std::string(len.data(), len.length());
-
-				if (!is_integer(s) || !is_integer(lens)) {
-					res.set_status_and_content(status_type::bad_request);
-					return;
-				}
-			}
+			if (!assign_start_end(req, res, s, lens))
+				return;
 
 			auto category = req.get_query_value("category");
 			if (category.empty()) {
@@ -145,21 +136,38 @@ namespace feather {
 			render_page(sql, req, res, "./purecpp/html/category.html", category_s, cur_page, total);
 		}
 
+		void my_post(request& req, response& res) {
+			std::string s = "0";
+			std::string lens = "10";
+
+			if (!assign_start_end(req, res, s, lens))
+				return;
+
+			auto login_user_name = get_user_name_from_session(req);
+			auto user_id = get_user_id_from_session(req);
+			dao_t<dbng<mysql>> dao;
+			auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1 where post_status = 'publish' "
+				"AND t1.post_author=" + user_id);
+			if (v.empty()) {
+				res.set_status_and_content(status_type::internal_server_error);
+				return;
+			}
+
+			size_t cur_page = atoi(s.data()) / 10 + 1;
+			size_t total = std::get<0>(v[0]);
+
+			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
+				"where post_status = 'publish' AND t1.post_author=" + user_id + " AND t1.post_author = t2.ID ORDER BY t1.ID DESC LIMIT " + s + "," + lens;
+
+			render_page(sql, req, res, "./purecpp/html/my_post.html", user_id, cur_page, total);
+		}
+
 		void search(request& req, response& res) {
 			std::string s = "0";
 			std::string lens = "10";
 
-			auto start = req.get_query_value("start");
-			auto len = req.get_query_value("len");
-			if (!start.empty() && !start.empty()) {
-				s = std::string(start.data(), start.length());
-				lens = std::string(len.data(), len.length());
-
-				if (!is_integer(s) || !is_integer(lens)) {
-					res.set_status_and_content(status_type::bad_request);
-					return;
-				}
-			}
+			if (!assign_start_end(req, res, s, lens))
+				return;
 
 			auto key_word = req.get_query_value("category");
 			if (key_word.empty()) {
@@ -193,6 +201,22 @@ namespace feather {
 			render_page(sql, req, res, "./purecpp/html/search.html", key_word_s, cur_page, total);
 		}
 
+		bool assign_start_end(request& req, response& res, std::string& s, std::string& limit) {
+			auto start = req.get_query_value("start");
+			auto len = req.get_query_value("len");
+			if (!start.empty() && !start.empty()) {
+				s = std::string(start.data(), start.length());
+				limit = std::string(len.data(), len.length());
+
+				if (!is_integer(s) || !is_integer(limit)) {
+					res.set_status_and_content(status_type::bad_request);
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		void comment(request& req, response& res) {
 			auto key_word = req.get_query_value("editorContent");
 			auto user_login = req.get_query_value("user_login");
@@ -223,23 +247,28 @@ namespace feather {
 			std::string user_name_s = std::string(user_name.data(), user_name.length());
 			std::string password_s = std::string(password.data(), password.length());
 
-			std::string sql = "select count(1) from pp_user where user_login='" + user_name_s + "' and user_pass=md5('" + password_s+"')";
+			std::string sql = "select ID from pp_user where user_login='" + user_name_s + "' and user_pass=md5('" + password_s+"')";
 			dao_t<dbng<mysql>> dao;
-			auto r = dao.query<std::tuple<int>>(sql);
-			if (std::get<0>(r[0])==0) {
+			auto r = dao.query<std::tuple<std::string>>(sql);
+			if (r.empty()) {
 				res.set_status_and_content(status_type::ok, "用户名或密码不正确");
 				return;
 			}
 
+			std::string user_id = std::get<0>(r[0]);
+
 			auto session = req.get_session().lock();
 			if (session == nullptr) {
 				auto new_session = res.start_session();
-				new_session->set_data("userid", user_name_s);
+				new_session->set_data("user_name", user_name_s);
+				new_session->set_data("userid", user_id);
 				new_session->set_max_age(-1);
 			}
 			else {
-				if(session->get_data<std::string>("userid").empty())
-					session->set_data("userid", user_name_s);
+				if (session->get_data<std::string>("user_name").empty()) {
+					session->set_data("user_name", user_name_s);
+					session->set_data("userid", user_id);
+				}
 			}
 
 			res.redirect("/home");
@@ -250,7 +279,6 @@ namespace feather {
 			auto session = ptr.lock();
 			if (session) {
 				session->set_max_age(0);
-				//session->set_data("userid", std::string(""));
 			}
 
 			res.set_status_and_content(status_type::ok, "退出成功");
@@ -436,7 +464,7 @@ namespace feather {
 	private:
 		void render_page(const std::string& sql, request& req, response& res, std::string html_file, std::string categroy, size_t cur_page=0, size_t total=0) {
 			dao_t<dbng<mysql>> dao;
-			auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+			auto v = dao.query<std::tuple<pp_posts, std::string>>(sql);
 			if (v.empty()) {
 				res.set_status_and_content(status_type::ok, "");
 				return;
@@ -507,7 +535,7 @@ namespace feather {
 			std::string user_name_s = std::string(user_name.data(), user_name.length());
 			auto ptr = req.get_session();
 			auto session = ptr.lock();
-			if (session == nullptr || session->get_data<std::string>("userid") != user_name_s) {
+			if (session == nullptr || session->get_data<std::string>("user_name") != user_name_s) {
 				return false;
 			}
 			
@@ -515,13 +543,21 @@ namespace feather {
 		}
 
 		std::string get_user_name_from_session(request& req) {
+			return get_value_from_session(req, "user_name");
+		}
+
+		std::string get_user_id_from_session(request& req) {
+			return get_value_from_session(req, "userid");
+		}
+
+		std::string get_value_from_session(request& req, const std::string& key) {
 			auto ptr = req.get_session();
 			auto session = ptr.lock();
 			if (session == nullptr) {
 				return "";
 			}
 
-			return session->get_data<std::string>("userid");
+			return session->get_data<std::string>(key);
 		}
 
 		std::string time_str(std::time_t time) {
