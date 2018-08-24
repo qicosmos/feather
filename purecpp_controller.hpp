@@ -178,6 +178,7 @@ namespace feather {
 			bool r = dao.execute(sql);
 
 			if (r) {
+				total_post_count_--;
 				res.redirect("/home");
 			}
 			else {
