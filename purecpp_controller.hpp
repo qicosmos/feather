@@ -643,10 +643,13 @@ namespace feather {
 			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
 			
 			auto r = dao.add_object(post);
-			if (r < 0)
+			if (r < 0) {
 				res.set_status_and_content(status_type::internal_server_error);
-			else
+			}				
+			else {
+				total_post_count_++;
 				res.redirect("/home");
+			}
 		}
 
 	private:
