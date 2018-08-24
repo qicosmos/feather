@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+$inline {{
+./purecpp/html/header.html
+}}
+
+<body>
+  <!-- 主体（一般只改变这里的内容） -->
+  <div class="blog-body">
+    <!-- 这个一般才是真正的主体内容 -->
+    <div class="blog-container">
+      <div class="blog-main">
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 70px;">
+		  <legend>编辑文章</legend>
+		</fieldset>
+		<form class="layui-form blog-editor" method="post" action="/add_post">
+		
+			  <div class="layui-form-item">
+				<label class="layui-form-label" style="text-align: left;">文章标题</label>
+				<div class="layui-input-block">
+				  <input type="text" name="title" required placeholder="${title}" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+				<div class="layui-form-item">
+						<label class="layui-form-label" style="text-align: left;">文章类型</label>
+						<div class="layui-input-inline">
+						  <select name="type" lay-verify="required">
+							<option value="${category}"></option>
+							<option value="3">社区开源项目</option>
+							<option value="4">代码精粹</option>
+							<option value="5">modern c++资讯</option>
+							<option value="7">社区活动</option>
+							<option value="8">社区精华</option>
+							<option value="25">技术探讨</option>
+							<option value="47">C++11/14/17</option>
+							<option value="58">元编程</option>
+						  </select>
+						</div>
+				</div>
+				<div class="layui-form-item" pane="">
+					<div id="md_post_content">${post_content}</div>
+					<textarea name="post_content" id="post_content" class="layui-hide"></textarea>
+				</div>
+				  <div class="clear"></div>
+                  <div class="layui-form-item">
+				  <button class="layui-btn" lay-submit="submit" lay-filter="submit">发布</button>
+				  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+        </form>
+		</div>
+		</div>
+		</div>
+</body>
+  <!--遮罩-->
+  <div class="blog-mask animated layui-hide"></div>
+  <!-- layui.js -->
+  <script src="./purecpp/plug/layui/layui.all.js"></script>
+  <!-- 全局脚本 -->
+  <script src="./purecpp/js/global.js"></script>
+  <!-- 本页脚本 -->
+  <script src="./purecpp/js/home.js"></script>
+  <script src="./purecpp/plug/laymd/marked.min.js"></script>
+	<script>
+		layui.config({base: './purecpp/plug/laymd/'}).use(['form', 'layer', 'laymd'], function(){
+			var layer = layui.layer,
+				laymd = layui.laymd;
+			
+			//实例化编辑器,可以多个实例
+			var md = laymd.init('md_post_content', {
+				tools: [
+					'bold', 'italic', 'underline', 'del',
+					'|',
+					'left', 'center', 'right',
+					'|',
+					'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+					'|',
+					'hr', 'link', 'code', 'ol', 'ul', 'tl',
+					'|',
+					'table', 'quote', 'toc', 'img',
+					'|',
+					'full', 'preview'
+				],
+				height: 350
+			});
+
+			//内容改变事件
+			md.on('change', function () {
+				//这里借用marked.js解析效率比HyperDown快,用户可自行找解析器
+				var html = marked(this.getText());
+				this.setPreview(html);
+				layui.jquery('#post_content').val(html);
+			});
+
+			//初始化数据预览
+			md.do('change');
+		});
+	</script>
+</html>

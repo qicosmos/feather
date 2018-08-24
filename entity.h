@@ -18,8 +18,9 @@ namespace feather{
 		std::string url;
 		int comment_count;
 		std::string category;
+		std::string raw_content;
 	};
-	REFLECTION(pp_posts, ID, post_author, post_date, post_title, post_content, post_status, post_modified, content_abstract, url, comment_count, category);
+	REFLECTION(pp_posts, ID, post_author, post_date, post_title, post_content, post_status, post_modified, content_abstract, url, comment_count, category, raw_content);
 
 	struct pp_user {
 		int ID; 

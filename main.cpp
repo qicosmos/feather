@@ -113,6 +113,8 @@ int main(){
 	server.set_http_handler<GET, POST>("/member_edit_page", &purecpp_controller::member_edit_page, &purecpp_ctl, enable_cache{ false });
 	server.set_http_handler<GET, POST>("/member_edit", &purecpp_controller::member_edit, &purecpp_ctl, enable_cache{ false });
 	server.set_http_handler<GET, POST>("/my_post", &purecpp_controller::my_post, &purecpp_ctl, enable_cache{ false });
+	server.set_http_handler<GET, POST>("/remove_post", &purecpp_controller::remove_post, &purecpp_ctl, enable_cache{ false });
+	server.set_http_handler<GET, POST>("/edit_post", &purecpp_controller::edit_post, &purecpp_ctl, enable_cache{ false });
 
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);

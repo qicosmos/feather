@@ -136,6 +136,73 @@ namespace feather {
 			render_page(sql, req, res, "./purecpp/html/category.html", category_s, cur_page, total);
 		}
 
+		void remove_post(request& req, response& res) {
+			auto ids = req.get_query_value("id");
+			if (ids.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (!is_integer(std::string(ids.data(), ids.length()))) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto login_user_name = get_user_name_from_session(req);
+			if(login_user_name.empty()){
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			std::string sql = "update pp_posts set post_status='trash' where ID="+std::string(ids.data(), ids.length());
+			dao_t<dbng<mysql>> dao;
+			bool r = dao.execute(sql);
+
+			if (r) {
+				res.redirect("/home");
+			}
+			else {
+				res.set_status_and_content(status_type::internal_server_error);
+			}
+		}
+
+		void edit_post(request& req, response& res) {
+			auto ids = req.get_query_value("id");
+			if (ids.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (!is_integer(std::string(ids.data(), ids.length()))) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto login_user_name = get_user_name_from_session(req);
+			if (login_user_name.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			std::string sql = "select post_title, category, raw_content from pp_posts where ID=" + std::string(ids.data(), ids.length());
+			dao_t<dbng<mysql>> dao;
+			auto r = dao.query<std::tuple<std::string, std::string, std::string>>(sql);
+			if (r.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			nlohmann::json result;
+			result["has_login"] = !login_user_name.empty();
+			result["login_user_name"] = login_user_name;
+			result["title"] = std::move(std::get<0>(r[0]));
+			result["category"] = std::move(std::get<1>(r[0]));
+			result["post_content"] = std::move(std::get<2>(r[0]));
+
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/edit_post.html", result));
+		}
+
 		void my_post(request& req, response& res) {
 			std::string s = "0";
 			std::string lens = "10";
@@ -247,27 +314,29 @@ namespace feather {
 			std::string user_name_s = std::string(user_name.data(), user_name.length());
 			std::string password_s = std::string(password.data(), password.length());
 
-			std::string sql = "select ID from pp_user where user_login='" + user_name_s + "' and user_pass=md5('" + password_s+"')";
+			std::string sql = "select ID, user_role from pp_user where user_login='" + user_name_s + "' and user_pass=md5('" + password_s+"')";
 			dao_t<dbng<mysql>> dao;
-			auto r = dao.query<std::tuple<std::string>>(sql);
+			auto r = dao.query<std::tuple<std::string, std::string>>(sql);
 			if (r.empty()) {
 				res.set_status_and_content(status_type::ok, "用户名或密码不正确");
 				return;
 			}
 
 			std::string user_id = std::get<0>(r[0]);
-
+			std::string user_role = std::get<1>(r[0]);
 			auto session = req.get_session().lock();
 			if (session == nullptr) {
 				auto new_session = res.start_session();
 				new_session->set_data("user_name", user_name_s);
 				new_session->set_data("userid", user_id);
+				new_session->set_data("user_role", user_role);
 				new_session->set_max_age(-1);
 			}
 			else {
 				if (session->get_data<std::string>("user_name").empty()) {
 					session->set_data("user_name", user_name_s);
 					session->set_data("userid", user_id);
+					session->set_data("user_role", user_role);
 				}
 			}
 
@@ -449,6 +518,7 @@ namespace feather {
 			post.post_date = time_str(std::time(0));
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == 0 ? "waiting" : "publish";
+			post.raw_content = std::string(raw_content.data(), raw_content.length());
 
 			size_t pos = raw_content.find_first_of("<");
 			auto substr = raw_content.substr(0, pos<200?pos:200);
@@ -470,6 +540,9 @@ namespace feather {
 				return;
 			}
 
+			auto [login_user_name, login_user_id, user_role] = get_user_info(req);
+			bool is_admin = (!login_user_name.empty()) && (user_role == "3" || user_role == "6");
+
 			nlohmann::json article_list;
 			for (auto& o : v) {
 				nlohmann::json item;
@@ -484,14 +557,14 @@ namespace feather {
 
 				std::string user_login = std::get<1>(o);
 				item["user_login"] = user_login;
+				item["is_owner"] = is_admin?false:login_user_name == user_login;
+				item["is_admin"] = is_admin;
 				article_list.push_back(item);
 			}
 
 			if (total == 0) {
 				total = v.size();
 			}
-
-			auto login_user_name = get_user_name_from_session(req);
 
 			nlohmann::json result;
 			result["article_list"] = article_list;
@@ -548,6 +621,21 @@ namespace feather {
 
 		std::string get_user_id_from_session(request& req) {
 			return get_value_from_session(req, "userid");
+		}
+
+		std::string get_user_role_from_session(request& req) {
+			return get_value_from_session(req, "user_role");
+		}
+
+		std::tuple<std::string, std::string, std::string> get_user_info(request& req) {
+			auto ptr = req.get_session();
+			auto session = ptr.lock();
+			if (session == nullptr) {
+				return {};
+			}
+
+			return std::make_tuple(session->get_data<std::string>("user_name"), session->get_data<std::string>("userid"), 
+				session->get_data<std::string>("user_role"));
 		}
 
 		std::string get_value_from_session(request& req, const std::string& key) {
