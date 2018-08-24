@@ -41,8 +41,9 @@ namespace feather{
 		int comment_parant;
 		std::string comment_content; 
 		std::string comment_date;
+		std::string comment_status;
 	};
-	REFLECTION(pp_comment, ID, user_id, post_id, comment_parant, comment_content, comment_date);
+	REFLECTION(pp_comment, ID, user_id, post_id, comment_parant, comment_content, comment_date, comment_status);
 
 	struct pp_terms {
 		int term_id;

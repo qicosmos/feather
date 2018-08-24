@@ -88,7 +88,7 @@
                 <form class="layui-form blog-editor" method="post" action="/comment">
 				  <div class="layui-form-item layui-form-text">
 					<div class="layui-input-block">
-					  <textarea name="user_login" placeholder="请输入内容" class="layui-textarea layui-hide">${login_user_name}</textarea>
+					  <textarea name="post_id" placeholder="请输入内容" class="layui-textarea layui-hide">${post_id}</textarea>
 					</div>
 				  </div>
                   <div class="layui-form-item">
@@ -110,6 +110,16 @@
                   <div class="info">
                     <span class="username">${item.comment_user}</span>
                     <span class="time">${item.comment_date}</span>
+					$if item.is_owner{{
+					  <span>
+						<i class="fa fa-tag"></i><a href="./remove_comment?id=${item.comment_id}&post_id=${post_id}">删除</a>
+					  </span>
+					  }}
+					  $if item.is_admin{{
+					  <span>
+						<i class="fa fa-tag"></i><a href="./remove_comment?id=${item.comment_id}&post_id=${post_id}">删除</a>
+					  </span>
+					}}
                   </div>
                   <div class="content">
                     ${item.comment_content}

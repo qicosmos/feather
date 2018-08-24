@@ -71,6 +71,7 @@ namespace feather {
 			}
 
 			auto login_user_name = get_user_name_from_session(req);
+			auto user_role = get_user_role_from_session(req);
 			auto post_id = std::string(ids.data(), ids.length());
 			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
 				"where post_status = 'publish' AND t1.ID = " + post_id+" and t1.post_author=t2.ID";
@@ -83,22 +84,28 @@ namespace feather {
 			}
 
 			std::string comment_sql = "SELECT t1.*, t2.user_login from pp_comment t1, pp_user t2 "
-				"where post_id= " + post_id + " and t1.user_id=t2.ID";
+				"where post_id= " + post_id + " and comment_status<>'trash' and t1.user_id=t2.ID";
 	
+			bool is_admin = (!login_user_name.empty()) && (user_role == "3" || user_role == "6");
 			auto comments = dao.query<std::tuple<pp_comment, std::string>>(comment_sql);
 			nlohmann::json comment_list;
 			for (auto& item : comments) {
 				pp_comment comment = std::get<0>(item);
 				nlohmann::json json;
+				std::string comment_user = std::get<1>(item);
+				json["comment_id"] = comment.ID;
 				json["comment_date"] = std::move(comment.comment_date);
 				json["comment_content"] = std::move(comment.comment_content);
-				json["comment_user"] = std::move(std::get<1>(item));
+				json["comment_user"] = comment_user;
+				json["is_owner"] = is_admin ? false : login_user_name == comment_user;
+				json["is_admin"] = is_admin;
 				comment_list.push_back(std::move(json));
 			}
 			
 			nlohmann::json article;
 			article["comment_list"] = std::move(comment_list);
 			auto& post = std::get<0>(v[0]);
+			article["post_id"] = post_id;
 			article["post_title"] = post.post_title;
 			article["post_modified"] = post.post_modified;
 			article["user_login"] = std::get<1>(v[0]);
@@ -337,13 +344,76 @@ namespace feather {
 		}
 
 		void comment(request& req, response& res) {
-			auto key_word = req.get_query_value("editorContent");
-			auto user_login = req.get_query_value("user_login");
-			if (!check_input(res, key_word, user_login)) {
+			auto comment_content = req.get_query_value("editorContent");
+			auto login_user_name = get_user_name_from_session(req);
+			if (login_user_name.empty()) {
+				res.set_status_and_content(status_type::bad_request, "请先登录");
+				return;
+			}
+			auto post_id = req.get_query_value("post_id");
+			std::string post_id_s = std::string(post_id.data(), post_id.length());
+			if (!is_integer(post_id_s)) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+			
+			pp_comment comment{};
+			comment.comment_content = std::string(comment_content.data(), comment_content.length());
+			comment.comment_date = time_str(std::time(0));
+			comment.post_id = atoi(post_id_s.data());
+			comment.user_id = atoi(get_user_id_from_session(req).data());
+			comment.comment_status = "publish";
+			dao_t<dbng<mysql>> dao;
+			int r = dao.add_object(comment);
+			if (r < 0) {
+				res.set_status_and_content(status_type::bad_request);
+			}
+			else {
+				res.redirect("./detail?id=" + post_id_s);
+			}
+		}
+
+		void remove_comment(request& req, response& res) {
+			auto login_user_name = get_user_name_from_session(req);
+			if (login_user_name.empty()) {
+				res.set_status_and_content(status_type::bad_request, "请先登录");
 				return;
 			}
 
-			res.set_status_and_content(status_type::ok);
+			auto ids = req.get_query_value("id");
+			if (ids.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			if (!is_integer(std::string(ids.data(), ids.length()))) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto post_ids = req.get_query_value("post_id");
+			if (post_ids.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			auto post_id = std::string(post_ids.data(), post_ids.length());
+			if (!is_integer(post_id.data())) {
+				res.set_status_and_content(status_type::bad_request);
+				return;
+			}
+
+			std::string id = std::string(ids.data(), ids.length());
+			std::string sql = "update pp_comment set comment_status='trash' where ID=" + id;
+			dao_t<dbng<mysql>> dao;
+			bool r = dao.execute(sql);
+
+			if (r) {
+				res.redirect("./detail?id="+ post_id);
+			}
+			else {
+				res.set_status_and_content(status_type::internal_server_error);
+			}
 		}
 
 		void login_page(request& req, response& res) {
@@ -402,16 +472,16 @@ namespace feather {
 				session->set_max_age(0);
 			}
 
-			res.set_status_and_content(status_type::ok, "退出成功");
+			res.redirect("./home");
 		}
 
-		void logout_page(request& req, response& res) {
+		void sign_out_page(request& req, response& res) {
 			auto login_user_name = get_user_name_from_session(req);
 			nlohmann::json result;
 			result["has_login"] = !login_user_name.empty();
 			result["login_user_name"] = login_user_name;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
-			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/logout.html", result));
+			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/sign_out.html", result));
 		}
 
 		void member_edit_page(request& req, response& res) {
@@ -473,7 +543,7 @@ namespace feather {
 			
 		}
 
-		void logout(request& req, response& res) {
+		void sign_out(request& req, response& res) {
 			auto user_name = req.get_query_value("user_name");
 			auto email = req.get_query_value("email");
 			auto answer = req.get_query_value("answer");
@@ -506,7 +576,7 @@ namespace feather {
 				return;
 			}
 
-			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_logout_answer where ID=1 and answer like \"%"+ answer_s+"%\"");
+			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=1 and answer like \"%"+ answer_s+"%\"");
 			if (std::get<0>(r1[0]) == 0) {
 				res.set_status_and_content(status_type::ok, "验证问题答案错误");
 				return;
@@ -526,7 +596,7 @@ namespace feather {
 				return;
 			}
 			
-			res.set_status_and_content(status_type::ok, "注册成功");
+			res.redirect("./login_page");
 		}
 
 		void new_post(request& req, response& res) {
