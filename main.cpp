@@ -98,7 +98,7 @@ int main(){
 
 	purecpp_controller purecpp_ctl;
 	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl, enable_cache{ false });
-	server.set_http_handler<GET>("/detail", &purecpp_controller::detail, &purecpp_ctl);
+	server.set_http_handler<GET>("/detail", &purecpp_controller::detail, &purecpp_ctl, enable_cache{ false });
 	server.set_http_handler<GET>("/category", &purecpp_controller::category, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/search", &purecpp_controller::search, &purecpp_ctl);
 	server.set_http_handler<POST>("/comment", &purecpp_controller::comment, &purecpp_ctl);

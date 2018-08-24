@@ -71,28 +71,40 @@ namespace feather {
 			}
 
 			auto login_user_name = get_user_name_from_session(req);
+			auto post_id = std::string(ids.data(), ids.length());
+			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
+				"where post_status = 'publish' AND t1.ID = " + post_id+" and t1.post_author=t2.ID";
 			
-			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2  "
-				"where post_status = 'publish' AND t1.ID = " + std::string(ids.data(), ids.length()) + " AND t1.post_author = t2.ID; ";
-
 			dao_t<dbng<mysql>> dao;
-			auto v = dao.query<std::tuple<pp_posts, std::string, int>>(sql);
+			auto v = dao.query<std::tuple<pp_posts, std::string>>(sql);
 			if (v.empty()) {
 				res.set_status_and_content(status_type::not_found);
 				return;
 			}
 
-			nlohmann::json article;
-			for (auto& o : v) {
-				auto& post = std::get<0>(o);
-				article["post_title"] = post.post_title;
-				article["post_modified"] = post.post_modified;
-				std::string user_login = std::get<1>(o);
-				int total = std::get<2>(o);
-				article["user_login"] = user_login;
-				article["total"] = total;
-				article["post_content"] = std::move(post.post_content);
+			std::string comment_sql = "SELECT t1.*, t2.user_login from pp_comment t1, pp_user t2 "
+				"where post_id= " + post_id + " and t1.user_id=t2.ID";
+	
+			auto comments = dao.query<std::tuple<pp_comment, std::string>>(comment_sql);
+			nlohmann::json comment_list;
+			for (auto& item : comments) {
+				pp_comment comment = std::get<0>(item);
+				nlohmann::json json;
+				json["comment_date"] = std::move(comment.comment_date);
+				json["comment_content"] = std::move(comment.comment_content);
+				json["comment_user"] = std::move(std::get<1>(item));
+				comment_list.push_back(std::move(json));
 			}
+			
+			nlohmann::json article;
+			article["comment_list"] = std::move(comment_list);
+			auto& post = std::get<0>(v[0]);
+			article["post_title"] = post.post_title;
+			article["post_modified"] = post.post_modified;
+			article["user_login"] = std::get<1>(v[0]);
+			article["total"] = comments.size();
+			article["has_comment"] = !comments.empty();
+			article["post_content"] = std::move(post.post_content);
 			article["has_login"] = !login_user_name.empty();
 			article["login_user_name"] = login_user_name;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
@@ -227,7 +239,7 @@ namespace feather {
 			post.category = std::string(type.data(), type.length());
 			post.ID = atoi(post_id.data());
 			post.post_author = atoi(user_id.data());
-			post.post_date = time_str(std::time(0));
+			post.post_modified = time_str(std::time(0));
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";
 			post.raw_content = std::string(raw_content.data(), raw_content.length());
@@ -551,6 +563,7 @@ namespace feather {
 			post.category = std::string(type.data(), type.length());
 			post.post_author = atoi(user_id.data());
 			post.post_date = time_str(std::time(0));
+			post.post_modified = post.post_date;
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";
 			post.raw_content = std::string(raw_content.data(), raw_content.length());

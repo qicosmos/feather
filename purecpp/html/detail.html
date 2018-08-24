@@ -59,9 +59,9 @@
               ${post_title}
             </div>
             <div class="article-detail-info">
-              <span>编辑时间：${post_modified}</span>
-              <span>作者：${user_login}</span>
-              <span>浏览量：${total}</span>
+              <span class="fa fa-clock-o">编辑时间：${post_modified}</span>
+              <span class="fa fa-user">作者：${user_login}</span>
+              <span class="fa fa-commenting">${total}条评论</span>
             </div>
             <div class="markdown-body">
               <p style="text-align:center;">
@@ -88,7 +88,7 @@
                 <form class="layui-form blog-editor" method="post" action="/comment">
 				  <div class="layui-form-item layui-form-text">
 					<div class="layui-input-block">
-					  <textarea name="user_login" placeholder="请输入内容" class="layui-textarea layui-hide">${user_login}</textarea>
+					  <textarea name="user_login" placeholder="请输入内容" class="layui-textarea layui-hide">${login_user_name}</textarea>
 					</div>
 				  </div>
                   <div class="layui-form-item">
@@ -102,18 +102,22 @@
             </fieldset>
             <div class="blog-module-title">最新评论</div>
             <ul class="blog-comment">
+			$if has_comment{{
+			$for item in comment_list{{
               <li>
                 <div class="comment-parent">
                   <img src="./purecpp/images/cover/logo6.png" alt="qicosmos" />
                   <div class="info">
-                    <span class="username">qicosmos</span>
-                    <span class="time">2018-08-12 18:46:06</span>
+                    <span class="username">${item.comment_user}</span>
+                    <span class="time">${item.comment_date}</span>
                   </div>
                   <div class="content">
-                    我为大家做了模拟评论功能！欢迎评论！
+                    ${item.comment_content}
                   </div>
                 </div>
               </li>
+			}}
+			}}
             </ul>
           </div>
         </div>
