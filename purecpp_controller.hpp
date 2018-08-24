@@ -166,7 +166,7 @@ namespace feather {
 			}
 		}
 
-		void edit_post(request& req, response& res) {
+		void edit_post_page(request& req, response& res) {
 			auto ids = req.get_query_value("id");
 			if (ids.empty()) {
 				res.set_status_and_content(status_type::bad_request);
@@ -184,7 +184,8 @@ namespace feather {
 				return;
 			}
 
-			std::string sql = "select post_title, category, raw_content from pp_posts where ID=" + std::string(ids.data(), ids.length());
+			auto post_id = std::string(ids.data(), ids.length());
+			std::string sql = "select post_title, category, raw_content from pp_posts where ID=" + post_id;
 			dao_t<dbng<mysql>> dao;
 			auto r = dao.query<std::tuple<std::string, std::string, std::string>>(sql);
 			if (r.empty()) {
@@ -195,12 +196,51 @@ namespace feather {
 			nlohmann::json result;
 			result["has_login"] = !login_user_name.empty();
 			result["login_user_name"] = login_user_name;
+			result["post_id"] = post_id;
 			result["title"] = std::move(std::get<0>(r[0]));
 			result["category"] = std::move(std::get<1>(r[0]));
 			result["post_content"] = std::move(std::get<2>(r[0]));
 
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/edit_post.html", result));
+		}
+
+		void edit_post(request& req, response& res) {
+			auto login_user_name = get_user_name_from_session(req);
+			if (login_user_name.empty()) {
+				res.set_status_and_content(status_type::ok, "ÇëÏÈµÇÂ¼");
+				return;
+			}
+
+			auto user_id = get_user_id_from_session(req);
+			auto role = get_user_role_from_session(req);
+
+			auto post_id = req.get_query_value("post_id");
+			auto title = req.get_query_value("title");
+			auto type = req.get_query_value("type");
+			auto post_content = req.get_query_value("post_content");
+			auto raw_content = req.get_query_value("md_post_content");
+
+			dao_t<dbng<mysql>> dao;
+			pp_posts post{};
+			post.post_title = std::string(title.data(), title.length());
+			post.category = std::string(type.data(), type.length());
+			post.ID = atoi(post_id.data());
+			post.post_author = atoi(user_id.data());
+			post.post_date = time_str(std::time(0));
+			post.post_content = std::string(post_content.data(), post_content.length());
+			post.post_status = role == "0" ? "waiting" : "publish";
+			post.raw_content = std::string(raw_content.data(), raw_content.length());
+
+			size_t pos = raw_content.find_first_of("<");
+			auto substr = raw_content.substr(0, pos<200 ? pos : 200);
+			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
+
+			auto r = dao.update_object(post);
+			if (r < 0)
+				res.set_status_and_content(status_type::internal_server_error);
+			else
+				res.redirect("/home");
 		}
 
 		void my_post(request& req, response& res) {
@@ -497,13 +537,8 @@ namespace feather {
 				res.set_status_and_content(status_type::ok, "ÇëÏÈµÇÂ¼");
 				return;
 			}
-
-			int role = 0;
-			{
-				dao_t<dbng<mysql>> dao;
-				auto r =dao.query<std::tuple<int>>("select user_role from pp_user where user_login='"+ login_user_name +"'");
-				role = std::get<0>(r[0]);
-			}
+			auto user_id = get_user_id_from_session(req);
+			auto role = get_user_role_from_session(req);
 
 			auto title = req.get_query_value("title");
 			auto type = req.get_query_value("type");
@@ -514,10 +549,10 @@ namespace feather {
 			pp_posts post{};
 			post.post_title = std::string(title.data(), title.length());
 			post.category = std::string(type.data(), type.length());
-			post.post_author = 2443;
+			post.post_author = atoi(user_id.data());
 			post.post_date = time_str(std::time(0));
 			post.post_content = std::string(post_content.data(), post_content.length());
-			post.post_status = role == 0 ? "waiting" : "publish";
+			post.post_status = role == "0" ? "waiting" : "publish";
 			post.raw_content = std::string(raw_content.data(), raw_content.length());
 
 			size_t pos = raw_content.find_first_of("<");
