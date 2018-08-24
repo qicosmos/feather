@@ -7,6 +7,7 @@ using namespace ormpp;
 using namespace cinatra;
 
 namespace feather {
+	using Dao = dao_t<dbng<mysql>>;
 	class purecpp_controller {
 	public:
 		purecpp_controller() {
@@ -131,7 +132,7 @@ namespace feather {
 				return;
 			}
 
-			std::string category_s = std::string(category.data(), category.length());
+			std::string category_s = sv2s(category);
 
 			if (!is_integer(category_s)) {
 				res.set_status_and_content(status_type::bad_request);
@@ -247,7 +248,7 @@ namespace feather {
 			post.category = std::string(type.data(), type.length());
 			post.ID = atoi(post_id.data());
 			post.post_author = atoi(user_id.data());
-			post.post_modified = time_str(std::time(0));
+			post.post_modified = cur_time();
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";
 			post.raw_content = std::string(raw_content.data(), raw_content.length());
@@ -360,7 +361,7 @@ namespace feather {
 			
 			pp_comment comment{};
 			comment.comment_content = std::string(comment_content.data(), comment_content.length());
-			comment.comment_date = time_str(std::time(0));
+			comment.comment_date = cur_time();
 			comment.post_id = atoi(post_id_s.data());
 			comment.user_id = atoi(get_user_id_from_session(req).data());
 			comment.comment_status = "publish";
@@ -633,7 +634,7 @@ namespace feather {
 			post.post_title = std::string(title.data(), title.length());
 			post.category = std::string(type.data(), type.length());
 			post.post_author = atoi(user_id.data());
-			post.post_date = time_str(std::time(0));
+			post.post_date = cur_time();
 			post.post_modified = post.post_date;
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";
@@ -768,12 +769,6 @@ namespace feather {
 			}
 
 			return session->get_data<std::string>(key);
-		}
-
-		std::string time_str(std::time_t time) {
-			std::stringstream ss;
-			ss << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S");
-			return ss.str();
 		}
 
 		private:
