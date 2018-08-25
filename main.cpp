@@ -98,24 +98,24 @@ int main(){
 	}
 
 	purecpp_controller purecpp_ctl;
-	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl);
+	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
 	server.set_http_handler<GET>("/detail", &purecpp_controller::detail, &purecpp_ctl, check_detail_input{});
 	server.set_http_handler<GET>("/category", &purecpp_controller::category, &purecpp_ctl, check_category_input{});
 	server.set_http_handler<GET, POST>("/search", &purecpp_controller::search, &purecpp_ctl, check_search_input{});
 	server.set_http_handler<POST>("/comment", &purecpp_controller::comment, &purecpp_ctl, check_login{}, check_comment_input{});
 	server.set_http_handler<GET, POST>("/remove_comment", &purecpp_controller::remove_comment, &purecpp_ctl, check_login{}, check_remove_comment_input{});
 	server.set_http_handler<GET, POST>("/login_page", &purecpp_controller::login_page, &purecpp_ctl);
-	server.set_http_handler<GET, POST>("/login", &purecpp_controller::login, &purecpp_ctl);
-	server.set_http_handler<GET, POST>("/new_post", &purecpp_controller::new_post, &purecpp_ctl, check_login{});
+	server.set_http_handler<GET, POST>("/login", &purecpp_controller::login, &purecpp_ctl, check_login_input{});
+	server.set_http_handler<GET, POST>("/add_post_page", &purecpp_controller::add_post_page, &purecpp_ctl, check_login{});
 	server.set_http_handler<GET, POST>("/add_post", &purecpp_controller::add_post, &purecpp_ctl, check_login{});
 	server.set_http_handler<GET, POST>("/sign_out_page", &purecpp_controller::sign_out_page, &purecpp_ctl);
-	server.set_http_handler<GET, POST>("/sign_out", &purecpp_controller::sign_out, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/sign_out", &purecpp_controller::sign_out, &purecpp_ctl, check_sign_out_input{});
 	server.set_http_handler<GET, POST>("/quit", &purecpp_controller::quit, &purecpp_ctl, check_login{});
 	server.set_http_handler<GET, POST>("/member_edit_page", &purecpp_controller::member_edit_page, &purecpp_ctl, check_login{});
-	server.set_http_handler<GET, POST>("/member_edit", &purecpp_controller::member_edit, &purecpp_ctl, check_login{});
-	server.set_http_handler<GET, POST>("/my_post", &purecpp_controller::my_post, &purecpp_ctl, check_login{}, check_mypost_input{});
-	server.set_http_handler<GET, POST>("/remove_post", &purecpp_controller::remove_post, &purecpp_ctl, check_login{});
-	server.set_http_handler<GET, POST>("/edit_post_page", &purecpp_controller::edit_post_page, &purecpp_ctl, check_login{});
+	server.set_http_handler<GET, POST>("/member_edit", &purecpp_controller::member_edit, &purecpp_ctl, check_login{}, check_member_edit_input{});
+	server.set_http_handler<GET, POST>("/my_post", &purecpp_controller::my_post, &purecpp_ctl, check_login{}, check_start_end_input{});
+	server.set_http_handler<GET, POST>("/remove_post", &purecpp_controller::remove_post, &purecpp_ctl, check_login{}, check_edit_post_input{});
+	server.set_http_handler<GET, POST>("/edit_post_page", &purecpp_controller::edit_post_page, &purecpp_ctl, check_login{}, check_edit_post_input{});
 	server.set_http_handler<GET, POST>("/edit_post", &purecpp_controller::edit_post, &purecpp_ctl, check_login{});
 
     user_controller user_ctl;

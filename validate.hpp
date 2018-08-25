@@ -131,7 +131,7 @@ namespace feather {
 		}
 	};
 
-	struct check_mypost_input {
+	struct check_start_end_input {
 		bool before(request& req, response& res) {
 			std::string s = "0";
 			std::string lens = "10";
@@ -140,6 +140,97 @@ namespace feather {
 				return false;
 
 			req.set_aspect_data(std::move(s), std::move(lens));
+			return true;
+		}
+	};
+
+	template<typename T>
+	inline bool check_input0(response& res, T t) {
+		if (t.empty()) {
+			res.set_status_and_content(status_type::bad_request);
+			return false;
+		}
+
+		if (has_special_char(t)) {
+			res.set_status_and_content(status_type::bad_request);
+			return false;
+		}
+
+		return true;
+	}
+
+	template<typename... T>
+	inline bool check_input(response& res, T... args) {
+		bool r = true;
+		((r = r && check_input0(res, args)), ...);
+
+		return r;
+	}
+
+	struct check_login_input {
+		bool before(request& req, response& res) {
+			auto user_name = req.get_query_value("user_name");
+			auto password = req.get_query_value("password");
+			if (!check_input(res, user_name, password)) {
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(user_name), sv2s(password));
+			return true;
+		}
+	};
+
+	struct check_sign_out_input {
+		bool before(request& req, response& res) {
+			auto user_name = req.get_query_value("user_name");
+			auto email = req.get_query_value("email");
+			auto answer = req.get_query_value("answer");
+			auto pwd = req.get_query_value("user_pwd");
+
+			if (!check_input(res, user_name, answer, pwd)) {
+				return false;
+			}
+
+			if (email.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (has_special_char(email, true)) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(user_name), sv2s(email), sv2s(answer), sv2s(pwd));
+			return true;
+		}
+	};
+
+	struct check_member_edit_input {
+		bool before(request& req, response& res) {
+			auto old_password = req.get_query_value("old_password");
+			auto new_pwd = req.get_query_value("new_password");
+			if (new_pwd.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (!check_input(res, old_password, new_pwd)) {
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(old_password), sv2s(new_pwd));
+			return true;
+		}
+	};
+
+	struct check_edit_post_input {
+		bool before(request& req, response& res) {
+			if (!check_integer(req, res, "id")) {
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(req.get_query_value("id")));
 			return true;
 		}
 	};
