@@ -3,6 +3,7 @@
 #include "entity.h"
 #include "feather.h"
 #include "md5.hpp"
+#include "validate.hpp"
 using namespace ormpp;
 using namespace cinatra;
 
@@ -60,24 +61,11 @@ namespace feather {
 		}
 
 		void detail(request& req, response& res) {
-			auto ids = req.get_query_value("id");
-			if (ids.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (!is_integer(std::string(ids.data(), ids.length()))) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			auto login_user_name = get_user_name_from_session(req);
-			auto user_role = get_user_role_from_session(req);
-			auto post_id = std::string(ids.data(), ids.length());
+			auto post_id = sv2s(req.get_query_value("id"));
 			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
 				"where post_status = 'publish' AND t1.ID = " + post_id+" and t1.post_author=t2.ID";
 			
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto v = dao.query<std::tuple<pp_posts, std::string>>(sql);
 			if (v.empty()) {
 				res.set_status_and_content(status_type::not_found);
@@ -87,6 +75,10 @@ namespace feather {
 			std::string comment_sql = "SELECT t1.*, t2.user_login from pp_comment t1, pp_user t2 "
 				"where post_id= " + post_id + " and comment_status<>'trash' and t1.user_id=t2.ID";
 	
+			const auto& params = get_user_info(req);
+			const auto& login_user_name = params[0];
+			const auto& user_id = params[1];
+			const auto& user_role = params[2];
 			bool is_admin = (!login_user_name.empty()) && (user_role == "3" || user_role == "6");
 			auto comments = dao.query<std::tuple<pp_comment, std::string>>(comment_sql);
 			nlohmann::json comment_list;
@@ -120,28 +112,14 @@ namespace feather {
 		}
 
 		void category(request& req, response& res) {
-			std::string s = "0";
-			std::string lens = "10";
+			const auto& params = req.get_aspect_data();
+			const auto& s = params[0];
+			const auto& lens = params[1];
+			const auto& category = params[2];
 
-			if (!assign_start_end(req, res, s, lens))
-				return;
-
-			auto category = req.get_query_value("category");
-			if (category.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			std::string category_s = sv2s(category);
-
-			if (!is_integer(category_s)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1 where post_status = 'publish' "
-				"AND t1.category=" + category_s);
+				"AND t1.category=" + category);
 			if (v.empty()) {
 				res.set_status_and_content(status_type::internal_server_error);
 				return;
@@ -151,9 +129,9 @@ namespace feather {
 			size_t total = std::get<0>(v[0]);
 
 			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
-				"where post_status = 'publish' AND t1.category=" + category_s + " AND t1.post_author = t2.ID ORDER BY t1.ID DESC LIMIT " + s + "," + lens;
+				"where post_status = 'publish' AND t1.category=" + category + " AND t1.post_author = t2.ID ORDER BY t1.ID DESC LIMIT " + s + "," + lens;
 
-			render_page(sql, req, res, "./purecpp/html/category.html", category_s, cur_page, total);
+			render_page(sql, req, res, "./purecpp/html/category.html", category, cur_page, total);
 		}
 
 		void remove_post(request& req, response& res) {
@@ -265,14 +243,12 @@ namespace feather {
 		}
 
 		void my_post(request& req, response& res) {
-			std::string s = "0";
-			std::string lens = "10";
+			const auto& params = req.get_aspect_data();
+			const auto& login_user_name = params[0];
+			const auto& user_id = params[1];
+			const auto& s = params[3];
+			const auto& lens = params[4];
 
-			if (!assign_start_end(req, res, s, lens))
-				return;
-
-			auto login_user_name = get_user_name_from_session(req);
-			auto user_id = get_user_id_from_session(req);
 			dao_t<dbng<mysql>> dao;
 			auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1 where post_status = 'publish' "
 				"AND t1.post_author=" + user_id);
@@ -291,28 +267,14 @@ namespace feather {
 		}
 
 		void search(request& req, response& res) {
-			std::string s = "0";
-			std::string lens = "10";
-
-			if (!assign_start_end(req, res, s, lens))
-				return;
-
-			auto key_word = req.get_query_value("category");
-			if (key_word.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (has_special_char(key_word)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			std::string key_word_s = std::string(key_word.data(), key_word.length());
+			const auto& params = req.get_aspect_data();
+			const auto& s = params[0];
+			const auto& lens = params[1];
+			const auto& key_word = params[2];
 
 			dao_t<dbng<mysql>> dao;
 			std::string count_sql = "SELECT count(1) from pp_posts t1, pp_user t2 "
-				"where post_status = 'publish' AND t1.post_author = t2.ID AND post_content like \"%" + key_word_s + "%\"" + " ORDER BY t1.ID DESC; ";
+				"where post_status = 'publish' AND t1.post_author = t2.ID AND post_content like \"%" + key_word + "%\"" + " ORDER BY t1.ID DESC; ";
 
 			auto v = dao.query<std::tuple<int>>(count_sql);
 			if (v.empty()) {
@@ -324,25 +286,9 @@ namespace feather {
 			size_t total = std::get<0>(v[0]);
 
 			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
-				"where post_status = 'publish' AND t1.post_author = t2.ID AND post_content like \"%" + key_word_s + "%\"" + " ORDER BY t1.ID DESC LIMIT " + s + "," + lens;
+				"where post_status = 'publish' AND t1.post_author = t2.ID AND post_content like \"%" + key_word + "%\"" + " ORDER BY t1.ID DESC LIMIT " + s + "," + lens;
 
-			render_page(sql, req, res, "./purecpp/html/search.html", key_word_s, cur_page, total);
-		}
-
-		bool assign_start_end(request& req, response& res, std::string& s, std::string& limit) {
-			auto start = req.get_query_value("start");
-			auto len = req.get_query_value("len");
-			if (!start.empty() && !start.empty()) {
-				s = std::string(start.data(), start.length());
-				limit = std::string(len.data(), len.length());
-
-				if (!is_integer(s) || !is_integer(limit)) {
-					res.set_status_and_content(status_type::bad_request);
-					return false;
-				}
-			}
-
-			return true;
+			render_page(sql, req, res, "./purecpp/html/search.html", key_word, cur_page, total);
 		}
 
 		void comment(request& req, response& res) {
@@ -368,41 +314,14 @@ namespace feather {
 		}
 
 		void remove_comment(request& req, response& res) {
-			auto login_user_name = get_user_name_from_session(req);
-			if (login_user_name.empty()) {
-				res.set_status_and_content(status_type::bad_request, "请先登录");
-				return;
-			}
-
-			auto ids = req.get_query_value("id");
-			if (ids.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			if (!is_integer(std::string(ids.data(), ids.length()))) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			auto post_ids = req.get_query_value("post_id");
-			if (post_ids.empty()) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			auto post_id = std::string(post_ids.data(), post_ids.length());
-			if (!is_integer(post_id)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-
-			std::string id = std::string(ids.data(), ids.length());
+			std::string id = sv2s(req.get_query_value("id"));
 			std::string sql = "update pp_comment set comment_status='trash' where ID=" + id;
+
 			dao_t<dbng<mysql>> dao;
 			bool r = dao.execute(sql);
 
 			if (r) {
+				std::string post_id = sv2s(req.get_query_value("post_id"));
 				res.redirect("./detail?id="+ post_id);
 			}
 			else {
@@ -525,18 +444,6 @@ namespace feather {
 			}
 		}
 
-		void is_login(request& req, response& res) {
-			bool has_login = check_login(req);
-
-			if (has_login) {
-				res.set_status_and_content(status_type::ok, "已经登录");
-			}
-			else {
-				res.set_status_and_content(status_type::ok, "没有登录");
-			}
-			
-		}
-
 		void sign_out(request& req, response& res) {
 			auto user_name = req.get_query_value("user_name");
 			auto email = req.get_query_value("email");
@@ -655,7 +562,10 @@ namespace feather {
 				return;
 			}
 
-			auto [login_user_name, login_user_id, user_role] = get_user_info(req);
+			const auto& params = get_user_info(req);
+			const auto& login_user_name = params.empty() ? "" : params[0];
+			const auto& user_role = params.empty() ? "" : params[2];
+
 			bool is_admin = (!login_user_name.empty()) && (user_role == "3" || user_role == "6");
 
 			nlohmann::json article_list;
@@ -715,21 +625,6 @@ namespace feather {
 			return r;
 		}
 
-		bool check_login(request& req) {
-			auto user_name = req.get_query_value("user_name");
-			if (user_name.empty())
-				return false;
-
-			std::string user_name_s = std::string(user_name.data(), user_name.length());
-			auto ptr = req.get_session();
-			auto session = ptr.lock();
-			if (session == nullptr || session->get_data<std::string>("user_name") != user_name_s) {
-				return false;
-			}
-			
-			return true;
-		}
-
 		std::string get_user_name_from_session(request& req) {
 			return get_value_from_session(req, "user_name");
 		}
@@ -740,17 +635,6 @@ namespace feather {
 
 		std::string get_user_role_from_session(request& req) {
 			return get_value_from_session(req, "user_role");
-		}
-
-		std::tuple<std::string, std::string, std::string> get_user_info(request& req) {
-			auto ptr = req.get_session();
-			auto session = ptr.lock();
-			if (session == nullptr) {
-				return {};
-			}
-
-			return std::make_tuple(session->get_data<std::string>("user_name"), session->get_data<std::string>("userid"), 
-				session->get_data<std::string>("user_role"));
 		}
 
 		std::string get_value_from_session(request& req, const std::string& key) {
