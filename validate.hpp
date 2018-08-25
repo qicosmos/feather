@@ -16,6 +16,20 @@ namespace feather {
 			session->get_data<std::string>("user_role") };
 	}
 
+	inline std::string get_value_from_session(request& req, const std::string& key) {
+		auto ptr = req.get_session();
+		auto session = ptr.lock();
+		if (session == nullptr) {
+			return "";
+		}
+
+		return session->get_data<std::string>(key);
+	}
+
+	inline std::string get_user_name_from_session(request& req) {
+		return get_value_from_session(req, "user_name");
+	}
+
 	struct check_login {
 		bool before(request& req, response& res) {
 			auto v = get_user_info(req);

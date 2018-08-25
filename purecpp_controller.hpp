@@ -506,20 +506,6 @@ namespace feather {
 			res.set_status_and_content(status_type::ok, render::render_file(std::move(html_file), result));
 		}
 
-		std::string get_user_name_from_session(request& req) {
-			return get_value_from_session(req, "user_name");
-		}
-
-		std::string get_value_from_session(request& req, const std::string& key) {
-			auto ptr = req.get_session();
-			auto session = ptr.lock();
-			if (session == nullptr) {
-				return "";
-			}
-
-			return session->get_data<std::string>(key);
-		}
-
 		private:
 			std::atomic<size_t> total_post_count_ = 0;
 			std::map<std::string, std::string> category_map_;
