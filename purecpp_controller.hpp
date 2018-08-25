@@ -38,7 +38,7 @@ namespace feather {
 				dao_t<dbng<mysql>> dao;
 				auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts  where post_status = 'publish'");
 				if (v.empty()) {
-					res.set_status_and_content(status_type::internal_server_error);
+					res.set_status_and_content(status_type::not_found);
 					return;
 				}
 
@@ -346,32 +346,24 @@ namespace feather {
 		}
 
 		void comment(request& req, response& res) {
+			auto post_id_sv = req.get_query_value("post_id");
+			auto post_id = sv2s(post_id_sv);
 			auto comment_content = req.get_query_value("editorContent");
-			auto login_user_name = get_user_name_from_session(req);
-			if (login_user_name.empty()) {
-				res.set_status_and_content(status_type::bad_request, "ÇëÏÈµÇÂ¼");
-				return;
-			}
-			auto post_id = req.get_query_value("post_id");
-			std::string post_id_s = std::string(post_id.data(), post_id.length());
-			if (!is_integer(post_id_s)) {
-				res.set_status_and_content(status_type::bad_request);
-				return;
-			}
-			
+
 			pp_comment comment{};
-			comment.comment_content = std::string(comment_content.data(), comment_content.length());
+			comment.comment_content = sv2s(comment_content);
 			comment.comment_date = cur_time();
-			comment.post_id = atoi(post_id_s.data());
-			comment.user_id = atoi(get_user_id_from_session(req).data());
+			comment.post_id = atoi(post_id.data());
+			comment.user_id = atoi(req.get_aspect_data()[1].data());
 			comment.comment_status = "publish";
-			dao_t<dbng<mysql>> dao;
+
+			Dao dao;
 			int r = dao.add_object(comment);
 			if (r < 0) {
-				res.set_status_and_content(status_type::bad_request);
+				res.set_status_and_content(status_type::internal_server_error);
 			}
 			else {
-				res.redirect("./detail?id=" + post_id_s);
+				res.redirect("./detail?id=" + post_id);
 			}
 		}
 
@@ -400,7 +392,7 @@ namespace feather {
 			}
 
 			auto post_id = std::string(post_ids.data(), post_ids.length());
-			if (!is_integer(post_id.data())) {
+			if (!is_integer(post_id)) {
 				res.set_status_and_content(status_type::bad_request);
 				return;
 			}

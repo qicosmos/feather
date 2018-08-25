@@ -51,6 +51,15 @@ namespace feather{
 		return true;
 	}
 
+	inline bool is_integer(std::string_view str) {
+		for (auto ch : str) {
+			if (!std::isdigit(ch))
+				return false;
+		}
+
+		return true;
+	}
+
 	inline bool has_special_char(std::string_view str, bool is_email=false) {
 		for (char ch : str) {
 			if (ch == ';' || ch == ',' || ch == '%' || ch == '"'|| ch == '\\'||
