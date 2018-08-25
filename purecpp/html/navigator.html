@@ -20,15 +20,15 @@
           <a href="login_page">登录</a>
         </li>
 		<li class="layui-nav-item">
-          <a href="logout_page">注册</a>
+          <a href="sign_out_page">注册</a>
         </li>
 		  $if has_login{{
 		  <li class="layui-nav-item">
 			<a href="" style="color:white" >您好，${login_user_name}<span class="layui-badge-dot"></span></a>
 			<dl class="layui-nav-child">
 			  <dd><a href="./member_edit_page">修改信息</a></dd>
-			  <dd><a href="./new_post">新建文章</a></dd>
-			  <dd><a href="javascript:;">管理</a></dd>
+			  <dd><a href="./add_post_page">新建文章</a></dd>
+			  <dd><a href="./my_post">我的文章</a></dd>
 			  <dd><a href="./quit">退出</a></dd>
 			</dl>
 		</li>

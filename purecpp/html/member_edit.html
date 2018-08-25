@@ -36,40 +36,34 @@ $inline {{
             </div>
           </div>
         <div class="blog-body">
-          <form class="layui-form" method="post" action="/logout">
+          <form class="layui-form" method="post" action="/member_edit">
 			  <div class="layui-form-item">
 				<label class="layui-form-label">用户名</label>
 				<div class="layui-input-block">
-				  <input type="text" name="user_name" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+				  <input type="text" name="user_name" placeholder="${login_user_name}" autocomplete="off" class="layui-input layui_disabled" disabled>
 				</div>
 			  </div>
 			  <div class="layui-form-item">
-				<label class="layui-form-label">密码</label>
+				<label class="layui-form-label">旧密码</label>
 				<div class="layui-input-inline layui-input-password">
-				  <input type="password" name="user_pwd" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				  <input type="password" name="old_password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 				</div>
 			  </div>
 			  <div class="layui-form-item">
-				  <label class="layui-form-label">注册邮箱</label>
-				  <div class="layui-input-inline">
-					<input name="email" lay-verify="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input" type="text">
-				  </div>
+				<label class="layui-form-label">新密码</label>
+				<div class="layui-input-inline layui-input-password">
+				  <input type="password" id="newpass" name="new_password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 				</div>
-				<div class="layui-form-item">
-				<label class="layui-form-label">验证问题</label>
-				<div class="layui-input-block">
-					<input type="text"  placeholder="args +  ...是C++17什么特性？" autocomplete="off" class="layui-input layui_disabled " disabled>
-				  </div>
 			  </div>
 			  <div class="layui-form-item">
-				<label class="layui-form-label">答案</label>
-				<div class="layui-input-block">
-				  <input type="text" name="answer" required  lay-verify="required" placeholder="请输入答案" autocomplete="off" class="layui-input">
+				<label class="layui-form-label">确认密码</label>
+				<div class="layui-input-inline layui-input-password">
+				  <input type="password" id="repass" name="confirm_password" lay-verify="same" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 				</div>
 			  </div>
 			  <div class="layui-form-item">
 				<div class="layui-input-block">
-				  <button class="layui-btn" lay-submit="logout" lay-filter="logout">注册</button>
+				  <button class="layui-btn" lay-submit="login" lay-filter="login">修改</button>
 				  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
 				</div>
 			  </div>
@@ -95,6 +89,15 @@ $inline {{
 <script>
     layui.use('form', function () {
         var form = layui.form;
+					form.verify({
+					same: function(value, item){
+					if(layui.jquery('#newpass').val()!=layui.jquery('#repass').val()){
+					console.log('different');
+						return '两次输入的新密码不同';
+					}
+				}
+			}); 
+			
         form.on('submit(login)', function(data){
 			data.form.submit();
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。

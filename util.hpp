@@ -30,12 +30,16 @@ namespace feather{
         return list;
     }
 
-    inline std::string get_cur_time_str(){
+    inline std::string cur_time(){
         std::time_t t = std::time(nullptr);
         std::stringstream ss;
         ss << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
         return ss.str();
     }
+
+	inline std::string sv2s(std::string_view sv) {
+		return std::string(sv.data(), sv.length());
+	}
 
 	inline bool is_integer(const std::string& str) {
 		char* p;
@@ -44,6 +48,15 @@ namespace feather{
 			return false;
 		}
 		
+		return true;
+	}
+
+	inline bool is_integer(std::string_view str) {
+		for (auto ch : str) {
+			if (!std::isdigit(ch))
+				return false;
+		}
+
 		return true;
 	}
 

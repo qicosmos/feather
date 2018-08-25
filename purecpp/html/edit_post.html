@@ -13,21 +13,21 @@ $inline {{
     <div class="blog-container">
       <div class="blog-main">
 		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 70px;">
-		  <legend>撰写新文章</legend>
+		  <legend>编辑文章</legend>
 		</fieldset>
-		<form class="layui-form blog-editor" method="post" action="/add_post">
+		<form class="layui-form blog-editor" method="post" action="/edit_post">
 		
 			  <div class="layui-form-item">
 				<label class="layui-form-label" style="text-align: left;">文章标题</label>
 				<div class="layui-input-block">
-				  <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+				  <input type="text" name="title" required placeholder="${title}" lay-verify="required" autocomplete="off" class="layui-input">
 				</div>
 			</div>
 				<div class="layui-form-item">
 						<label class="layui-form-label" style="text-align: left;">文章类型</label>
 						<div class="layui-input-inline">
 						  <select name="type" lay-verify="required">
-							<option value=""></option>
+							<option value="${category}"></option>
 							<option value="3">社区开源项目</option>
 							<option value="4">代码精粹</option>
 							<option value="5">modern c++资讯</option>
@@ -40,8 +40,12 @@ $inline {{
 						</div>
 				</div>
 				<div class="layui-form-item" pane="">
-					<div id="md_post_content"># 初始数据放这里</div>
+				<div id="id" name="id" class="layui-hide">${post_id}</div>
+				</div>
+				<div class="layui-form-item" pane="">
+					<div id="md_post_content">${post_content}</div>
 					<textarea name="post_content" id="post_content" class="layui-hide"></textarea>
+					<textarea name="post_id" id="post_id" class="layui-hide"></textarea>
 				</div>
 				  <div class="clear"></div>
                   <div class="layui-form-item">
@@ -91,6 +95,7 @@ $inline {{
 				var html = marked(this.getText());
 				this.setPreview(html);
 				layui.jquery('#post_content').val(html);
+				layui.jquery('#post_id').val(${post_id});
 			});
 
 			//初始化数据预览

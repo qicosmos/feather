@@ -63,8 +63,7 @@ $inline {{
 				<h2>
 			  </li>
 			</ul>
-		  </div>
-		  
+		  </div>	  
           $for item in article_list{{
           <div class="article shadow">
             <div class="article-left">
@@ -86,8 +85,22 @@ $inline {{
                 <i class="fa fa-user"></i>${item.user_login}</span>
               <span>
                 <i class="fa fa-tag"></i>&nbsp;&nbsp;
-                <a href="#">${item.category}</a>
+                ${item.category}
               </span>
+			  $if item.is_owner{{
+			  <span>
+                <i class="fa fa-tag"></i><a href="./edit_post_page?id=${item.ID}">编辑</a>
+			  </span>
+			  }}
+			  $if item.is_admin{{
+			  <span>
+                <i class="fa fa-tag"></i><a href="./edit_post_page?id=${item.ID}">编辑</a>
+			  </span>
+			  <span>
+                <i class="fa fa-tag"></i><a href="./remove_post?id=${item.ID}">删除</a>
+			  </span>
+			  }}
+              <span class="article-viewinfo">
               <span class="article-viewinfo">
                 <i class="fa fa-commenting"></i>${item.comment_count}</span>
             </div>
