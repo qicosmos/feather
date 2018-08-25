@@ -20,22 +20,22 @@ $inline {{
 			  <div class="layui-form-item">
 				<label class="layui-form-label" style="text-align: left;">文章标题</label>
 				<div class="layui-input-block">
-				  <input type="text" name="title" required placeholder="${title}" lay-verify="required" autocomplete="off" class="layui-input">
+				  <input type="text" name="title" required placeholder="${title}" value="${title}" lay-verify="required" autocomplete="off" class="layui-input">
 				</div>
 			</div>
 				<div class="layui-form-item">
 						<label class="layui-form-label" style="text-align: left;">文章类型</label>
 						<div class="layui-input-inline">
 						  <select name="type" lay-verify="required">
-							<option value="${category}"></option>
-							<option value="3">社区开源项目</option>
-							<option value="4">代码精粹</option>
-							<option value="5">modern c++资讯</option>
-							<option value="7">社区活动</option>
-							<option value="8">社区精华</option>
-							<option value="25">技术探讨</option>
-							<option value="47">C++11/14/17</option>
-							<option value="58">元编程</option>
+							<option id="option_0" value="${category}"></option>
+							<option id="option_3" value="3">社区开源项目</option>
+							<option id="option_4" value="4">代码精粹</option>
+							<option id="option_5" value="5">modern c++资讯</option>
+							<option id="option_7" value="7">社区活动</option>
+							<option id="option_8" value="8">社区精华</option>
+							<option id="option_25" value="25">技术探讨</option>
+							<option id="option_47" value="47">C++11/14/17</option>
+							<option id="option_58" value="58">元编程</option>
 						  </select>
 						</div>
 				</div>
@@ -67,6 +67,12 @@ $inline {{
   <script src="./purecpp/js/home.js"></script>
   <script src="./purecpp/plug/laymd/marked.min.js"></script>
 	<script>
+		window.onload = function(){
+			var str_SelectOptionValue = document.getElementById("option_0").value;
+			document.getElementById("option_" + str_SelectOptionValue).click();
+		};
+	
+		
 		layui.config({base: './purecpp/plug/laymd/'}).use(['form', 'layer', 'laymd'], function(){
 			var layer = layui.layer,
 				laymd = layui.laymd;
