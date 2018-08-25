@@ -12,7 +12,7 @@ namespace feather {
 	class purecpp_controller {
 	public:
 		purecpp_controller() {
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto v = dao.query<std::tuple<std::string, std::string>>("SELECT term_id, name from pp_terms  where term_id in (1, 2,3,4,5,7,8,25,47,58)");
 			for (auto tp : v) {
 				category_map_.emplace(std::get<0>(tp), std::get<1>(tp));
@@ -25,7 +25,7 @@ namespace feather {
 			const auto& lens = params[1];
 
 			if (total_post_count_ == 0) {
-				dao_t<dbng<mysql>> dao;
+				Dao dao;
 				auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts  where post_status = 'publish'");
 				if (v.empty()) {
 					res.set_status_and_content(status_type::not_found);
@@ -147,7 +147,7 @@ namespace feather {
 			const auto& post_id = params[3];
 
 			std::string sql = "select post_title, category, raw_content from pp_posts where ID=" + post_id;
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string, std::string>>(sql);
 			if (r.empty()) {
 				res.set_status_and_content(status_type::bad_request);
@@ -178,7 +178,7 @@ namespace feather {
 			auto post_content = req.get_query_value("post_content");
 			auto raw_content = req.get_query_value("md_post_content");
 
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			pp_posts post{};
 			post.post_title = std::string(title.data(), title.length());
 			post.category = std::string(type.data(), type.length());
@@ -207,7 +207,7 @@ namespace feather {
 			const auto& s = params[3];
 			const auto& lens = params[4];
 
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto v = dao.query<std::tuple<int>>("SELECT count(1) from pp_posts t1 where post_status = 'publish' "
 				"AND t1.post_author=" + user_id);
 			if (v.empty()) {
@@ -230,7 +230,7 @@ namespace feather {
 			const auto& lens = params[1];
 			const auto& key_word = params[2];
 
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			std::string count_sql = "SELECT count(1) from pp_posts t1, pp_user t2 "
 				"where post_status = 'publish' AND t1.post_author = t2.ID AND post_content like \"%" + key_word + "%\"" + " ORDER BY t1.ID DESC; ";
 
@@ -276,7 +276,7 @@ namespace feather {
 			std::string id = sv2s(req.get_query_value("id"));
 			std::string sql = "update pp_comment set comment_status='trash' where ID=" + id;
 
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			bool r = dao.execute(sql);
 
 			if (r) {
@@ -298,7 +298,7 @@ namespace feather {
 			const auto& password = params[1];
 
 			std::string sql = "select ID, user_role from pp_user where user_login='" + user_name + "' and user_pass=md5('" + password+"')";
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string>>(sql);
 			if (r.empty()) {
 				res.set_status_and_content(status_type::ok, "用户名或密码不正确");
@@ -351,7 +351,7 @@ namespace feather {
 			const auto& new_pwd = params[4];
 
 			std::string sql = "select ID from pp_user where user_login='" + login_user_name + "' and user_pass=md5('" + old_pwd + "')";
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto r = dao.query<std::tuple<std::string>>(sql);
 			if (r.empty()) {
 				res.set_status_and_content(status_type::ok, "旧密码不对");
@@ -378,7 +378,7 @@ namespace feather {
 			const auto& pwd = params[3];
 
 			std::string sql = "select count(1) from pp_user where user_login='" + user_name + "' or user_email='" + email + "'";
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto r = dao.query<std::tuple<int>>(sql);
 			if (std::get<0>(r[0]) > 0) {
 				res.set_status_and_content(status_type::ok, "用户名或邮箱已经存在");
@@ -423,7 +423,7 @@ namespace feather {
 			auto post_content = req.get_query_value("post_content");
 			auto raw_content = req.get_query_value("md_post_content");
 
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			pp_posts post{};
 			post.post_title = sv2s(title);
 			post.category = sv2s(type);
@@ -450,7 +450,7 @@ namespace feather {
 
 	private:
 		void render_page(const std::string& sql, request& req, response& res, std::string html_file, std::string categroy, size_t cur_page=0, size_t total=0) {
-			dao_t<dbng<mysql>> dao;
+			Dao dao;
 			auto v = dao.query<std::tuple<pp_posts, std::string>>(sql);
 			if (v.empty()) {
 				res.set_status_and_content(status_type::ok, "");
