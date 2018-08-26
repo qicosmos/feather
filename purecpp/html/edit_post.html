@@ -20,7 +20,7 @@ $inline {{
 			  <div class="layui-form-item">
 				<label class="layui-form-label" style="text-align: left;">文章标题</label>
 				<div class="layui-input-block">
-				  <input type="text" name="title" required placeholder="${title}" lay-verify="required" autocomplete="off" class="layui-input">
+				  <input type="text" name="title" value="${title}" required placeholder="${title}" lay-verify="required" autocomplete="off" class="layui-input">
 				</div>
 			</div>
 				<div class="layui-form-item">
@@ -43,8 +43,8 @@ $inline {{
 				<div id="id" name="id" class="layui-hide">${post_id}</div>
 				</div>
 				<div class="layui-form-item" pane="">
-					<div id="md_post_content">${post_content}</div>
-					<textarea name="post_content" id="post_content" class="layui-hide"></textarea>
+					<div id="md_post_content">${raw_content}</div>
+					<textarea name="post_content" id="post_content" class="layui-hide">${post_content}</textarea>
 					<textarea name="post_id" id="post_id" class="layui-hide"></textarea>
 				</div>
 				  <div class="clear"></div>
@@ -88,14 +88,13 @@ $inline {{
 				],
 				height: 350
 			});
-
+			
 			//内容改变事件
 			md.on('change', function () {
-				//这里借用marked.js解析效率比HyperDown快,用户可自行找解析器
 				var html = marked(this.getText());
-				this.setPreview(html);
 				layui.jquery('#post_content').val(html);
 				layui.jquery('#post_id').val(${post_id});
+				this.setPreview(html);
 			});
 
 			//初始化数据预览

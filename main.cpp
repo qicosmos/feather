@@ -89,7 +89,7 @@ int main(){
     init(cfg);
 
     cinatra::http_server server(cfg.thread_num);
-    server.set_static_dir("/static/");
+    server.set_static_dir("./static/");
 	server.enable_http_cache(false);//set global cache
     bool r = server.listen("0.0.0.0", cfg.port);
     if (!r) {
@@ -99,7 +99,7 @@ int main(){
 
 	purecpp_controller purecpp_ctl;
 	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
-	server.set_http_handler<GET>("/detail", &purecpp_controller::detail, &purecpp_ctl, check_detail_input{});
+	server.set_http_handler<GET, POST>("/detail", &purecpp_controller::detail, &purecpp_ctl, check_detail_input{});
 	server.set_http_handler<GET>("/category", &purecpp_controller::category, &purecpp_ctl, check_category_input{});
 	server.set_http_handler<GET, POST>("/search", &purecpp_controller::search, &purecpp_ctl, check_search_input{});
 	server.set_http_handler<POST>("/comment", &purecpp_controller::comment, &purecpp_ctl, check_login{}, check_comment_input{});
@@ -117,6 +117,7 @@ int main(){
 	server.set_http_handler<GET, POST>("/remove_post", &purecpp_controller::remove_post, &purecpp_ctl, check_login{}, check_edit_post_input{});
 	server.set_http_handler<GET, POST>("/edit_post_page", &purecpp_controller::edit_post_page, &purecpp_ctl, check_login{}, check_edit_post_input{});
 	server.set_http_handler<GET, POST>("/edit_post", &purecpp_controller::edit_post, &purecpp_ctl, check_login{});
+	server.set_http_handler<GET, POST>("/upload_file", &purecpp_controller::upload, &purecpp_ctl, check_login{});
 
     user_controller user_ctl;
     server.set_http_handler<POST>("/add_user", &user_controller::add_user, &user_ctl);

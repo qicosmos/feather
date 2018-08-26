@@ -49,6 +49,22 @@ namespace feather {
 			render_page(sql, req, res, "./purecpp/html/home.html", "all", cur_page, total_post_count_);
 		}
 
+		void upload(request& req, response& res) {
+			assert(req.get_content_type() == content_type::multipart);
+			std::string filenames = "";
+			auto& files = req.get_upload_files();
+			for (auto& file : files) {
+				filenames += file.get_file_path();
+			}
+			nlohmann::json result;
+			result["code"] = 0;
+			result["msg"] = "";
+			nlohmann::json data;
+			data["src"] = "http://127.0.0.1:8080" + filenames.substr(1);
+			result["data"] = data;
+			res.render_json(result);
+		}
+
 		void detail(request& req, response& res) {
 			auto post_id = sv2s(req.get_query_value("id"));
 			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
@@ -146,9 +162,9 @@ namespace feather {
 			const auto& login_user_name = params[0];
 			const auto& post_id = params[3];
 
-			std::string sql = "select post_title, category, raw_content from pp_posts where ID=" + post_id;
+			std::string sql = "select post_title, category, post_content, raw_content from pp_posts where ID=" + post_id;
 			Dao dao;
-			auto r = dao.query<std::tuple<std::string, std::string, std::string>>(sql);
+			auto r = dao.query<std::tuple<std::string, std::string, std::string, std::string>>(sql);
 			if (r.empty()) {
 				res.set_status_and_content(status_type::bad_request);
 				return;
@@ -161,6 +177,7 @@ namespace feather {
 			result["title"] = std::move(std::get<0>(r[0]));
 			result["category"] = std::move(std::get<1>(r[0]));
 			result["post_content"] = std::move(std::get<2>(r[0]));
+			result["raw_content"] = std::move(std::get<3>(r[0]));
 
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/edit_post.html", result));

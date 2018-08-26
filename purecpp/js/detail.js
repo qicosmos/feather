@@ -21,7 +21,6 @@ layui.use(['form', 'layedit'], function () {
 		  ,'link' //超链接
 		  ,'unlink' //清除链接
 		  ,'face' //表情
-		  ,'image' //插入图片
 		  ,'code' //code
 		],
     });
