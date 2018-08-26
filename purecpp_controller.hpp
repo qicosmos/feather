@@ -60,7 +60,7 @@ namespace feather {
 			result["code"] = 0;
 			result["msg"] = "";
 			nlohmann::json data;
-			data["src"] = "http://127.0.0.1:8080" + filenames.substr(1);
+			data["src"] = "http://119.61.16.32:8080" + filenames.substr(1);
 			result["data"] = data;
 			res.render_json(result);
 		}
@@ -318,7 +318,7 @@ namespace feather {
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string>>(sql);
 			if (r.empty()) {
-				res.set_status_and_content(status_type::ok, "ÓÃ»§Ãû»òÃÜÂë²»ÕıÈ·");
+				res.set_status_and_content(status_type::ok, "ç”¨æˆ·åæˆ–å¯†ç ä¸æ­£ç¡®");
 				return;
 			}
 
@@ -371,7 +371,7 @@ namespace feather {
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string>>(sql);
 			if (r.empty()) {
-				res.set_status_and_content(status_type::ok, "¾ÉÃÜÂë²»¶Ô");
+				res.set_status_and_content(status_type::ok, "æ—§å¯†ç ä¸å¯¹");
 				return;
 			}
 
@@ -398,13 +398,13 @@ namespace feather {
 			Dao dao;
 			auto r = dao.query<std::tuple<int>>(sql);
 			if (std::get<0>(r[0]) > 0) {
-				res.set_status_and_content(status_type::ok, "ÓÃ»§Ãû»òÓÊÏäÒÑ¾­´æÔÚ");
+				res.set_status_and_content(status_type::ok, "ç”¨æˆ·åæˆ–é‚®ç®±å·²ç»å­˜åœ¨");
 				return;
 			}
 
 			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=1 and answer like \"%"+ answer+"%\"");
 			if (std::get<0>(r1[0]) == 0) {
-				res.set_status_and_content(status_type::ok, "ÑéÖ¤ÎÊÌâ´ğ°¸´íÎó");
+				res.set_status_and_content(status_type::ok, "éªŒè¯é—®é¢˜ç­”æ¡ˆé”™è¯¯");
 				return;
 			}
 			
