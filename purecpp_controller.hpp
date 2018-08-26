@@ -81,9 +81,9 @@ namespace feather {
 				"where post_id= " + post_id + " and comment_status<>'trash' and t1.user_id=t2.ID";
 	
 			const auto& params = get_user_info(req);
-			const auto& login_user_name = params[0];
-			const auto& user_id = params[1];
-			const auto& user_role = params[2];
+			const auto& login_user_name = params.empty() ? "" : params[0];
+			const auto& user_id = params.empty() ? "" : params[1];
+			const auto& user_role = params.empty() ? "" : params[2];
 			bool is_admin = (!login_user_name.empty()) && (user_role == "3" || user_role == "6");
 			auto comments = dao.query<std::tuple<pp_comment, std::string>>(comment_sql);
 			nlohmann::json comment_list;
