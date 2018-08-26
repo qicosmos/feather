@@ -117,6 +117,7 @@ int main(){
 	server.set_http_handler<GET, POST>("/remove_post", &purecpp_controller::remove_post, &purecpp_ctl, check_login{}, check_edit_post_input{});
 	server.set_http_handler<GET, POST>("/edit_post_page", &purecpp_controller::edit_post_page, &purecpp_ctl, check_login{}, check_edit_post_input{});
 	server.set_http_handler<GET, POST>("/edit_post", &purecpp_controller::edit_post, &purecpp_ctl, check_login{});
+	server.set_http_handler<GET, POST>("/pass_post", &purecpp_controller::pass_post, &purecpp_ctl, check_login{}, check_edit_post_input{});
 	server.set_http_handler<GET, POST>("/upload_file", &purecpp_controller::upload, &purecpp_ctl, check_login{});
 
     user_controller user_ctl;

@@ -21,8 +21,8 @@ namespace feather {
 
 		void home(request& req, response& res) {	
 			const auto& params = req.get_aspect_data();
-			const auto& s = params[0];
-			const auto& lens = params[1];
+			const auto& s = params.size()==2 ? params[0] : params[3];
+			const auto& lens = params.size() == 2 ? params[1] : params[4];
 
 			if (total_post_count_ == 0) {
 				Dao dao;
@@ -183,6 +183,21 @@ namespace feather {
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/edit_post.html", result));
 		}
 
+		void pass_post(request& req, response& res) {
+			const auto& params = req.get_aspect_data();
+			const auto& post_id = params[3];
+
+			std::string sql = "update pp_posts set post_status='publish' where ID="+ post_id;
+			Dao dao;
+			bool r = dao.execute(sql);
+			if (r) {
+				res.redirect("/home");
+			}
+			else {
+				res.set_status_and_content(status_type::internal_server_error);
+			}
+		}
+
 		void edit_post(request& req, response& res) {
 			const auto& params = req.get_aspect_data();
 			const auto& login_user_name = params[0];
@@ -318,7 +333,7 @@ namespace feather {
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string>>(sql);
 			if (r.empty()) {
-				res.set_status_and_content(status_type::ok, "用户名或密码不正确");
+				res.set_status_and_content(status_type::ok, "user name or password is not right");
 				return;
 			}
 
@@ -371,7 +386,7 @@ namespace feather {
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string>>(sql);
 			if (r.empty()) {
-				res.set_status_and_content(status_type::ok, "旧密码不对");
+				res.set_status_and_content(status_type::ok, "the old password is not right");
 				return;
 			}
 
@@ -448,7 +463,7 @@ namespace feather {
 			post.post_date = cur_time();
 			post.post_modified = post.post_date;
 			post.post_content = sv2s(post_content);
-			post.post_status = role == "0" ? "waiting" : "publish";
+			post.post_status = /*role == "0" ? "waiting" : */"publish";
 			post.raw_content = sv2s(raw_content);
 
 			size_t pos = raw_content.find_first_of("<");

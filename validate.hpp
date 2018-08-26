@@ -244,6 +244,14 @@ namespace feather {
 				return false;
 			}
 
+			const auto& params = get_user_info(req);
+			const auto& user_role = params[2];
+			bool is_admin = (user_role == "3" || user_role == "6");
+			if (!is_admin) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
 			req.set_aspect_data(sv2s(req.get_query_value("id")));
 			return true;
 		}
