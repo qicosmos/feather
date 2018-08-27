@@ -60,7 +60,7 @@ namespace feather {
 			result["code"] = 0;
 			result["msg"] = "";
 			nlohmann::json data;
-			data["src"] = "http://119.61.16.32:8080" + filenames.substr(1);
+			data["src"] = "http://purecpp.org" + filenames.substr(1);
 			result["data"] = data;
 			res.render_json(result);
 		}

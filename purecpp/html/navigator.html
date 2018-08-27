@@ -16,12 +16,6 @@
         <li class="layui-nav-item">
           <a href="category?category=60">社区服务</a>
         </li>
-        <li class="layui-nav-item">
-          <a href="login_page">登录</a>
-        </li>
-		<li class="layui-nav-item">
-          <a href="sign_out_page">注册</a>
-        </li>
 		  $if has_login{{
 		  <li class="layui-nav-item">
 			<a href="" style="color:white" >您好，${login_user_name}<span class="layui-badge-dot"></span></a>
@@ -32,6 +26,14 @@
 			  <dd><a href="./quit">退出</a></dd>
 			</dl>
 		</li>
+		}}
+		$else{{
+	    <li class="layui-nav-item">
+          <a href="login_page">登录</a>
+        </li>
+		<li class="layui-nav-item">
+          <a href="sign_out_page">注册</a>
+        </li>		
 		}}
       </ul>
       <!-- 手机和平板的导航开关 -->
