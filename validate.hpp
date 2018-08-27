@@ -30,11 +30,18 @@ namespace feather {
 		return get_value_from_session(req, "user_name");
 	}
 
+	template<size_t N, typename... T>
+	bool len_more_than(T... args) {
+		bool r = false;
+		((!r && (r = args.length()>N)), ...);
+		return r;
+	}
+
 	struct check_login {
 		bool before(request& req, response& res) {
 			auto v = get_user_info(req);
 			if (v.empty() || v[0].empty()) {
-				res.set_status_and_content(status_type::bad_request, "ÇëÏÈµÇÂ¼");
+				res.set_status_and_content(status_type::bad_request, "please login");
 				return false;
 			}
 			req.set_aspect_data(std::move(v));
@@ -47,6 +54,12 @@ namespace feather {
 			auto post_id = req.get_query_value("post_id");
 			if (!is_integer(post_id)) {
 				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			auto comment_content = req.get_query_value("editorContent");
+			if (len_more_than<64*1024>(comment_content)) {
+				res.set_status_and_content(status_type::bad_request, "the comment is too long, should be less than 64kB");
 				return false;
 			}
 
@@ -130,6 +143,11 @@ namespace feather {
 				return false;
 
 			auto key_word = req.get_query_value("category");
+			if (len_more_than<255>(key_word)) {
+				res.set_status_and_content(status_type::bad_request, "the input parameter is too long");
+				return false;
+			}
+
 			if (key_word.empty()) {
 				res.set_status_and_content(status_type::bad_request);
 				return false;
@@ -185,6 +203,11 @@ namespace feather {
 		bool before(request& req, response& res) {
 			auto user_name = req.get_query_value("user_name");
 			auto password = req.get_query_value("password");
+			if (len_more_than<255>(user_name, password)) {
+				res.set_status_and_content(status_type::bad_request, "the input parameter is too long");
+				return false;
+			}
+
 			if (!check_input(res, user_name, password)) {
 				return false;
 			}
@@ -200,6 +223,11 @@ namespace feather {
 			auto email = req.get_query_value("email");
 			auto answer = req.get_query_value("answer");
 			auto pwd = req.get_query_value("user_pwd");
+
+			if (len_more_than<255>(user_name, email, answer, pwd)) {
+				res.set_status_and_content(status_type::bad_request, "the input parameter is too long");
+				return false;
+			}
 
 			if (!check_input(res, user_name, answer, pwd)) {
 				return false;
@@ -224,6 +252,11 @@ namespace feather {
 		bool before(request& req, response& res) {
 			auto old_password = req.get_query_value("old_password");
 			auto new_pwd = req.get_query_value("new_password");
+			if (len_more_than<255>(old_password, new_pwd)) {
+				res.set_status_and_content(status_type::bad_request, "the password is too long");
+				return false;
+			}
+
 			if (new_pwd.empty()) {
 				res.set_status_and_content(status_type::bad_request);
 				return false;
@@ -249,6 +282,13 @@ namespace feather {
 			bool is_admin = (user_role == "3" || user_role == "6");
 			if (!is_admin) {
 				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			auto post_content = req.get_query_value("post_content");
+			auto raw_content = req.get_query_value("md_post_content");
+			if (len_more_than<64 * 1024>(post_content, raw_content)) {
+				res.set_status_and_content(status_type::bad_request, "the post is too long, should be less than 64kB");
 				return false;
 			}
 

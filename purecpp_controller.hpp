@@ -139,6 +139,46 @@ namespace feather {
 			render_page(sql, req, res, "./purecpp/html/category.html", category, cur_page, total);
 		}
 
+		void add_post_page(request& req, response& res) {
+			render_simple_page(req, res, "./purecpp/html/create_post.html");
+		}
+
+		void add_post(request& req, response& res) {
+			const auto& params = req.get_aspect_data();
+			const auto& login_user_name = params[0];
+			const auto& user_id = params[1];
+			const auto& role = params[1];
+
+			auto title = req.get_query_value("title");
+			auto type = req.get_query_value("type");
+			auto post_content = req.get_query_value("post_content");
+			auto raw_content = req.get_query_value("md_post_content");
+
+			Dao dao;
+			pp_posts post{};
+			post.post_title = sv2s(title);
+			post.category = sv2s(type);
+			post.post_author = atoi(user_id.data());
+			post.post_date = cur_time();
+			post.post_modified = post.post_date;
+			post.post_content = sv2s(post_content);
+			post.post_status = /*role == "0" ? "waiting" : */"publish";
+			post.raw_content = sv2s(raw_content);
+
+			size_t pos = raw_content.find_first_of("<");
+			auto substr = raw_content.substr(0, pos<200 ? pos : 200);
+			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
+
+			auto r = dao.add_object(post);
+			if (r < 0) {
+				res.set_status_and_content(status_type::internal_server_error);
+			}
+			else {
+				total_post_count_++;
+				res.redirect("/home");
+			}
+		}
+
 		void remove_post(request& req, response& res) {
 			const auto& params = req.get_aspect_data();
 			const auto& login_user_name = params[0];
@@ -413,13 +453,13 @@ namespace feather {
 			Dao dao;
 			auto r = dao.query<std::tuple<int>>(sql);
 			if (std::get<0>(r[0]) > 0) {
-				res.set_status_and_content(status_type::ok, "用户名或邮箱已经存在");
+				res.set_status_and_content(status_type::ok, "user name or password is not right");
 				return;
 			}
 
 			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=1 and answer like \"%"+ answer+"%\"");
 			if (std::get<0>(r1[0]) == 0) {
-				res.set_status_and_content(status_type::ok, "验证问题答案错误");
+				res.set_status_and_content(status_type::ok, "the answer is wrong");
 				return;
 			}
 			
@@ -438,46 +478,6 @@ namespace feather {
 			}
 			
 			res.redirect("./login_page");
-		}
-
-		void add_post_page(request& req, response& res) {
-			render_simple_page(req, res, "./purecpp/html/create_post.html");
-		}
-
-		void add_post(request& req, response& res) {
-			const auto& params = req.get_aspect_data();
-			const auto& login_user_name = params[0];
-			const auto& user_id = params[1];
-			const auto& role = params[1];
-
-			auto title = req.get_query_value("title");
-			auto type = req.get_query_value("type");
-			auto post_content = req.get_query_value("post_content");
-			auto raw_content = req.get_query_value("md_post_content");
-
-			Dao dao;
-			pp_posts post{};
-			post.post_title = sv2s(title);
-			post.category = sv2s(type);
-			post.post_author = atoi(user_id.data());
-			post.post_date = cur_time();
-			post.post_modified = post.post_date;
-			post.post_content = sv2s(post_content);
-			post.post_status = /*role == "0" ? "waiting" : */"publish";
-			post.raw_content = sv2s(raw_content);
-
-			size_t pos = raw_content.find_first_of("<");
-			auto substr = raw_content.substr(0, pos<200?pos:200);
-			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
-			
-			auto r = dao.add_object(post);
-			if (r < 0) {
-				res.set_status_and_content(status_type::internal_server_error);
-			}				
-			else {
-				total_post_count_++;
-				res.redirect("/home");
-			}
 		}
 
 	private:
