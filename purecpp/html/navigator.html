@@ -1,6 +1,6 @@
   <nav class="blog-nav layui-header">
     <div class="blog-container">
-        <a class="blog-logo" href="/">
+        <a class="blog-logo" href="home">
             <div>
                 PURECPP
             </div>
@@ -8,13 +8,19 @@
       <!-- 导航菜单 -->
       <ul class="layui-nav" lay-filter="nav">
         <li class="layui-nav-item layui-this">
-          <a href="/">首页</a>
+          <a href="home">首页</a>
         </li>
         <li class="layui-nav-item">
           <a href="category?category=3">开源项目</a>
         </li>
         <li class="layui-nav-item">
           <a href="category?category=60">社区服务</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="login_page">登录</a>
+        </li>
+		<li class="layui-nav-item">
+          <a href="sign_out_page">注册</a>
         </li>
 		  $if has_login{{
 		  <li class="layui-nav-item">
@@ -26,14 +32,6 @@
 			  <dd><a href="./quit">退出</a></dd>
 			</dl>
 		</li>
-		}}
-		$else{{
-	    <li class="layui-nav-item">
-          <a href="login_page">登录</a>
-        </li>
-		<li class="layui-nav-item">
-          <a href="sign_out_page">加入社区<span class="layui-badge-dot"></span></a>
-        </li>		
 		}}
       </ul>
       <!-- 手机和平板的导航开关 -->
