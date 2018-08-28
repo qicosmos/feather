@@ -65,7 +65,7 @@
             </div>
             <div class="markdown-body">
               <p style="text-align:center;">
-                <span style="font-size:18px;">${post_content}</span>
+                <span style="font-size:18px;"><div id="md_post_content"></div></span>
               </p>
               <hr /> &nbsp; &nbsp; 出自：purecpp
               <p>
@@ -80,6 +80,7 @@
               </p>
             </div>
           </div>
+		  <textarea style="display: none;"  id="pre_md_post_content">${post_content}</textarea>
           <!-- 评论区域 -->
           <div class="blog-module shadow" style="box-shadow: 0 1px 8px #a6a6a6;">
             <fieldset class="layui-elem-field layui-field-title" style="margin-bottom:0">
@@ -156,3 +157,7 @@
 </body>
 
 </html>
+  <script src="/purecpp/plug/laymd/laymd/marked.min.js"></script>
+  <script>
+      document.getElementById("md_post_content").innerHTML = marked(document.getElementById("pre_md_post_content").value);
+  </script>

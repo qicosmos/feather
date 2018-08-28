@@ -39,12 +39,10 @@ $inline {{
 					</div>
 				</div>
 				<div class="layui-form-item" pane="">
-					<div id="id" name="id" class="layui-hide">${post_id}</div>
+					<input type="post_id" name="post_id" value="${post_id}" class="layui-hide">
 				</div>
 				<div class="layui-form-item" pane="">
-					<div id="md_post_content">${raw_content}</div>
-					<textarea name="post_content" id="post_content" class="layui-hide">${post_content}</textarea>
-					<textarea name="post_id" id="post_id" class="layui-hide"></textarea>
+					<div id="post_content"></div>
 				</div>
 				<div class="clear"></div>
 				<div class="layui-form-item">
@@ -55,6 +53,7 @@ $inline {{
 		</div>
 	</div>
 </div>
+<textarea style="display: none;"  id="pre_md_post_content">${post_content}</textarea>
 </body>
   <!--遮罩-->
   <!-- layui.js -->
@@ -63,13 +62,21 @@ $inline {{
   <!-- 本页脚本 -->
   <script src="/purecpp/plug/laymd/laymd/marked.min.js"></script>
   <script>
+      function HTMLEncode(html) {
+          var temp = document.createElement("div");
+          (temp.textContent != null) ? (temp.textContent = html) : (temp.innerText = html);
+          var output = temp.innerHTML;
+          temp = null;
+          return output;
+      }
+      document.getElementById("post_content").innerHTML = HTMLEncode(document.getElementById("pre_md_post_content").value);
       layui.config({base: './purecpp/plug/laymd/laymd/'}).use(['layer', 'laymd','form'], function(){
           var layer = layui.layer,
               form = layui.form,
               laymd = layui.laymd;
 
           //实例化编辑器,可以多个实例
-          var md = laymd.init('md_post_content', {height:700});
+          var md = laymd.init('post_content', {height:700});
 
           //内容改变事件
           md.on('change', function () {
@@ -81,7 +88,6 @@ $inline {{
           md.do('change');
 
           form.render('select');
-
       });
   </script>
 </html>

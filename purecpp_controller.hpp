@@ -152,7 +152,6 @@ namespace feather {
 			auto title = req.get_query_value("title");
 			auto type = req.get_query_value("type");
 			auto post_content = req.get_query_value("post_content");
-			auto raw_content = req.get_query_value("md_post_content");
 
 			Dao dao;
 			pp_posts post{};
@@ -163,10 +162,9 @@ namespace feather {
 			post.post_modified = post.post_date;
 			post.post_content = sv2s(post_content);
 			post.post_status = /*role == "0" ? "waiting" : */"publish";
-			post.raw_content = sv2s(raw_content);
 
-			size_t pos = raw_content.find_first_of("<");
-			auto substr = raw_content.substr(0, pos<200 ? pos : 200);
+			size_t pos = post_content.find_first_of("<");
+			auto substr = post_content.substr(0, pos<200 ? pos : 200);
 			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
 
 			auto r = dao.add_object(post);
@@ -202,7 +200,7 @@ namespace feather {
 			const auto& login_user_name = params[0];
 			const auto& post_id = params[3];
 
-			std::string sql = "select post_title, category, post_content, raw_content from pp_posts where ID=" + post_id;
+			std::string sql = "select post_title, category, post_content from pp_posts where ID=" + post_id;
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string, std::string, std::string>>(sql);
 			if (r.empty()) {
@@ -217,7 +215,6 @@ namespace feather {
 			result["title"] = std::move(std::get<0>(r[0]));
 			result["category"] = std::move(std::get<1>(r[0]));
 			result["post_content"] = std::move(std::get<2>(r[0]));
-			result["raw_content"] = std::move(std::get<3>(r[0]));
 
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/edit_post.html", result));
@@ -248,7 +245,6 @@ namespace feather {
 			auto title = req.get_query_value("title");
 			auto type = req.get_query_value("type");
 			auto post_content = req.get_query_value("post_content");
-			auto raw_content = req.get_query_value("md_post_content");
 
 			Dao dao;
 			pp_posts post{};
@@ -259,10 +255,9 @@ namespace feather {
 			post.post_modified = cur_time();
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";
-			post.raw_content = std::string(raw_content.data(), raw_content.length());
 
-			size_t pos = raw_content.find_first_of("<");
-			auto substr = raw_content.substr(0, pos<200 ? pos : 200);
+			size_t pos = post_content.find_first_of("<");
+			auto substr = post_content.substr(0, pos<200 ? pos : 200);
 			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
 
 			auto r = dao.update_object(post);

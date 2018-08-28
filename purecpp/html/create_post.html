@@ -44,7 +44,7 @@ $inline {{
 				</button>
 				<input type="text" style="width:60%" id="upload_file_url" name="upload_file_url"></input>
 				<div class="layui-form-item" pane="">
-					<div id="md_post_content"># 初始数据放这里</div>
+					<div id="post_content"># 初始数据放这里</div>
 				</div>
 				  <div class="clear"></div>
                   <div class="layui-form-item">
@@ -59,19 +59,34 @@ $inline {{
   <!--遮罩-->
   <div class="blog-mask animated layui-hide"></div>
 <!-- layui.js -->
-<script src="./purecpp/plug/laymd/layui/layui.js"></script>
+<script src="./purecpp/plug/laymd/layui/layui.all.js"></script>
 <!-- 全局脚本 -->
 <script src="./purecpp/js/global.js"></script>
 <!-- 本页脚本 -->
 <script src="/purecpp/plug/laymd/laymd/marked.min.js"></script>
 <script>
-    layui.config({base: './purecpp/plug/laymd/laymd/'}).use(['layer', 'laymd','form'], function(){
+    layui.config({base: './purecpp/plug/laymd/laymd/'}).use(['upload', 'layer', 'laymd','form'], function(){
         var layer = layui.layer,
             form = layui.form,
             laymd = layui.laymd;
+			
+			  var upload = layui.upload;
+   
+			  //执行实例
+			  var uploadInst = upload.render({
+				elem: '#uploader' //绑定元素
+				,url: '/upload_file' //上传接口
+				,done: function(res){
+				  //上传完毕回调
+				  layui.jquery('#upload_file_url').val(res.data.src);
+				}
+				,error: function(){
+				  //请求异常回调
+				}
+			  });			
 
         //实例化编辑器,可以多个实例
-        var md = laymd.init('md_post_content', {height:700});
+        var md = laymd.init('post_content', {height:500});
 
         //内容改变事件
         md.on('change', function () {

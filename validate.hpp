@@ -41,7 +41,7 @@ namespace feather {
 		bool before(request& req, response& res) {
 			auto v = get_user_info(req);
 			if (v.empty() || v[0].empty()) {
-				res.set_status_and_content(status_type::bad_request, "please login");
+				res.redirect("/home");
 				return false;
 			}
 			req.set_aspect_data(std::move(v));
@@ -286,8 +286,7 @@ namespace feather {
 			}
 
 			auto post_content = req.get_query_value("post_content");
-			auto raw_content = req.get_query_value("md_post_content");
-			if (len_more_than<64 * 1024>(post_content, raw_content)) {
+			if (len_more_than<64 * 1024>(post_content)) {
 				res.set_status_and_content(status_type::bad_request, "the post is too long, should be less than 64kB");
 				return false;
 			}
