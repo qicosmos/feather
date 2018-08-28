@@ -39,10 +39,14 @@ $inline {{
 						  </select>
 						</div>
 				</div>
-				<button type="button" class="layui-btn" id="uploader">
-				  <i class="layui-icon"></i>上传图片
-				</button>
-				<input type="text" style="width:60%" id="upload_file_url" name="upload_file_url"></input>
+				<div class="layui-form-item" pane="">
+					<button type="button" class="layui-btn" id="uploader">
+						<i class="layui-icon"></i>上传图片
+					</button>
+					<div class="layui-input-block" style="display: inline-block;margin-left:11px;width:500px;">
+						<input type="text" id="upload_file_url" name="upload_file_url" class="layui-input"></input>
+					</div>
+				</div>
 				<div class="layui-form-item" pane="">
 					<div id="post_content"># 初始数据放这里</div>
 				</div>
