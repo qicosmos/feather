@@ -89,6 +89,7 @@ int main(){
     init(cfg);
 
     cinatra::http_server server(cfg.thread_num);
+	server.set_public_root_directory("purecpp");
     server.set_static_dir("./static/");
 	server.enable_http_cache(false);//set global cache
     bool r = server.listen("0.0.0.0", cfg.port);
