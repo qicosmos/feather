@@ -1130,3 +1130,19 @@ body {
         opacity: 0;
     }
 }
+
+/*手机设备导航栏样式*/
+.uk-dropdown{
+	left:-34px;
+	min-width:110px;
+}
+
+.uk-dropdown .uk-nav li{
+	font-size:20px;
+	text-align:center;
+	line-height:40px;
+}
+.uk-dropdown .uk-nav li:active{
+	background-color:#B8B8B8;
+}
+/*手机设备导航栏样式*/
