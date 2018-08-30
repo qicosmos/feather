@@ -7,13 +7,13 @@
         </a>
       <!-- 导航菜单 -->
       <ul class="layui-nav" lay-filter="nav">
-        <li class="layui-nav-item layui-this">
+        <li class="layui-nav-item $if category==all {{layui-this}}">
           <a href="/">首页</a>
         </li>
-        <li class="layui-nav-item">
+        <li class="layui-nav-item $if category==3 {{layui-this}}">
           <a href="category?category=3">开源项目</a>
         </li>
-        <li class="layui-nav-item">
+        <li class="layui-nav-item $if category==60 {{layui-this}}">
           <a href="category?category=60">社区服务</a>
         </li>
 		  $if has_login{{
@@ -28,10 +28,10 @@
 		</li>
 		}}
 		$else{{
-	    <li class="layui-nav-item">
+	    <li class="layui-nav-item $if category==login {{layui-this}}">
           <a href="login_page">登录</a>
         </li>
-		<li class="layui-nav-item">
+		<li class="layui-nav-item $if category==sign_out {{layui-this}}">
           <a href="sign_out_page">加入社区<span class="layui-badge-dot"></span></a>
         </li>		
 		}}

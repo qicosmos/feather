@@ -112,6 +112,7 @@ namespace feather {
 			article["post_content"] = std::move(post.post_content);
 			article["has_login"] = !login_user_name.empty();
 			article["login_user_name"] = login_user_name;
+			article["category"] = "all";
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/detail.html", article));
 		}
@@ -356,7 +357,7 @@ namespace feather {
 		}
 
 		void login_page(request& req, response& res) {
-			render_simple_page(req, res, "./purecpp/html/login.html");
+			render_simple_page(req, res, "./purecpp/html/login.html", "login");
 		}
 
 		void login(request& req, response& res) {
@@ -404,7 +405,7 @@ namespace feather {
 		}
 
 		void sign_out_page(request& req, response& res) {
-			render_simple_page(req, res, "./purecpp/html/sign_out.html");
+			render_simple_page(req, res, "./purecpp/html/sign_out.html", "sign_out");
 		}
 
 		void member_edit_page(request& req, response& res) {
@@ -524,11 +525,12 @@ namespace feather {
 			res.set_status_and_content(status_type::ok, render::render_file(html_file, result));
 		}
 
-		void render_simple_page(request& req, response& res, std::string html_file) {
+		void render_simple_page(request& req, response& res, std::string html_file, const std::string& category="") {
 			auto login_user_name = get_user_name_from_session(req);
 			nlohmann::json result;
 			result["has_login"] = !login_user_name.empty();
 			result["login_user_name"] = login_user_name;
+			result["category"] = category;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file(std::move(html_file), result));
 		}
