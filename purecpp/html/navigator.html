@@ -37,8 +37,31 @@
 		}}
       </ul>
       <!-- 手机和平板的导航开关 -->
-      <a class="blog-navicon" href="javascript:;">
-        <i class="fa fa-navicon"></i>
-      </a>
+        <div class="uk-button-dropdown blog-navicon" data-uk-dropdown>
+            <button class="uk-button"><i class="fa fa-navicon"></i></button>
+            <div style="background-color:white" class="uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="category?category=3">开源项目</a></li>
+					<li> <a href="category?category=60">社区服务</a></li>
+					$if has_login{{
+						<li>您好，${login_user_name}</li>
+					  <li><a href="./member_edit_page">修改信息</a></li>
+					  <li><a href="./add_post_page">新建文章</a></li>
+					  <li><a href="./my_post">我的文章</a></li>
+					  <li><a href="./quit">退出</a></li>
+					}}
+					$else{{
+					 <li><a href="login_page">登录</a></li>
+					 <li><a href="sign_out_page">加入社区<span class="layui-badge-dot"></span></a></li>					
+					}}
+                </ul>
+            </div>
+
+        </div>
     </div>
   </nav>
+  <!--<link href="./purecpp/css/uikit.min.css" rel="stylesheet" />-->
+  <link href="./purecpp/css/dropdown.css" rel="stylesheet" />
+  <script src="./purecpp/js/jquery.js"></script>
+  <script src="./purecpp/js/uikit.min.js"></script>
