@@ -121,7 +121,7 @@ dao.create_table< article >将会在testdb数据库中自动创建一个article�
 
 ## Demo示例
 
-我们用Feather开发了一个社区网站，地址在这里：http://119.61.16.32:8080/
+我们用Feather开发了一个社区网站，地址在这里：http://purecpp.org/
 
 Feather社区：
 ![Feather社区](https://github.com/qicosmos/feather/blob/master/demo.png)
