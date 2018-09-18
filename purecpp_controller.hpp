@@ -365,7 +365,8 @@ namespace feather {
 			const auto& user_name = params[0];
 			const auto& password = params[1];
 
-			std::string sql = "select ID, user_role from pp_user where user_login='" + user_name + "' and user_pass=md5('" + password+"')";
+			std::string sql = "select ID, user_role from pp_user where user_login='" + user_name + 
+				"' and user_pass=md5('" + password+"')";
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string>>(sql);
 			if (r.empty()) {
@@ -375,21 +376,7 @@ namespace feather {
 
 			std::string user_id = std::get<0>(r[0]);
 			std::string user_role = std::get<1>(r[0]);
-			auto session = req.get_session().lock();
-			if (session == nullptr) {
-				auto new_session = res.start_session();
-				new_session->set_data("user_name", user_name);
-				new_session->set_data("userid", user_id);
-				new_session->set_data("user_role", user_role);
-				new_session->set_max_age(-1);
-			}
-			else {
-				if (session->get_data<std::string>("user_name").empty()) {
-					session->set_data("user_name", user_name);
-					session->set_data("userid", user_id);
-					session->set_data("user_role", user_role);
-				}
-			}
+			init_session(req, res, user_id, user_role, user_name);
 
 			res.redirect("/home");
 		}
@@ -533,6 +520,25 @@ namespace feather {
 			result["category"] = category;
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file(std::move(html_file), result));
+		}
+
+		void init_session(request& req, response& res, const std::string& user_id,
+			const std::string& user_role, const std::string& user_name) {
+			auto session = req.get_session().lock();
+			if (session == nullptr) {
+				auto new_session = res.start_session();
+				new_session->set_data("user_name", user_name);
+				new_session->set_data("userid", user_id);
+				new_session->set_data("user_role", user_role);
+				new_session->set_max_age(-1);
+			}
+			else {
+				if (session->get_data<std::string>("user_name").empty()) {
+					session->set_data("user_name", user_name);
+					session->set_data("userid", user_id);
+					session->set_data("user_role", user_role);
+				}
+			}
 		}
 
 		private:
