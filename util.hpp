@@ -70,6 +70,20 @@ namespace feather{
 
 		return false;
 	}
+
+	inline std::string_view utf8substr(std::string_view str, int sub_len){
+		int len = 0;
+		int byte_index = 0;
+		for (byte_index = 0; byte_index < str.length(); byte_index++){
+			if ((str[byte_index] & 0xc0) != 0x80)
+				len += 1;
+
+			if (len >= sub_len)
+				break;
+		}
+
+		return str.substr(0, byte_index);
+	}
 }
 
 #endif //FEATHER_UTIL_HPP
