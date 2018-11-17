@@ -248,6 +248,44 @@ namespace feather {
 		}
 	};
 
+	struct check_join_cncppcon2018 {
+		bool before(request& req, response& res) {
+			auto user_name = req.get_query_value("user_name");
+			auto email = req.get_query_value("user_email");
+			auto phone = req.get_query_value("user_phone");
+			auto group = req.get_query_value("user_group");
+			auto answer = req.get_query_value("user_answer");
+
+			if (len_more_than<255>(user_name, email, phone, group, answer)) {
+				res.set_status_and_content(status_type::bad_request, "the input parameter is too long");
+				return false;
+			}
+
+			if (!check_input(res, user_name, phone, answer)) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (!is_integer(phone)) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (email.empty()) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (has_special_char(email, true)) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(user_name), sv2s(email), sv2s(phone), sv2s(answer), sv2s(group));
+			return true;
+		}
+	};
+
 	struct check_member_edit_input {
 		bool before(request& req, response& res) {
 			auto old_password = req.get_query_value("old_password");

@@ -19,6 +19,12 @@ void init(const feather_cfg& cfg) {
 
 	dao_t<dbng<mysql>>::init(cfg.db_conn_num, cfg.db_ip.data(), cfg.user_name.data(), cfg.pwd.data(),
 		cfg.db_name.data(), cfg.timeout);
+
+	Dao dao;
+	ormpp_auto_key key{ SID(cncppcon2018_user::id) };
+	ormpp_unique uk{ SID(cncppcon2018_user::phone) };
+	bool r = dao.create_table<cncppcon2018_user>(key, uk);
+	assert(r);
 }
 
 int main() {
@@ -49,6 +55,9 @@ int main() {
 	server.set_http_handler<GET, POST>("/member_edit_page", &purecpp_controller::member_edit_page, &purecpp_ctl, check_login{});
 	server.set_http_handler<GET, POST>("/member_edit", &purecpp_controller::member_edit, &purecpp_ctl, check_login{}, check_member_edit_input{});
 	server.set_http_handler<GET, POST>("/quit", &purecpp_controller::quit, &purecpp_ctl, check_login{});
+
+	server.set_http_handler<GET, POST>("/cncppcon_page2018", &purecpp_controller::cncppcon_page2018, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/join_cncppcon2018", &purecpp_controller::join_cncppcon2018, &purecpp_ctl, check_join_cncppcon2018{});
 
 	server.set_http_handler<GET>("/", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
 	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});

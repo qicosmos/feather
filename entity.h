@@ -94,6 +94,16 @@ namespace feather{
         std::string update_time;
     };
     REFLECTION(article_detail, id, parant_id, title, content, update_time);
+
+	struct cncppcon2018_user {
+		int id;
+		std::string		user_name;
+		int64_t		    phone;
+		std::string		email;
+		std::string		user_group;
+		std::string		join_time;
+	};
+	REFLECTION(cncppcon2018_user, id, user_name, phone, email, user_group, join_time);
 }
 
 #endif //FEATHER_ENTITY_H
