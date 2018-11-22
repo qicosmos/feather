@@ -1,7 +1,7 @@
 # feather
 
 * [introduction](#introduction)
-* [how to build]()
+* [how to build](#how to build)
 * [quick example]()
 * [note]()
 * [roadmap](#roadmap)

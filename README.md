@@ -1,5 +1,7 @@
 # Feather--一个快速开发的web服务器框架
 
+## [English wiki](https://github.com/qicosmos/feather/blob/master/feather_en.md)
+
 Feather是一个适合快速开发的modern c++ web框架，Feather的目标是让使用者以最小的精力和成本来开发一个web网站。
 
 现在很多web框架都非常庞大，学习成本高，而Feather正是为了解决这些问题的，它就像它的名字feather那样轻盈，所有的一切都是为了让用户非常方便又快速地开发而不是陷入到框架的细节当中。
@@ -31,8 +33,7 @@ Feather框架的核心包括：
 
 1. http组件：  cinatra
 2. ORM组件：   ormpp
-3. 序列化组件： iguana
-4. html 模版： inja
+3. html 模版： render
 
 Feather内部的四个核心组件是松耦合的，Feather只是把它们像搭积木一样搭在一起。
 
