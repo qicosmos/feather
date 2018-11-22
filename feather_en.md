@@ -50,6 +50,9 @@ The database component ormpp rely on some database connector.
 
 If you want to use ssl, you also need install ssl library, it is not necessary otherwise you want to use ssl.
 
+**compiler**
+gcc7.1+, msvc2017 15.7.1+
+
 **Debian linux**
 
 1.install mysql client: sudo apt-get install libmysqlclient-dev
@@ -78,6 +81,11 @@ If you want to use ssl, you also need install ssl library, it is not necessary o
 5.install zlib: sudo yum install zlib-devel.x86_64
 
 6.install openssl: sudo yum install openssl-devel.x86_64
+
+**windows**
+1.install mysql connector if you use mysql database;
+2.install postgresql connector if you use pg database;
+3.install sqlite3 if you use it
 
 **build**
 
@@ -214,7 +222,7 @@ If you want to use gzip to compress the response string, just need set the conte
 
 the framework will use gzip compress the response string for you, comfortable and sweet right? :)
 
-I think you have know enough about request and response(If you want to more, please tell me).
+I think you have know enough about request and response(If you want to know more, please tell me).
 
 ## file upload/download
 
