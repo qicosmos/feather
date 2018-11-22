@@ -1,11 +1,9 @@
 # feather
 
 * [introduction](#introduction)
-* [how to build](#how to build)
-* [quick example]()
-* [note]()
-* [roadmap](#roadmap)
-* [contact us]()
+* [how to build](#build)
+* [quick example](#example)
+* [contact us](#contact)
 
 # introduction
 
@@ -41,7 +39,7 @@ All the components are independent, feather just make them work together.
 
 Feather is a classical MVC framework, you just need focus on the business logic in controller, in a controller function you can get http request fields and data and visit the database, at last return the rendered html page to the client.
 
-# how to build
+# build
 
 Feather is based on asio, so you'd better install boost, howerver it is not necessary, you can also use AsioStandalone.
 
@@ -93,7 +91,7 @@ cd build
 
 make -j
 
-# quick example
+# example
 
 ## hello world
 
@@ -230,7 +228,7 @@ I think you have know enough about request and response(If you want to more, ple
 
 ## real example
 
-# contact us
+# contact
 
 
 
