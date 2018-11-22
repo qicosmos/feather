@@ -97,6 +97,8 @@ mkdir build
 
 cd build
 
+cmake ..
+
 make -j
 
 # example
@@ -233,6 +235,10 @@ todo
 todo
 
 ## AOP
+
+todo
+
+## cache 
 
 todo
 
