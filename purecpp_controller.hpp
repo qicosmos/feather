@@ -257,8 +257,8 @@ namespace feather {
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";
 
-			size_t pos = post_content.find_first_of("<");
-			auto substr = post_content.substr(0, pos<200 ? pos : 200);
+			size_t pos = post_content.find_first_of(u8"\r\n");
+			auto substr = utf8substr(post_content, pos < 200 ? pos : 200);// post_content.substr(0, pos < 200 ? pos : 200);
 			post.content_abstract = std::string(substr.data(), substr.length()) + "...";
 
 			auto r = dao.update_object(post);
