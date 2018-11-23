@@ -43,8 +43,8 @@ Feather is a classical MVC framework, you just need focus on the business logic 
 
 Feather is based on asio, so you'd better install boost, howerver it is not necessary, you can also use AsioStandalone.
 
-The http component cinatra rely on the uuid library, so you uuid library is necessary.
-It also rely on zlib, but zlib is  necessary otherwise you want to use gzip.
+The http component cinatra rely on the uuid library, so uuid library is necessary.
+It also rely on zlib, but zlib is unnecessary otherwise you want to use gzip. If you want to use gzip please "SET(ENABLE_GZIP ON)" in cmakelists.txt, the default value is OFF.
 
 The database component ormpp rely on some database connector.
 
