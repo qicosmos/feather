@@ -395,6 +395,10 @@ namespace feather {
 			render_simple_page(req, res, "./purecpp/html/register_cppcon.html", "cncppcon_page");
 		}
 
+		void cncppcon_query_page2018(request& req, response& res) {
+			render_simple_page(req, res, "./purecpp/html/query_cppcon.html", "cncppcon_page");
+		}
+
 		void join_cncppcon2018(request& req, response& res) {
 			const auto& params = req.get_aspect_data();
 			const auto& user_name = params[0];
@@ -426,6 +430,33 @@ namespace feather {
 			}
 
 			res.set_status_and_content(status_type::ok, "join suceessfull");
+		}
+
+		void query_cncppcon2018(request& req, response& res) {
+			const auto& params = req.get_aspect_data();
+			const auto& phone = params[0];
+
+			Dao dao;
+			auto ret = dao.query<cncppcon2018_user>("where phone=" + phone);
+			if (ret.empty()) {
+				res.set_status_and_content(status_type::bad_request, "You haven't registered yet.");
+				return;
+			}
+
+			auto login_user_name = get_user_name_from_session(req);
+			auto& user = ret[0];
+			nlohmann::json result;
+			result["has_login"] = !login_user_name.empty();
+			result["login_user_name"] = login_user_name;
+			result["category"] = "cncppcon_page";
+
+			result["user_name"] = user.user_name;
+			result["user_phone"] = std::to_string(user.phone);
+			result["email"] = user.email;
+			result["user_group"] = user.user_group;
+			result["registerd_date"] = user.join_time;
+			res.add_header("Content-Type", "text/html; charset=utf-8");
+			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/query_cppcon_result.html", result));
 		}
 
 		void sign_out_page(request& req, response& res) {

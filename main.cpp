@@ -43,7 +43,7 @@ int main() {
 	server.enable_http_cache(false);//set global cache
 	bool r = server.listen("0.0.0.0", cfg.port);
 	if (!r) {
-		LOG_INFO << "listen failed";
+		LOG_CRIT << "listen failed";
 		return -1;
 	}
 
@@ -57,8 +57,10 @@ int main() {
 	server.set_http_handler<GET, POST>("/quit", &purecpp_controller::quit, &purecpp_ctl, check_login{});
 
 	server.set_http_handler<GET, POST>("/cncppcon_page2018", &purecpp_controller::cncppcon_page2018, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/cncppcon_query_page2018", &purecpp_controller::cncppcon_query_page2018, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/join_cncppcon2018", &purecpp_controller::join_cncppcon2018, &purecpp_ctl, check_join_cncppcon2018{});
-
+	server.set_http_handler<GET, POST>("/query_cncppcon2018", &purecpp_controller::query_cncppcon2018, &purecpp_ctl, check_query_cncppcon2018{});
+	
 	server.set_http_handler<GET>("/", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
 	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
 	server.set_http_handler<GET, POST>("/detail", &purecpp_controller::detail, &purecpp_ctl, check_detail_input{});

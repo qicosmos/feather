@@ -286,6 +286,31 @@ namespace feather {
 		}
 	};
 
+	struct check_query_cncppcon2018 {
+		bool before(request& req, response& res) {
+			auto phone = req.get_query_value("user_phone");
+			auto answer = req.get_query_value("user_answer");
+
+			if (!is_integer(phone)) {
+				res.set_status_and_content(status_type::bad_request);
+				return false;
+			}
+
+			if (len_more_than<255>(phone, answer)) {
+				res.set_status_and_content(status_type::bad_request, "the input parameter is too long");
+				return false;
+			}
+
+			if (trim(answer) !="4"sv) {
+				res.set_status_and_content(status_type::bad_request, "the answer is not right");
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(phone));
+			return true;
+		}
+	};
+
 	struct check_member_edit_input {
 		bool before(request& req, response& res) {
 			auto old_password = req.get_query_value("old_password");
