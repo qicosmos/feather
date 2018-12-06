@@ -25,6 +25,9 @@ void init(const feather_cfg& cfg) {
 	ormpp_unique uk{ SID(cncppcon2018_user::phone) };
 	bool r = dao.create_table<cncppcon2018_user>(key, uk);
 	assert(r);
+
+	r = dao.create_table<visit_counter>(ormpp_auto_key{ SID(visit_counter::id) });
+	assert(r);
 }
 
 int main() {

@@ -104,6 +104,13 @@ namespace feather{
 		std::string		join_time;
 	};
 	REFLECTION(cncppcon2018_user, id, user_name, phone, email, user_group, join_time);
+
+	struct visit_counter {
+		int id;
+		std::string save_hour;
+		int counter;
+	};
+	REFLECTION(visit_counter, id, save_hour, counter);
 }
 
 #endif //FEATHER_ENTITY_H

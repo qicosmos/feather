@@ -17,6 +17,17 @@ namespace feather {
 			for (auto tp : v) {
 				category_map_.emplace(std::get<0>(tp), std::get<1>(tp));
 			}
+
+			counter_thread_ = std::make_unique<std::thread>([this] {
+				while (!stop_counter_) {
+					visit_count();
+				}
+			});
+		}
+
+		~purecpp_controller() {
+			stop_counter_ = true;
+			counter_thread_->join();
 		}
 
 		void home(request& req, response& res) {	
@@ -609,8 +620,20 @@ namespace feather {
 			}
 		}
 
+		void visit_count() {
+			std::this_thread::sleep_for(std::chrono::minutes(60));
+			int count = response::get_counter();
+			response::reset_counter();
+			visit_counter counter{0, cur_time(), count };
+			Dao dao;
+			dao.add_object(counter);
+		}
+
 		private:
 			std::atomic<size_t> total_post_count_ = 0;
 			std::map<std::string, std::string> category_map_;
+
+			std::unique_ptr<std::thread> counter_thread_ = nullptr;
+			bool stop_counter_ = false;
 	};
 }
