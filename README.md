@@ -6,7 +6,7 @@
 
 [如何在windows和linux上运行feather](https://github.com/qicosmos/feather/blob/master/featehr%20%E4%BD%BF%E7%94%A8.txt)
 
-如何在mac上运行feather
+如何在mac上运行feather(稍后更新)
 
 Feather是一个适合快速开发的modern c++ web框架，Feather的目标是让使用者以最小的精力和成本来开发一个web网站。
 
