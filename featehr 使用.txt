@@ -1,0 +1,34 @@
+feather使用说明
+
+1. 安装依赖库
+
+	boost库
+	mysql-connector
+	mysql服务器
+	uuid库(windows上不需要安装，linux下需要安装)
+	
+	安装依赖库参考这里：https://github.com/qicosmos/feather/blob/master/feather_en.md
+	
+2. 编译
+
+编译器要求：win vs2017 15.7+, gcc 7.2+, clang 5.0+
+
+win下编译，设置mysql-connector的头文件和库目录即可
+
+linux下:
+
+git clone https://github.com/qicosmos/feather.git
+
+git submodule update --init
+
+mkdir build
+
+cd build
+
+cmake ..
+
+make -j
+
+3. 运行
+
+参考https://github.com/qicosmos/feather/blob/master/feather%20compile%20and%20run%20in%20archlinux(marjaro).md
