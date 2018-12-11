@@ -2,6 +2,12 @@
 
 ## [English wiki](https://github.com/qicosmos/feather/blob/master/feather_en.md)
 
+[如何在archlinux上运行feather](https://github.com/qicosmos/feather/blob/master/feather%20compile%20and%20run%20in%20archlinux(marjaro).md)
+
+[如何在windows和linux上运行feather](https://github.com/qicosmos/feather/blob/master/featehr%20%E4%BD%BF%E7%94%A8.txt)
+
+如何在mac上运行feather
+
 Feather是一个适合快速开发的modern c++ web框架，Feather的目标是让使用者以最小的精力和成本来开发一个web网站。
 
 现在很多web框架都非常庞大，学习成本高，而Feather正是为了解决这些问题的，它就像它的名字feather那样轻盈，所有的一切都是为了让用户非常方便又快速地开发而不是陷入到框架的细节当中。
@@ -49,78 +55,9 @@ Feather内部的四个核心组件是松耦合的，Feather只是把它们像搭
 2. 通过ORM提供数据库访问功能；
 3. 编写业务逻辑，根据用户请求获取文章列表并通过html模版做渲染；
 
-接下来看看这些步骤具体是怎么做的。
-
-### 获取文章列表的http接口
-
-	const int max_thread_num = 4;
-	http_server server(max_thread_num);
-	server.listen("0.0.0.0", "http");
-
-	article_controller article_ctl;
-	server.set_http_handler<GET, POST>("/get_article_list", &article_controller::get_article_list, &article_ctl);
-
-其中login接口是这样的：
-
-	class article_controller{
-	public:
-		void get_article_list(const cinatra::request& req, cinatra::response& res){
-            //todo
-            res.set_status_and_content(status_type::ok);
-        }
-	};
-接下来就可以测试这个http服务接口了，客户端只要发送一个http请求即可。比如发送一个这样的请求
-http://127.0.0.1/get_article_list
-服务器会自动路由到article_controller::get_article_list函数中，如果请求不对则会返回http错误给客户端。当服务器收到这样的请求之后就表明服务器提供的这个http服务是可用的。
-
-接下来需要编写数据库部分的代码，由于有了ORM，所以你可以很方便地编写数据库部分的代码了，同样很简单。
-
-
-### 通过ORM提供数据库访问功能
-登录业务涉及到一个用户表，因此我们需要创建这个表，不过在创建数据库之前先确定你选用什么数据库，Feather的ORM支持mysql, postgresql和sqlite三种数据库，假设我们的数据库是mysql。我们可以通过下面的代码来创建一个用户表。
-
-1.创建文章表
-
-	struct article{
-        int id;
-        std::string title;
-        std::string introduce;
-        int user_id;
-        int visible;
-        std::string create_time;
-    };
-    REFLECTION(article, id, title, introduce, user_id, visible, create_time);
-
-	dbng<mysql> mysql;
-	mysql.connect("127.0.0.1", "root", "12345", "testdb")
-	mysql.create_table<article>(ormpp_auto_key{ ID(article::id) });
-
-dao.create_table< article >将会在testdb数据库中自动创建一个article表，其中id字段是自增长的。
-
-2.编写获取文章列表的逻辑（包含访问数据库）
-
-	void get_article_list(const cinatra::request& req, cinatra::response& res){
-		auto page_s = req.get_query_value("page");
-        int current_page = atoi(page_s.data());
-
-        dao_t<dbng<mysql>> dao;
-        std::vector<article> v;
-        dao.get_object(v);
-            
-        article_list_res list{std::move(v), current_page, total_page(v.size())};
-
-        iguana::string_stream ss;
-        iguana::json::to_json(ss, list);
-
-        res.add_header("Access-Control-Allow-origin", "*");
-		res.set_status_and_content(status_type::ok, ss.str());
-    }
-
-访问数据库，序列化为json返回给客户端。
-
-详细的例子你可以看[github上的代码](https://github.com/qicosmos/feather)。
-
 ## Demo示例
+
+TODO
 
 我们用Feather开发了一个社区网站，地址在这里：http://purecpp.org/
 
