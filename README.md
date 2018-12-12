@@ -2,7 +2,7 @@
 
 ## [English wiki](https://github.com/qicosmos/feather/blob/master/feather_en.md)
 
-[如何在archlinux上运行feather](https://github.com/qicosmos/feather/blob/master/feather%20compile%20and%20run%20in%20archlinux(marjaro).md)
+[如何在archlinux上运行feather](https://github.com/qicosmos/feather/blob/master/feather%20compile%20and%20run%20in%20marjaro_archlinux(author-SkyFire).md)
 
 [如何在win10上运行feather](https://github.com/qicosmos/feather/blob/master/window_build(author-tc).txt)
 
