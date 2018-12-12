@@ -4,6 +4,8 @@
 
 [如何在archlinux上运行feather](https://github.com/qicosmos/feather/blob/master/feather%20compile%20and%20run%20in%20archlinux(marjaro).md)
 
+[如何在win10上运行feather](https://github.com/qicosmos/feather/blob/master/window_build(author-tc).txt)
+
 [如何在windows和linux上运行feather](https://github.com/qicosmos/feather/blob/master/featehr%20%E4%BD%BF%E7%94%A8.txt)
 
 如何在mac上运行feather(稍后更新)
