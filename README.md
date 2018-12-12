@@ -1,4 +1,4 @@
-# Feather--一个快速开发的web服务器框架
+# Feather--一个快速开发的web框架
 
 ## [English wiki](https://github.com/qicosmos/feather/blob/master/feather_en.md)
 
