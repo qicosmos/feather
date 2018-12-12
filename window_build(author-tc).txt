@@ -1,0 +1,27 @@
+编译环境：windows10专业版，VS2017社区版，boost1.6，mysql5.7.24
+
+boost编译：
+下载地址：https://nchc.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.zip
+bootstrap.bat
+b2 link=static runtime-link=static threading=multi release debug --with-system --with-date_time --with-regex
+
+mysql下载地址：https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.24-win32.zip
+mysql不需要编译，直接使用安装目录下的include,lib文件
+
+feather代码下载：
+git clone https://github.com/qicosmos/feather.git
+cd feather
+git submodule update --init
+
+feather编译：
+新建一个空的工程:feather
+添加main.cpp文件到工程
+在cinatra/response.hpp文件中添加头文件 #include <atomic>
+工程属性 -> c/c++ -> 预处理器->预处理器定义添加 ORMPP_ENABLE_MYSQL, _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS, _CRT_SECURE_NO_WARNINGS
+工程属性 -> c/c++ -> 命令行->其它选项添加 /std:c++17
+配置好boost,mysql头文件和LIB目录，mysql需要链接libmysql.lib文件
+编译完成后，执行文件需要和purecpp，cfg在同一级目录。
+
+数据库配置：
+新建一个数据库feather，导入feather.sql（https://github.com/qicosmos/feather/blob/master/feather.sql）文件，修改cfg/feather.cfg中数据库相关参数。
+
