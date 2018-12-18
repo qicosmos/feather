@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; Charset=utf-8">
+  <meta http-equiv="Content-Language" content="zh-CN">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>purecpp - a cool open source modern c++ community</title>
+  <base href="/">
+  <link rel="shortcut icon" href="./purecpp/images/favicon.ico" type="image/x-icon">
+  <!--Layui-->
+  <link href="./purecpp/plug/layui/css/layui.css" rel="stylesheet" />
+  <!--font-awesome-->
+  <link href="./purecpp/plug/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+  <!--全局样式表-->
+  <link href="./purecpp/css/global.css" rel="stylesheet" />
+    <!-- 比较好用的代码着色插件 -->
+    <link href="./purecpp/css/prettify.css" rel="stylesheet" />
+  <!-- 本页样式表 -->
+  <link href="./purecpp/css/detail.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./purecpp/css/github-markdown.css">
+  <style>
+	.markdown-body {
+		box-sizing: border-box;
+		min-width: 200px;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 45px;
+	}
+
+	@media (max-width: 767px) {
+		.markdown-body {
+			padding: 15px;
+		}
+	}
+  </style>
+</head>
+
+<body>
+  <!-- 导航 -->
+  $include {{
+  ./purecpp/html/navigator.html
+  }}
+  <!-- 主体（一般只改变这里的内容） -->
+  <div class="blog-body">
+    <div class="blog-container">
+      <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+        <a href="/" title="网站首页">网站首页</a>
+        <a href="" title="文章专栏">文章专栏</a>
+        <a>
+          <cite>${post_title}</cite>
+        </a>
+      </blockquote>
+      <div class="blog-main">
+        <div class="blog-main-left">
+          <!-- 文章内容（使用Kingeditor富文本编辑器发表的） -->
+          <div class="article-detail shadow">
+            <div class="article-detail-title">
+              ${post_title}
+            </div>
+            <div class="article-detail-info">
+              <span class="fa fa-clock-o">编辑时间：${post_modified}</span>
+              <span class="fa fa-user">作者：${user_login}</span>
+              <span class="fa fa-commenting">${total}条评论</span>
+            </div>
+            <div class="markdown-body">
+              <p style="text-align:center;">
+                <span style="font-size:18px;"><div id="md_post_content"></div></span>
+              </p>
+              <hr /> &nbsp; &nbsp; 出自：purecpp
+              <p>
+                &nbsp; &nbsp; 地址：
+                <a href="http://www.purecpp.org" target="_blank">www.purecpp.org</a>
+              </p>
+              <p>
+                &nbsp; &nbsp; 转载请注明出处！
+              </p>
+              <p>
+                <br />
+              </p>
+            </div>
+          </div>
+		  <textarea style="display: none;"  id="pre_md_post_content">${post_content}</textarea>
+          <!-- 评论区域 -->
+          <div class="blog-module shadow" style="box-shadow: 0 1px 8px #a6a6a6;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-bottom:0">
+              <legend>来说两句吧</legend>
+              <div class="layui-field-box">
+                <form class="layui-form blog-editor" method="post" action="/comment">
+				  <div class="layui-form-item layui-form-text">
+					<div class="layui-input-block">
+					  <textarea name="post_id" placeholder="请输入内容" class="layui-textarea layui-hide">${post_id}</textarea>
+					</div>
+				  </div>
+                  <div class="layui-form-item">
+                    <textarea name="editorContent" lay-verify="content" id="remarkEditor" placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
+                  </div>
+                  <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="formRemark" lay-filter="formRemark">提交评论</button>
+                  </div>
+                </form>
+              </div>
+            </fieldset>
+            <div class="blog-module-title">最新评论</div>
+            <ul class="blog-comment">
+			$if has_comment{{
+			$for item in comment_list{{
+              <li>
+                <div class="comment-parent">
+                  <img src="./purecpp/images/cover/logo6.png" alt="qicosmos" />
+                  <div class="info">
+                    <span class="username">${item.comment_user}</span>
+                    <span class="time">${item.comment_date}</span>
+					$if item.is_owner{{
+					  <span>
+						<i class="fa fa-tag"></i><a href="./remove_comment?id=${item.comment_id}&post_id=${post_id}">删除</a>
+					  </span>
+					  }}
+					  $if item.is_admin{{
+					  <span>
+						<i class="fa fa-tag"></i><a href="./remove_comment?id=${item.comment_id}&post_id=${post_id}">删除</a>
+					  </span>
+					}}
+                  </div>
+                  <div class="content">
+                    ${item.comment_content}
+                  </div>
+                </div>
+              </li>
+			}}
+			}}
+            </ul>
+          </div>
+        </div>
+        <!--右边小栏目-->
+        $inline {{
+		./purecpp/html/righter.html
+		}}
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+  <!-- 底部 -->
+  $inline {{
+	./purecpp/html/footer.html
+  }}
+  <!--遮罩-->
+  <div class="blog-mask animated layui-hide"></div>
+  <!-- layui.js -->
+  <script src="./purecpp/plug/layui/layui.js"></script>
+  <!-- 全局脚本 -->
+  <script src="./purecpp/js/global.js"></script>
+	<!-- 比较好用的代码着色插件 -->
+    <script src="./purecpp/js/prettify.js"></script>
+  <!-- 本页脚本 -->
+  <script src="./purecpp/js/detail.js"></script>
+</body>
+
+</html>
+  <script src="/purecpp/plug/laymd/laymd/marked.min.js"></script>
+  <script>
+      document.getElementById("md_post_content").innerHTML = marked(document.getElementById("pre_md_post_content").value);
+  </script>

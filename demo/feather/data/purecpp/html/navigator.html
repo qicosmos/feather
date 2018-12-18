@@ -1,0 +1,83 @@
+  <nav class="blog-nav layui-header">
+    <div class="blog-container">
+        <a class="blog-logo" href="/">
+            <div>
+                PURECPP
+            </div>
+        </a>
+      <!-- 导航菜单 -->
+      <ul class="layui-nav" lay-filter="nav">
+        <li class="layui-nav-item $if category==all {{layui-this}}">
+          <a href="/">首页</a>
+        </li>
+        <li class="layui-nav-item $if category==3 {{layui-this}}">
+          <a href="category?category=3">开源项目</a>
+        </li>
+		<li class="layui-nav-item $if category==3 {{layui-this}}">
+          <a href="">purecp大会<span class="layui-badge-dot"></span></a>
+		  <dl class="layui-nav-child">
+			  <dd><a href="./cncppcon_page2018">报名参会</a></dd>
+			  <dd><a href="./cncppcon_query_page2018">报名查询</a></dd>
+			  <dd><a href="./cncppcon_survey_page">大会调查</a></dd>
+		   </dl>
+        </li>
+        <li class="layui-nav-item $if category==60 {{layui-this}}">
+          <a href="category?category=60">社区服务</a>
+        </li>
+		  $if has_login{{
+		  <li class="layui-nav-item">
+			<a href="" style="color:white" >您好，${login_user_name}<span class="layui-badge-dot"></span></a>
+			<dl class="layui-nav-child">
+			  <dd><a href="./member_edit_page">修改信息</a></dd>
+			  <dd><a href="./add_post_page">新建文章</a></dd>
+			  <dd><a href="./my_post">我的文章</a></dd>
+			  <dd><a href="./quit">退出</a></dd>
+			</dl>
+		</li>
+		}}
+		$else{{
+	    <li class="layui-nav-item $if category==login {{layui-this}}">
+          <a href="login_page">登录</a>
+        </li>
+		<li class="layui-nav-item $if category==sign_out {{layui-this}}">
+          <a href="sign_out_page">加入社区<span class="layui-badge-dot"></span></a>
+        </li>		
+		}}
+      </ul>
+      <!-- 手机和平板的导航开关 -->
+        <div class="uk-button-dropdown blog-navicon" data-uk-dropdown>
+            <button class="uk-button"><i class="fa fa-navicon"></i></button>
+            <div style="background-color:white" class="uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="category?category=3">开源项目</a></li>
+					<li class="layui-nav-item $if category==3 {{layui-this}}">
+					  <a href="">purecp大会<span class="layui-badge-dot"></span></a>
+					  <dl class="layui-nav-child">
+						  <dd><a href="./cncppcon_page2018">报名参会</a></dd>
+						  <dd><a href="./cncppcon_query_page2018">报名查询</a></dd>
+						  <dd><a href="./cncppcon_survey_page">大会调查</a></dd>
+					   </dl>
+					</li>
+					<li> <a href="category?category=60">社区服务</a></li>
+					$if has_login{{
+						<li>您好，${login_user_name}</li>
+					  <li><a href="./member_edit_page">修改信息</a></li>
+					  <li><a href="./add_post_page">新建文章</a></li>
+					  <li><a href="./my_post">我的文章</a></li>
+					  <li><a href="./quit">退出</a></li>
+					}}
+					$else{{
+					 <li><a href="login_page">登录</a></li>
+					 <li><a href="sign_out_page">加入社区<span class="layui-badge-dot"></span></a></li>					
+					}}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+  </nav>
+  <!--<link href="./purecpp/css/uikit.min.css" rel="stylesheet" />-->
+  <link href="./purecpp/css/dropdown.css" rel="stylesheet" />
+  <script src="./purecpp/js/jquery.js"></script>
+  <script src="./purecpp/js/uikit.min.js"></script>
