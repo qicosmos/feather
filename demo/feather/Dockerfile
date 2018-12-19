@@ -29,6 +29,7 @@ RUN cd /tmp \
 FROM ubuntu:latest
 
 COPY --from=builder /tmp/feather/build/feather /opt/feather/
+COPY --from=builder /tmp/feather/purecpp /opt/feather/purecpp
 
 RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu/http:\/\/mirrors.tuna.tsinghua.edu.cn\/ubuntu\//g' /etc/apt/sources.list \
   && sed -i 's/http:\/\/security\.ubuntu\.com\/ubuntu/http:\/\/mirrors.tuna.tsinghua.edu.cn\/ubuntu\//g' /etc/apt/sources.list \
