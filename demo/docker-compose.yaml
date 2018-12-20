@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  feather:
+    build: feather
+    ports:
+      - '8080:8080'
+    links:
+      - mariadb
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    restart: unless-stopped
+    volumes:
+       - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
