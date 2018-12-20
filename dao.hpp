@@ -14,6 +14,10 @@ namespace feather{
                 LOG_WARN << "db get connection failed";
         }
 
+		bool is_open() const {
+			return conn_ != nullptr;
+		}
+
         template<typename T>
         bool create_table(const ormpp_auto_key& key) {
             if(!conn_)
