@@ -410,6 +410,43 @@ namespace feather {
 			render_simple_page(req, res, "./purecpp/html/query_cppcon.html", "cncppcon_page");
 		}
 
+		void register_user_group(request& req, response& res) {
+			render_simple_page(req, res, "./purecpp/html/register_user_group.html", "user_group");
+		}
+
+		void join_user_group(request& req, response& res) {
+			const auto& params = req.get_aspect_data();
+			const auto& user_name = params[0];
+			const auto& email = params[1];
+			const auto& phone = params[2];
+			const auto& answer = params[3];
+			const auto& user_group = params[4];
+
+			//check answer
+			Dao dao;
+			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=2 and answer like \"%" + answer + "%\"");
+			if (std::get<0>(r1[0]) == 0) {
+				res.set_status_and_content(status_type::ok, "the answer is wrong");
+				return;
+			}
+
+			//add to user group
+			user_group_member user = {};
+			user.user_name = user_name;
+			user.email = email;
+			user.phone = atoll(phone.data());
+			user.user_group = user_group;
+			user.join_time = cur_time();
+
+			int ret = dao.add_object(user);
+			if (ret < 0) {
+				res.set_status_and_content(status_type::bad_request, "You have already registered.");
+				return;
+			}
+
+			res.set_status_and_content(status_type::ok, "join suceessfull");
+		}
+
 		void join_cncppcon2018(request& req, response& res) {
 			const auto& params = req.get_aspect_data();
 			const auto& user_name = params[0];

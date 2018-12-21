@@ -28,6 +28,10 @@ void init(const feather_cfg& cfg) {
 
 	r = dao.create_table<visit_counter>(ormpp_auto_key{ SID(visit_counter::id) });
 	assert(r);
+
+	ormpp_auto_key member_key{ SID(user_group_member::id) };
+	r = dao.create_table<user_group_member>(member_key);
+	assert(r);
 }
 
 int main() {
@@ -63,6 +67,8 @@ int main() {
 	server.set_http_handler<GET, POST>("/cncppcon_query_page2018", &purecpp_controller::cncppcon_query_page2018, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/join_cncppcon2018", &purecpp_controller::join_cncppcon2018, &purecpp_ctl, check_join_cncppcon2018{});
 	server.set_http_handler<GET, POST>("/query_cncppcon2018", &purecpp_controller::query_cncppcon2018, &purecpp_ctl, check_query_cncppcon2018{});
+	server.set_http_handler<GET, POST>("/register_user_group", &purecpp_controller::register_user_group, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/join_user_group", &purecpp_controller::join_user_group, &purecpp_ctl, check_join_cncppcon2018{});
 	
 	server.set_http_handler<GET>("/", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
 	server.set_http_handler<GET>("/home", &purecpp_controller::home, &purecpp_ctl, check_start_end_input{});
