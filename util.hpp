@@ -64,7 +64,7 @@ namespace feather{
 		for (char ch : str) {
 			if (ch == ';' || ch == ',' || ch == '%' || ch == '"'|| ch == '\\'||
 				ch == '-' || ch == '|' || ch == '(' || ch == ')' || ch == '[' || ch == ']' ||
-				ch == '{' || ch == '}' || (!is_email&&ch == '@') || ch == '*' || ch == '!')
+				ch == '{' || ch == '}' || (!is_email&&ch == '@') || ch == '*' || ch == '!' || ch == '\'' || ch == '#')
 				return true;
 		}
 
