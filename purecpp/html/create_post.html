@@ -85,6 +85,7 @@ $inline {{
 			  var uploadInst = upload.render({
 				elem: '#uploader' //绑定元素
 				,url: '/upload_file' //上传接口
+				,accept: 'file'
 				,done: function(res){
 				  //上传完毕回调
 				  layui.jquery('#upload_file_url').val(res.data.src);
