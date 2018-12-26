@@ -55,7 +55,7 @@ namespace feather {
 			size_t cur_page = atoi(s.data())/10+1;
 
 			std::string sql = "SELECT t1.*, t2.user_login from pp_posts t1, pp_user t2 "
-				"where post_status = 'publish' AND t1.post_author = t2.ID ORDER BY t1.ID DESC LIMIT "+s+","+lens;
+				"where post_status = 'publish' AND t1.post_author = t2.ID AND t1.category<>60 ORDER BY t1.ID DESC LIMIT "+s+","+lens;
 			
 			render_page(sql, req, res, "./purecpp/html/home.html", "all", cur_page, total_post_count_);
 		}
@@ -212,7 +212,7 @@ namespace feather {
 			const auto& login_user_name = params[0];
 			const auto& post_id = params[3];
 
-			std::string sql = "select post_title, category, post_content from pp_posts where ID=" + post_id;
+			std::string sql = "select post_title, category, post_content, post_date from pp_posts where ID=" + post_id;
 			Dao dao;
 			auto r = dao.query<std::tuple<std::string, std::string, std::string, std::string>>(sql);
 			if (r.empty()) {
@@ -227,6 +227,7 @@ namespace feather {
 			result["title"] = std::move(std::get<0>(r[0]));
 			result["category"] = std::move(std::get<1>(r[0]));
 			result["post_content"] = std::move(std::get<2>(r[0]));
+			result["post_date"] = std::move(std::get<3>(r[0]));
 
 			res.add_header("Content-Type", "text/html; charset=utf-8");
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/edit_post.html", result));
@@ -257,6 +258,7 @@ namespace feather {
 			auto title = req.get_query_value("title");
 			auto type = req.get_query_value("type");
 			auto post_content = req.get_query_value("post_content");
+			auto post_date = req.get_query_value("post_date");
 
 			Dao dao;
 			pp_posts post{};
@@ -264,6 +266,7 @@ namespace feather {
 			post.category = std::string(type.data(), type.length());
 			post.ID = atoi(post_id.data());
 			post.post_author = atoi(user_id.data());
+			post.post_date = post_date;
 			post.post_modified = cur_time();
 			post.post_content = std::string(post_content.data(), post_content.length());
 			post.post_status = role == "0" ? "waiting" : "publish";

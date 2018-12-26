@@ -43,7 +43,7 @@ Feather框架的核心包括：
 2. ORM组件：   ormpp
 3. html 模版： render
 
-Feather内部的四个核心组件是松耦合的，Feather只是把它们像搭积木一样搭在一起。
+Feather内部的三个核心组件是松耦合的，Feather只是把它们像搭积木一样搭在一起。
 
 ## Feather的使用
 
