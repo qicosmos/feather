@@ -248,6 +248,29 @@ namespace feather {
 		}
 	};
 
+	struct check_book_course {
+		bool before(request& req, response& res) {
+			std::string result;
+			for (size_t i = 0; i < req.get_form_url_map().size(); i++)
+			{
+				std::string key = "course" + std::to_string(i);
+				auto value = req.get_query_value({key.data(), key.size()});
+				if (!value.empty()) {
+					result.append(std::move(key));
+					result.append(",");
+				}
+			}
+			
+			if (len_more_than<255>(result)) {
+				res.set_status_and_content(status_type::bad_request, "the input parameter is too long");
+				return false;
+			}
+
+			req.set_aspect_data(sv2s(result));
+			return true;
+		}
+	};
+
 	struct check_join_cncppcon2018 {
 		bool before(request& req, response& res) {
 			auto user_name = req.get_query_value("user_name");
@@ -342,8 +365,8 @@ namespace feather {
 
 			const auto& params = get_user_info(req);
 			const auto& user_role = params[2];
-			bool is_admin = (user_role == "3" || user_role == "6");
-			if (!is_admin) {
+			bool authority = (user_role == "3" || user_role == "6"|| user_role == "0");
+			if (!authority) {
 				res.set_status_and_content(status_type::bad_request);
 				return false;
 			}

@@ -115,6 +115,17 @@ namespace feather{
 	};
 	REFLECTION(user_group_member, id, user_name, phone, email, user_group, join_time);
 
+	struct book_course_member {
+		int id;
+		std::string		user_name;
+		int64_t		    phone;
+		std::string		email;
+		std::string		user_group;
+		std::string		join_time;
+		std::string     courses;
+	};
+	REFLECTION(book_course_member, id, user_name, phone, email, user_group, join_time, courses);
+
 	struct visit_counter {
 		int id;
 		std::string save_hour;

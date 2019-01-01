@@ -32,6 +32,11 @@ void init(const feather_cfg& cfg) {
 	ormpp_auto_key member_key{ SID(user_group_member::id) };
 	r = dao.create_table<user_group_member>(member_key);
 	assert(r);
+
+	ormpp_auto_key book_key{ SID(book_course_member::id) };
+	ormpp_unique uniq_key{ SID(book_course_member::phone) };
+	r = dao.create_table<book_course_member>(member_key, uniq_key);
+	assert(r);
 }
 
 int main() {
@@ -57,11 +62,14 @@ int main() {
 	purecpp_controller purecpp_ctl;
 	server.set_http_handler<GET, POST>("/login_page", &purecpp_controller::login_page, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/login", &purecpp_controller::login, &purecpp_ctl, check_login_input{});
-	server.set_http_handler<GET, POST>("/sign_out_page", &purecpp_controller::sign_out_page, &purecpp_ctl);
-	server.set_http_handler<GET, POST>("/sign_out", &purecpp_controller::sign_out, &purecpp_ctl, check_sign_out_input{});
+	server.set_http_handler<GET, POST>("/sign_up_page", &purecpp_controller::sign_up_page, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/sign_up", &purecpp_controller::sign_up, &purecpp_ctl, check_sign_out_input{});
 	server.set_http_handler<GET, POST>("/member_edit_page", &purecpp_controller::member_edit_page, &purecpp_ctl, check_login{});
 	server.set_http_handler<GET, POST>("/member_edit", &purecpp_controller::member_edit, &purecpp_ctl, check_login{}, check_member_edit_input{});
 	server.set_http_handler<GET, POST>("/quit", &purecpp_controller::quit, &purecpp_ctl, check_login{});
+
+	server.set_http_handler<GET, POST>("/course_page", &purecpp_controller::course_page, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/book_course", &purecpp_controller::book_course, &purecpp_ctl, check_join_cncppcon2018{}, check_book_course{});
 
 	server.set_http_handler<GET, POST>("/cncppcon_page2018", &purecpp_controller::cncppcon_page2018, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/cncppcon_query_page2018", &purecpp_controller::cncppcon_query_page2018, &purecpp_ctl);

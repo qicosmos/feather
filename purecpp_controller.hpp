@@ -269,7 +269,7 @@ namespace feather {
 			post.post_date = post_date;
 			post.post_modified = cur_time();
 			post.post_content = std::string(post_content.data(), post_content.length());
-			post.post_status = role == "0" ? "waiting" : "publish";
+			post.post_status = /*role == "0" ? "waiting" :*/ "publish";
 
 			size_t pos = post_content.find_first_of(u8"\r\n");
 			auto substr = utf8substr(post_content, pos < 200 ? pos : 200);// post_content.substr(0, pos < 200 ? pos : 200);
@@ -405,6 +405,45 @@ namespace feather {
 			res.redirect("./home");
 		}
 
+		void course_page(request& req, response& res) {
+			render_simple_page(req, res, "./purecpp/html/book_course.html", "course_page");
+		}
+
+		void book_course(request& req, response& res) {
+			const auto& params = req.get_aspect_data();
+			const auto& user_name = params[0];
+			const auto& email = params[1];
+			const auto& phone = params[2];
+			const auto& answer = params[3];
+			const auto& user_group = params[4];
+			const auto& courses = params[5];
+
+			//check answer
+			Dao dao;
+			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=2 and answer like \"%" + answer + "%\"");
+			if (std::get<0>(r1[0]) == 0) {
+				res.set_status_and_content(status_type::ok, "the answer is wrong");
+				return;
+			}
+
+			//add to user group
+			book_course_member user = {};
+			user.user_name = user_name;
+			user.email = email;
+			user.phone = atoll(phone.data());
+			user.user_group = user_group;
+			user.join_time = cur_time();
+			user.courses = courses;
+
+			int ret = dao.add_object(user);
+			if (ret < 0) {
+				res.set_status_and_content(status_type::bad_request, "The phone has already been exsit.");
+				return;
+			}
+
+			res.set_status_and_content(status_type::ok, "join suceessfull");
+		}
+
 		void cncppcon_page2018(request& req, response& res) {
 			render_simple_page(req, res, "./purecpp/html/register_cppcon.html", "cncppcon_page");
 		}
@@ -510,8 +549,8 @@ namespace feather {
 			res.set_status_and_content(status_type::ok, render::render_file("./purecpp/html/query_cppcon_result.html", result));
 		}
 
-		void sign_out_page(request& req, response& res) {
-			render_simple_page(req, res, "./purecpp/html/sign_out.html", "sign_out");
+		void sign_up_page(request& req, response& res) {
+			render_simple_page(req, res, "./purecpp/html/sign_up.html", "sign_up");
 		}
 
 		void member_edit_page(request& req, response& res) {
@@ -544,7 +583,7 @@ namespace feather {
 			}
 		}
 
-		void sign_out(request& req, response& res) {
+		void sign_up(request& req, response& res) {
 			const auto& params = req.get_aspect_data();
 			const auto& user_name = params[0];
 			const auto& email = params[1];
@@ -559,7 +598,7 @@ namespace feather {
 				return;
 			}
 
-			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=1 and answer like \"%"+ answer+"%\"");
+			auto r1 = dao.query<std::tuple<int>>("select count(1) from pp_sign_out_answer where ID=2 and answer like \"%"+ answer+"%\"");
 			if (std::get<0>(r1[0]) == 0) {
 				res.set_status_and_content(status_type::ok, "the answer is wrong");
 				return;
