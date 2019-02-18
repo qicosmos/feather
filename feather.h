@@ -5,7 +5,7 @@
 #ifndef FEATHER_FEATHER_H
 #define FEATHER_FEATHER_H
 
-#include "cinatra/http_server.hpp"
+#include "cinatra/include/cinatra.hpp"
 #include "ormpp/dbng.hpp"
 #include "ormpp/mysql.hpp"
 #include "ormpp/connection_pool.hpp"
