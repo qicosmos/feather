@@ -28,7 +28,7 @@
 		margin: 0 auto;
 		padding: 45px;
 	}
-	  
+
         .markdown-body li {
             list-style: disc;
         }
@@ -101,7 +101,13 @@
                     <textarea name="editorContent" lay-verify="content" id="remarkEditor" placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
                   </div>
                   <div class="layui-form-item">
-                    <button class="layui-btn" lay-submit="formRemark" lay-filter="formRemark">提交评论</button>
+                    $if has_login{{
+                      <button class="layui-btn" lay-submit="formRemark" lay-filter="formRemark">提交评论</button>
+                    }}
+                    $else{{
+                      <button class="layui-btn layui-disabled" disabled lay-submit="formRemark" lay-filter="formRemark">提交评论</button>
+                      <span>登录才能发表评论。</span>
+                    }}
                   </div>
                 </form>
               </div>
