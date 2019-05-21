@@ -1,6 +1,6 @@
 # Feather--一个快速开发的web框架
 
-## [English wiki](https://github.com/qicosmos/feather/blob/master/feather_en.md)
+*Read this in other languages: [English](https://github.com/qicosmos/feather/blob/master/README.en.md), [简体中文](https://github.com/qicosmos/feather/blob/master/README.md)
 
 [如何在archlinux上运行feather](https://github.com/qicosmos/feather/blob/master/feather%20compile%20and%20run%20in%20marjaro_archlinux(author-SkyFire).md)
 
