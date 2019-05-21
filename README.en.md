@@ -1,94 +1,101 @@
-# feather
+# Feather
 
-* [introduction](#introduction)
-* [how to build](#build)
-* [quick example](#example)
-* [contact us](#contact)
+*Read this in other languages: [English](https://github.com/qicosmos/feather/blob/master/README.en.md), [简体中文](https://github.com/qicosmos/feather/blob/master/README.md)*
 
-# introduction
+* [Introduction](#Introduction)
+* [How to build](#Build)
+* [Quick example](#Example)
+* [Contact us](#Contact)
 
-Feather is a rapid modern c++(c++17) web development framework.The goal of feather is to develop a web application efficiently, low learning cost.
+# Introduction
 
-**Features of feather**
+Feather is a rapid modern C++ web development framework, written in C++17. The goal of Feather is to develop web applications quickly, with a low barrier to entry.
 
-1. easy to use
-2. header only
-3. cross-platform
-4. high performance
-5. support AOP
+Here is a presentation by Yu Qi on Feather from CppCon 2018: https://www.youtube.com/watch?v=DoXXCZJVNeo.
 
-**components of feather**
+**Features of Feather**
+
+1. Easy to use
+2. Header only
+3. Cross-platform
+4. High performance
+5. Supports [AOP](https://en.wikipedia.org/wiki/Aspect-oriented_programming)
+
+**Components of Feather**
 
 Feather is made of three core components:
 
-1. http component--cinatra
+1. HTTP component: **cinatra**
 
-	cinatra is an easy to use, header only http server, cinatra support http1.1, web socket, ssl.
+	**cinatra** is an easy to use, header only HTTP server. **cinatra** supports HTTP/1.1, web sockets, and SSL.
 
-2. database component--ormpp
+2. Database component: **ormpp**
 
-	the goal of ormpp is to simplify database programming in C++. ormpp provides easy to use unified interface, supports multiple databases, and reduces the learning cost of using the database.
+	The goal of **ormpp** is to simplify database programming in C++. **ormpp** provides an easy to use unified interface, supports multiple databases, and reduces the learning cost of using a database.
 
-	ormpp supports three databases currently: mysql, postgresql and sqlite, it can be extended to support more databases.
+	**ormpp** currently supports three databases: **mysql**, **postgresql**, and **sqlite**. It can be extended to support more databases.
 
-3. html render component--render
+3. HTML render component: **render**
 
-	render helps to render html pages, such as fill dynamic data into the html template pages, control the UI display, reuse the same html code.
+	**render** helps to render HTML pages, such as filling dynamic data into HTML template pages, controlling the UI display, and reusing HTML code.
 
-All the components are independent, feather just make them work together.
+All the components are independent. Feather just make them work together.
 
-Feather is a classical MVC framework, you just need focus on the business logic in controller, in a controller function you can get http request fields and data and visit the database, at last return the rendered html page to the client.
+Feather is a classical MVC framework, you just need to focus on your business logic in the controller. In a controller function, you can get HTTP request fields, data, and visit the database. The controller then returns the rendered HTML page to the client.
 
-# build
+# Build
 
-Feather is based on asio, so you'd better install boost, howerver it is not necessary, you can also use AsioStandalone.
+Feather is based on **asio**, so it's recommended to install Boost. However this is not strictly necessary, as you can also use **AsioStandalone**.
 
-The http component cinatra rely on the uuid library, so uuid library is necessary.
-It also rely on zlib, but zlib is unnecessary otherwise you want to use gzip. If you want to use gzip please "SET(ENABLE_GZIP ON)" in cmakelists.txt, the default value is OFF.
+The HTTP component **cinatra** relies on the **uuid** library, so please install it.
+It also relies on **zlib**, but **zlib** is unnecessary if you want to use **gzip**. If you want to use **gzip** please `SET(ENABLE_GZIP ON)` in **CMakeLists.txt**. The default value is `OFF`.
 
-The database component ormpp rely on some database connector.
+The database component **ormpp** relies on a database connector.
 
-If you want to use ssl, you also need install ssl library, it is not necessary otherwise you want to use ssl.
+If you want to use SSL, you also need to install a SSL library. This is not necessary if you don't want to use SSL.
 
-**compiler**
-gcc7.1+, msvc2017 15.7.1+
+**Supported compilers**
+* **gcc7.1+**
+* **msvc2017 15.7.1+**
 
-**Debian linux**
+**Debian Linux**
 
-1.install mysql client: sudo apt-get install libmysqlclient-dev
+1. Install **mysql** client: `sudo apt-get install libmysqlclient-dev`
 
-2.install postgresql client: sudo apt-get install libpq-dev
+2. Install **postgresql** client: `sudo apt-get install libpq-dev`
 
-3.install sqlite3: sudo apt-get install libsqlite3-dev
+3. Install **sqlite3**: `sudo apt-get install libsqlite3-dev`
 
-4.install uuid: sudo apt-get install uuid
+4. Install **uuid**: `sudo apt-get install uuid`
 
-5.install zlib: sudo apt-get install zlib1g-dev
+5. Install **zlib**: `sudo apt-get install zlib1g-dev`
 
-6.install openssl: sudo apt-get install libssl-dev
+6. Install **openssl**: `sudo apt-get install libssl-dev`
 
 
-**Centos（you'd better prepare centos7.0+）**
+**CentOS（version 7+ required）**
 
-1.install mysql client: sudo yum install mysql++-devel.x86_64
+1. Install **mysql** client: `sudo yum install mysql++-devel.x86_64`
 
-2.install postgresql: sudo yum install postgresql-devel.x86_64
+2. Install **postgresql**: `sudo yum install postgresql-devel.x86_64`
 
-3.install sqlite3: sudo yum install sqlite-devel.x86_64
+3. Install **sqlite3**: `sudo yum install sqlite-devel.x86_64`
 
-4.install uuid: sudo yum install uuid-devel.x86_64
+4. Install **uuid**: `sudo yum install uuid-devel.x86_64`
 
-5.install zlib: sudo yum install zlib-devel.x86_64
+5. Install **zlib**: `sudo yum install zlib-devel.x86_64`
 
-6.install openssl: sudo yum install openssl-devel.x86_64
+6. Install **openssl**: `sudo yum install openssl-devel.x86_64`
 
-**windows**
-1.install mysql connector if you use mysql database;
-2.install postgresql connector if you use pg database;
-3.install sqlite3 if you use it
+**Windows**
 
-**build**
+1. Install the **mysql** connector if you use MySQL
+2. Install the **postgresql** connector if you use Postgres
+3. Install **sqlite3** if you use it
 
+**Build**
+
+```
 git clone https://github.com/qicosmos/feather.git
 
 git submodule update --init
@@ -100,10 +107,11 @@ cd build
 cmake ..
 
 make -j
+```
 
-# example
+# Example
 
-## hello world
+## Hello world
 
 	#include "feather.h"
 	
@@ -123,25 +131,19 @@ make -j
 		return 0;
 	}
 
-request url: http://127.0.0.1:8080/
+The request URL is: http://127.0.0.1:8080/. The response will be: `hello world`.
 
-response: hello world
+You can handle both `POST` and `GET` requests from the client in the above example, because you have assigned the verbs `POST` and `GET`. 
 
-**note**
+Feather provides `GET`, `POST`, `DEL`, `HEAD`, `PUT`, `CONNECT`, `TRACE`, `OPTIONS` for you. You could choose 0-n arbitrary verbs for the request handler function as you wish.
 
-you can handle both post and get request from the client in above example, because you have assigned the verbs with POST and GET. 
+So you could reuse the same request handler function very easily.
 
-Feather provides GET, POST, DEL, HEAD, PUT, CONNECT, TRACE, OPTIONS for you. You could choose 0-n arbitrary verbs for the request handle function as your wish.
+## HTTP Request
 
-So you could reuse the same request handle function very easily.
+All the fields and data types from a parsed HTTP request are `std::string_view`. There are no memory copies, no memory moves, and there are enough convenient algorithms. I really love this feature from C++17. I think it should be used in all networking programs.  
 
-## request
-
-**note**
-
-All the fields and data types from parsed http request are std::string_view, no memory copy, no memory move, enough convenient algorithms. I really love this feature from c++17. I think it is should be used in all networking programmes.  
-
-you can get header fields from request object.
+You can get header fields from the request object:
 
 	server.set_http_handler<GET, POST>("/test", [](request& req, response& res) {
 		auto name = req.get_header_value("name");
@@ -152,13 +154,14 @@ you can get header fields from request object.
 
 		res.render_string("hello world");
 	});
-you can get a header value by a case-insensitive key from http headers.
+
+You can get a header value by a case-insensitive key from the HTTP headers:
 
 	auto name = req.get_header_value("name");
 
-If the header is not exist the returned value will be empty.
+If the header does not exist, the returned value will be empty.
 
-There is a similar method get_query_value to get query values.
+There is a similar method `get_query_value` to get query values:
 
 	auto id = req.get_query_value("id");
 	if (id.empty()) {
@@ -166,21 +169,21 @@ There is a similar method get_query_value to get query values.
 		return;
 	}
 
-You can also use get_query_value to get x-www-form-urlencoded value.
+You can also use `get_query_value` to get `x-www-form-urlencoded` value.
 
-## response
+## HTTP Response
 
-In above example you can see 
+In the above example, you can see:
 
 	res.render_string("hello world");
 
-Indeed it's a wrapper of 
+It's a wrapper for:
 
 	res.set_status_and_content(status_type::ok, "hello world", res_content_type::string);
 
-It lets you write fewer code.
+It lets you write less code.
 
-This is res_content_type:
+Here is `res_content_type`:
 
 	enum class res_content_type{
 		html,
@@ -189,7 +192,7 @@ This is res_content_type:
         none
 	};
 
-The default res_content_type in set_status_and_content is none. You can set the res_content_type as json.
+The default `res_content_type` in `set_status_and_content` is `none`. You can set the `res_content_type` as `json`:
 
 	server.set_http_handler<GET, POST,OPTIONS>("/json", [](request& req, response& res) {
 		nlohmann::json json;
@@ -206,62 +209,54 @@ The default res_content_type in set_status_and_content is none. You can set the 
 		}
 	});
 
-The above exmpale show how to response a json string or a normal string, further more you could add headers into the response.
+The above example shows how to respond with a JSON string or a normal string. Furthermore you could add headers to the response:
 
 	res.render_json(json);
-	it is same with
+	// It is the same as:
 	res.set_status_and_content(status_type::ok, json, res_content_type::json);
 
-req.get_method() will return http verbs such as POST, GET, OPTIONS etc.
+`req.get_method()` will return HTTP verbs such as `POST`, `GET`, `OPTIONS`, etc.
 
-How to deal with gzip?
-
-Don't worry，we have supported it already.
-
-If you want to use gzip to compress the response string, just need set the content_encoding type as gzip,
+How do we deal with **gzip**? Don't worry，we support it already. If you want to use **gzip** to compress the response string, just set the `content_encoding` type to `gzip`:
 
 	res.set_status_and_content(status_type::ok, "hello world", res_content_type::none, content_encoding::gzip);
 
-the framework will use gzip compress the response string for you, comfortable and sweet right? :)
+The framework will compress the response string for you. Comfortable and sweet, right? :)
 
-I think you have know enough about request and response(If you want to know more, please tell me).
+I think you now know enough about requests and responses. If you want to know more, please ask me.
 
-## file upload/download
+## File upload/download
 
-todo
+TODO
 
-## session/cookie
+## Sessions and cookies
 
-todo
+TODO
 
 ## AOP
 
-todo
+TODO
 
-## cache 
+## Cache 
 
-todo
+TODO
 
-## configuration
+## Configuration
 
-todo
+TODO
 
 ## ORM
 
-todo
+TODO
 
-## render
+## Render
 
-todo
+TODO
 
-## real example
+## Real example
 
-todo
+TODO
 
-# contact
+# Contact
 
-todo
-
-
-
-
+TODO
