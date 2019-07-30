@@ -4,6 +4,8 @@
 
 #ifndef FEATHER_DAO_HPP
 #define FEATHER_DAO_HPP
+#include "NanoLog.hpp"
+
 namespace feather{
     template<typename DB>
     class dao_t final{

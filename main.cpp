@@ -5,17 +5,16 @@
 #include "feather.h"
 #include "feather_cfg.hpp"
 #include "entity.h"
-#include "dao.hpp"
 #include "purecpp_controller.hpp"
 #include "validate.hpp"
+#include "dao.hpp"
 
 using namespace feather;
 using namespace ormpp;
 using namespace cinatra;
 
 void init(const feather_cfg& cfg) {
-
-	nanolog::initialize(nanolog::GuaranteedLogger(), cfg.log_path, cfg.log_name, cfg.roll_file_size);
+	nanolog::Logger::initialize(nanolog::GuaranteedLogger(), cfg.log_path, cfg.log_name, cfg.roll_file_size);
 
 	dao_t<dbng<mysql>>::init(cfg.db_conn_num, cfg.db_ip.data(), cfg.user_name.data(), cfg.pwd.data(),
 		cfg.db_name.data(), cfg.timeout);
@@ -50,7 +49,7 @@ int main() {
 
 	cinatra::http_server server(cfg.thread_num);
 	server.set_res_cache_max_age(86400);
-	server.set_public_root_directory("purecpp");
+	server.set_public_root_directory("cncppcon_page2019");
 	server.set_static_dir("static");
 	server.enable_http_cache(false);//set global cache
 	bool r = server.listen("0.0.0.0", cfg.port);
