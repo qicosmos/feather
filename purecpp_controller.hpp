@@ -444,8 +444,61 @@ namespace feather {
 			res.set_status_and_content(status_type::ok, "join suceessfull");
 		}
 
-		void cncppcon_page2018(request& req, response& res) {
-			render_simple_page(req, res, "./purecpp/html/register_cppcon.html", "cncppcon_page");
+		void cncppcon_page2019(request& req, response& res) {
+			render_simple_page(req, res, "./cncppcon_page2019/index.html", "cncppcon_page");
+		}
+
+		void enrol_speakers(request& req, response& res) {
+			auto name = req.get_query_value("name");
+			auto phone = req.get_query_value("phone");
+			auto mail = req.get_query_value("mail");
+			auto company = req.get_query_value("company");
+			auto country = req.get_query_value("country");
+
+			auto bio = req.get_query_value("bio");
+			auto title = req.get_query_value("title");
+			auto tags = req.get_query_value("tags");
+			auto session_length = req.get_query_value("session_length");
+			auto session_desc = req.get_query_value("session_desc");
+
+			auto outline = req.get_query_value("outline");
+			auto session_material = req.get_query_value("session_material");
+			auto code = req.get_query_value("code");
+
+			if (name.empty() || phone.empty() || mail.empty()) {
+				res.set_status_and_content(status_type::bad_request, "name or phone or mail are empty");
+				return;
+			}
+
+			speaker spk{};
+			spk.name = name;
+			spk.bio = bio;
+			spk.code = code;
+			spk.company = company;
+			spk.country = country;
+			spk.email = mail;
+			spk.outline = outline;
+			spk.tel = phone;
+			spk.session_desc = session_desc;
+			spk.session_length = session_length;
+			spk.session_material = session_material;
+			spk.tags = tags;
+			spk.title = title;
+
+			Dao dao;
+			int ret = dao.add_object(spk);
+			if (ret < 0) {
+				res.set_status_and_content(status_type::internal_server_error);
+				return;
+			}
+
+			nlohmann::json json;
+			json["code"] = 200;
+			json["msg"] = "thanks for you enrolment!";			
+			//nlohmann::json data;
+			//data["success"] = true;
+			//json["data"] = data;
+			res.render_json(json);
 		}
 
 		void cncppcon_query_page2018(request& req, response& res) {

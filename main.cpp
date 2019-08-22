@@ -36,6 +36,12 @@ void init(const feather_cfg& cfg) {
 	ormpp_unique uniq_key{ SID(book_course_member::phone) };
 	r = dao.create_table<book_course_member>(member_key, uniq_key);
 	assert(r);
+
+	{
+		ormpp_auto_key key{ SID(speaker::id) };
+		r = dao.create_table<speaker>(uniq_key);
+		assert(r);
+	}
 }
 
 int main() {
@@ -49,7 +55,7 @@ int main() {
 
 	cinatra::http_server server(cfg.thread_num);
 	server.set_res_cache_max_age(86400);
-	server.set_public_root_directory("cncppcon_page2019");
+	server.set_public_root_directory("");
 	server.set_static_dir("static");
 	server.enable_http_cache(false);//set global cache
 	bool r = server.listen("0.0.0.0", cfg.port);
@@ -70,7 +76,9 @@ int main() {
 	server.set_http_handler<GET, POST>("/course_page", &purecpp_controller::course_page, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/book_course", &purecpp_controller::book_course, &purecpp_ctl, check_join_cncppcon2018{}, check_book_course{});
 
-	server.set_http_handler<GET, POST>("/cncppcon_page2018", &purecpp_controller::cncppcon_page2018, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/cncppcon_page2019", &purecpp_controller::cncppcon_page2019, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/api/enrol/speaker", &purecpp_controller::enrol_speakers, &purecpp_ctl);
+
 	server.set_http_handler<GET, POST>("/cncppcon_query_page2018", &purecpp_controller::cncppcon_query_page2018, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/join_cncppcon2018", &purecpp_controller::join_cncppcon2018, &purecpp_ctl, check_join_cncppcon2018{});
 	server.set_http_handler<GET, POST>("/query_cncppcon2018", &purecpp_controller::query_cncppcon2018, &purecpp_ctl, check_query_cncppcon2018{});

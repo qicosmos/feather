@@ -132,6 +132,24 @@ namespace feather{
 		int counter;
 	};
 	REFLECTION(visit_counter, id, save_hour, counter);
+
+	struct speaker {
+		int id;
+		std::string name;
+		std::string tel;
+		std::string email;
+		std::string company;
+		std::string country;
+		std::string bio;
+		std::string title;
+		std::string tags;
+		std::string session_length;
+		std::string session_desc;
+		std::string outline;
+		std::string session_material;
+		std::string code;
+	};
+	REFLECTION(speaker, id, name, tel, email, company, country, bio, title, tags, session_length, session_desc, outline, session_material, code);
 }
 
 #endif //FEATHER_ENTITY_H
