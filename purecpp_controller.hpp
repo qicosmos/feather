@@ -463,17 +463,27 @@ namespace feather {
 
 			auto outline = req.get_query_value("outline");
 			auto session_material = req.get_query_value("session_material");
-			auto code = req.get_query_value("code");
+			auto comments = req.get_query_value("comments");
 
-			if (name.empty() || phone.empty() || mail.empty()) {
-				res.set_status_and_content(status_type::bad_request, "name or phone or mail are empty");
+			std::vector<std::string_view> v{ name, phone, mail,company,bio,title,tags, session_length,session_desc,outline,session_material };
+			int code = 200;
+			for (int i = 0; i < v.size(); i++) {
+				if (v[i].empty()) {
+					code = 40000 + i;
+					break;
+				}
+			}
+			if (code > 200) {
+				nlohmann::json json;
+				json["code"] = code;
+				json["msg"] = "enrol argument should not be empty";
+				res.render_json(json);
 				return;
 			}
 
 			speaker spk{};
 			spk.name = name;
 			spk.bio = bio;
-			spk.code = code;
 			spk.company = company;
 			spk.country = country;
 			spk.email = mail;
@@ -484,6 +494,7 @@ namespace feather {
 			spk.session_material = session_material;
 			spk.tags = tags;
 			spk.title = title;
+			spk.comments = comments;
 
 			Dao dao;
 			int ret = dao.add_object(spk);
@@ -494,10 +505,7 @@ namespace feather {
 
 			nlohmann::json json;
 			json["code"] = 200;
-			json["msg"] = "thanks for you enrolment!";			
-			//nlohmann::json data;
-			//data["success"] = true;
-			//json["data"] = data;
+			json["msg"] = "thanks for you enrolment!";
 			res.render_json(json);
 		}
 

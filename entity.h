@@ -147,9 +147,10 @@ namespace feather{
 		std::string session_desc;
 		std::string outline;
 		std::string session_material;
+		std::string comments;
 		std::string code;
 	};
-	REFLECTION(speaker, id, name, tel, email, company, country, bio, title, tags, session_length, session_desc, outline, session_material, code);
+	REFLECTION(speaker, id, name, tel, email, company, country, bio, title, tags, session_length, session_desc, outline, session_material, comments, code);
 }
 
 #endif //FEATHER_ENTITY_H
