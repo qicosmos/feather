@@ -77,6 +77,8 @@ int main() {
 	server.set_http_handler<GET, POST>("/book_course", &purecpp_controller::book_course, &purecpp_ctl, check_join_cncppcon2018{}, check_book_course{});
 
 	server.set_http_handler<GET, POST>("/cncppcon_page2019", &purecpp_controller::cncppcon_page2019, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/cncppcon_page2019/dash", &purecpp_controller::cncppcon_page2019, &purecpp_ctl);
+	server.set_http_handler<GET, POST>("/cncppcon_page2019/apply/lecturer", &purecpp_controller::cncppcon_page2019, &purecpp_ctl);
 	server.set_http_handler<GET, POST>("/api/enrol/speaker", &purecpp_controller::enrol_speakers, &purecpp_ctl);
 
 	server.set_http_handler<GET, POST>("/cncppcon_query_page2018", &purecpp_controller::cncppcon_query_page2018, &purecpp_ctl);
