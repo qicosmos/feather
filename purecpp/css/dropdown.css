@@ -338,3 +338,13 @@
   /* 4 */
   width: 100px;
 }
+
+//自定义样式
+.uk-dropdown .uk-nav li{
+   text-align：center;
+   font-size: 18px;
+}
+.uk-dropdown .uk-nav li:active{
+   background-color: #BBBBBB;
+}
+//自定义样式
