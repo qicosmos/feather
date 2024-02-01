@@ -12,4 +12,4 @@
 #include "ormpp/dbng.hpp"
 #include "ormpp/mysql.hpp"
 #include "util.hpp"
-#endif // FEATHER_FEATHER_H
+#endif  // FEATHER_FEATHER_H

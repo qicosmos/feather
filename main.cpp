@@ -58,7 +58,7 @@ int main() {
 
   init(cfg);
 
-  cinatra::http_server server(cfg.thread_num);
+  cinatra::http_server server(cfg.thread_num, atoi(cfg.port));
   server.set_res_cache_max_age(86400);
   server.set_public_root_directory("");
   server.set_static_dir("static");
@@ -162,7 +162,7 @@ int main() {
   server.set_http_handler<GET, POST>(
       "/upload_file", &purecpp_controller::upload, &purecpp_ctl, check_login{});
 
-  server.run();
+  server.sync_start();
 
   return 0;
 }

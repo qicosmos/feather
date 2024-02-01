@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.15)
 project(feather)
 
 #for mac
@@ -6,7 +6,11 @@ project(feather)
 #SET(CMAKE_CXX_COMPILER "/usr/local/bin/g++-8")
 #set(CMAKE_BUILD_TYPE Release)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++17")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+message(STATUS "CXX Standard: ${CMAKE_CXX_STANDARD}")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++20")
 SET(ENABLE_MYSQL ON)
 SET(ENABLE_PG OFF)
 SET(ENABLE_SQLITE3 OFF)
@@ -42,8 +46,6 @@ if(ENABLE_CLIENT_SSL)
 	add_definitions(-DCINATRA_ENABLE_CLIENT_SSL)
 endif()
 
-find_package(Boost 1.60 REQUIRED COMPONENTS system filesystem)
-
 if (ENABLE_SSL)
 	find_package(OpenSSL REQUIRED)
 endif()
@@ -61,11 +63,17 @@ set(SOURCE_FILES
         main.cpp
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines")
+    #-ftree-slp-vectorize with coroutine cause link error. disable it util gcc fix.
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-tree-slp-vectorize")
+endif()
+
 add_subdirectory(ormpp)
 
 add_executable(feather ${SOURCE_FILES})
 
-include_directories(${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+include_directories("cinatra/include" ${OPENSSL_INCLUDE_DIR})
 
 target_link_libraries(feather ${Boost_LIBRARIES} uuid -lstdc++fs)
 
