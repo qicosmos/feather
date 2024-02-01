@@ -4,9 +4,6 @@
 [submodule "ormpp"]
 	path = ormpp
 	url = https://github.com/qicosmos/ormpp.git
-[submodule "iguana"]
-	path = iguana
-	url = https://github.com/qicosmos/iguana.git
 [submodule "render"]
 	path = render
 	url = https://github.com/qicosmos/render.git

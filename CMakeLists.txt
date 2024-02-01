@@ -18,15 +18,15 @@ SET(ENABLE_SSL OFF)
 SET(ENABLE_CLIENT_SSL OFF)
 
 if (ENABLE_MYSQL)
-add_definitions(-DORMPP_ENABLE_MYSQL)
+	add_definitions(-DORMPP_ENABLE_MYSQL)
 endif()
 
 if (ENABLE_SQLITE3)
-add_definitions(-DORMPP_ENABLE_SQLITE3)
+	add_definitions(-DORMPP_ENABLE_SQLITE3)
 endif()
 
 if (ENABLE_PG)
-add_definitions(-DORMPP_ENABLE_PG)
+	add_definitions(-DORMPP_ENABLE_PG)
 endif()
 
 if (ENABLE_SSL)
@@ -45,8 +45,9 @@ endif()
 find_package(Boost 1.60 REQUIRED COMPONENTS system filesystem)
 
 if (ENABLE_SSL)
-find_package(OpenSSL REQUIRED)
+	find_package(OpenSSL REQUIRED)
 endif()
+
 if (ENABLE_CLIENT_SSL)
 	find_package(OpenSSL REQUIRED)
 endif()
@@ -60,6 +61,8 @@ set(SOURCE_FILES
         main.cpp
 )
 
+add_subdirectory(ormpp)
+
 add_executable(feather ${SOURCE_FILES})
 
 include_directories(${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
@@ -67,17 +70,19 @@ include_directories(${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
 target_link_libraries(feather ${Boost_LIBRARIES} uuid -lstdc++fs)
 
 if (ENABLE_MYSQL)
-target_link_libraries(feather mysqlclient)
+	target_link_libraries(feather ${MYSQL_LIBRARY})
+	target_include_directories(feather PRIVATE ${MYSQL_INCLUDE_DIR} ormpp)
 endif()
 
 if (ENABLE_SQLITE3)
-target_link_libraries(feather sqlite3)
+	target_link_libraries(feather sqlite3)
+	target_include_directories(feather PRIVATE ormpp)
 endif()
 
 if (ENABLE_PG)
-target_link_libraries(feather pq)
+	target_link_libraries(feather ${PGSQL_LIBRARY})
+	target_include_directories(feather PRIVATE ${PGSQL_INCLUDE_DIR} ormpp)
 endif()
-
 
 if (ENABLE_SSL)
 	target_link_libraries(feather ${OPENSSL_LIBRARIES} pthread -ldl)
@@ -91,4 +96,4 @@ if (ENABLE_GZIP)
 	target_link_libraries(feather ${ZLIB_LIBRARIES})
 endif()
 
-install(TARGETS feather DESTINATION include)
+install(TARGETS feather DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
