@@ -6,9 +6,10 @@
 #define FEATHER_FEATHER_H
 
 #include "cinatra/include/cinatra.hpp"
+#include "iguana/json_reader.hpp"
+#include "iguana/json_writer.hpp"
+#include "ormpp/connection_pool.hpp"
 #include "ormpp/dbng.hpp"
 #include "ormpp/mysql.hpp"
-#include "ormpp/connection_pool.hpp"
-#include "iguana/iguana/json.hpp"
 #include "util.hpp"
-#endif //FEATHER_FEATHER_H
+#endif // FEATHER_FEATHER_H
