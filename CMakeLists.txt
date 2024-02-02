@@ -62,6 +62,12 @@ set(SOURCE_FILES
         main.cpp
 )
 
+if (MSVC)
+  	add_compile_options(/bigobj)
+else ()
+  	add_compile_options(-Wa,-mbig-obj)
+endif ()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines -pthread -std=c++20")
     #-ftree-slp-vectorize with coroutine cause link error. disable it util gcc fix.
@@ -77,9 +83,6 @@ include_directories("cinatra/include" ${OPENSSL_INCLUDE_DIR})
 if (ENABLE_MYSQL)
 	target_link_libraries(feather ${MYSQL_LIBRARY})
 	target_include_directories(feather PRIVATE ${MYSQL_INCLUDE_DIR} ormpp)
-	if (MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-			set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/MD")
-	endif()
 endif()
 
 if (ENABLE_SQLITE3)
