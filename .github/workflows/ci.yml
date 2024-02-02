@@ -1,0 +1,31 @@
+name: CI
+
+on: [ push, pull_request ]
+
+jobs:
+  build-and-test:
+
+    name: ${{ matrix.os }} (${{ matrix.configuration }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [ Debug, Release ]
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+
+      - name: Setup MySQL
+        uses: ankane/setup-mysql@v1
+        if  : startsWith(matrix.os, 'macos')
+
+      - name: Configure cmake
+        run:  cmake -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+
+      - name: Build
+        run:  cmake --build ${{github.workspace}}/build --config ${{ matrix.configuration }}
