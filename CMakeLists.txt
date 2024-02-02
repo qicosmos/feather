@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "CXX Standard: ${CMAKE_CXX_STANDARD}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++20")
 SET(ENABLE_MYSQL ON)
 SET(ENABLE_PG OFF)
 SET(ENABLE_SQLITE3 OFF)
@@ -64,7 +63,7 @@ set(SOURCE_FILES
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines -pthread -std=c++20")
     #-ftree-slp-vectorize with coroutine cause link error. disable it util gcc fix.
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-tree-slp-vectorize")
 endif()

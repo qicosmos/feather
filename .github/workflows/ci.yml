@@ -20,6 +20,12 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Setup MySQL
+        uses: ankane/setup-mysql@v1
+        with: 
+          mysql-version: 8.0
+          database: feather
+
       - name: Configure cmake
         run:  cmake -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
 
