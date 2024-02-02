@@ -2,13 +2,7 @@
 
 *Read this in other languages: [English](https://github.com/qicosmos/feather/blob/master/README.en.md), [简体中文](https://github.com/qicosmos/feather/blob/master/README.md)
 
-[如何在archlinux上运行feather](https://github.com/qicosmos/feather/blob/master/docs/feather%20compile%20and%20run%20in%20marjaro_archlinux(author-SkyFire).md)
-
-[如何在win10上运行feather](https://github.com/qicosmos/feather/blob/master/docs/window_build(author-tc).txt)
-
-[如何在mac上运行feather](https://github.com/qicosmos/feather/blob/master/docs/feather%20Mac%E7%BC%96%E8%AF%91%E6%96%87%E6%A1%A3.md)
-
-[如何在windows和linux上运行feather](https://github.com/qicosmos/feather/blob/master/docs/featehr%20%E4%BD%BF%E7%94%A8.txt)
+[feather使用](https://github.com/qicosmos/feather/blob/master/docs/featehr%20%E4%BD%BF%E7%94%A8.md)
 
 Feather是一个适合快速开发的modern c++ web框架，Feather的目标是让使用者以最小的精力和成本来开发一个web网站。
 

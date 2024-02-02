@@ -9,9 +9,7 @@
 2. 编译
 
     ```shell
-    git clone https://github.com/qicosmos/feather.git
-
-    git submodule update --init
+    git clone --recurse-submodules https://github.com/qicosmos/feather.git
 
     cmake -B build
 
