@@ -74,11 +74,12 @@ add_executable(feather ${SOURCE_FILES})
 
 include_directories("cinatra/include" ${OPENSSL_INCLUDE_DIR})
 
-target_link_libraries(feather ${Boost_LIBRARIES} uuid -lstdc++fs)
-
 if (ENABLE_MYSQL)
 	target_link_libraries(feather ${MYSQL_LIBRARY})
 	target_include_directories(feather PRIVATE ${MYSQL_INCLUDE_DIR} ormpp)
+	if (MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+			set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/MD")
+	endif()
 endif()
 
 if (ENABLE_SQLITE3)
