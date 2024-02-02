@@ -33,7 +33,7 @@ class NanologBase {
 
   static std::string get_datetime(uint64_t timestamp) {
     char miliseconds[4];
-    sprintf(miliseconds, "%03llu", timestamp % 1000);
+    sprintf(miliseconds, "%03lu", timestamp % 1000);
     std::time_t time_t = timestamp / 1000;
     tm* gmtime = std::localtime(&time_t);
 
@@ -61,7 +61,7 @@ class NanologBase {
     // std::time_t time_t =
     // std::chrono::high_resolution_clock::to_time_t(time_point);
     char miliseconds[7];
-    sprintf(miliseconds, "%03llu", timestamp % 1000);
+    sprintf(miliseconds, "%03lu", timestamp % 1000);
     std::time_t time_t = timestamp / 1000;
     tm* gmtime = std::localtime(&time_t);
 

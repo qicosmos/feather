@@ -1,8 +1,15 @@
 #pragma once
+#include <memory>
+#include <string>
+
+#include "cinatra/define.h"
+#include "cinatra/session.hpp"
 #include "dao.hpp"
 #include "entity.h"
 #include "feather.h"
 #include "md5.hpp"
+#include "nlohmann_json.hpp"
+#include "render/render.h"
 #include "validate.hpp"
 using namespace ormpp;
 using namespace cinatra;
@@ -49,11 +56,11 @@ class purecpp_controller {
       total_post_count_ = std::get<0>(v[0]);
     }
 
-    auto session = req.get_session().lock();
-    if (session == nullptr ||
-        session->get_data<std::string>("user_name").empty()) {
-      auto new_session = res.start_session();
-      new_session->set_max_age(-1);
+    auto session = req.get_session(false);
+
+    if (!session || !session->get_data<std::string>("user_name").has_value()) {
+      auto new_session = req.get_session();
+      new_session->set_session_timeout();
     }
 
     size_t cur_page = atoi(s.data()) / 10 + 1;
@@ -69,19 +76,21 @@ class purecpp_controller {
   }
 
   void upload(request& req, response& res) {
-    assert(req.get_content_type() == content_type::multipart);
-    std::string filenames = "";
-    auto& files = req.get_upload_files();
-    for (auto& file : files) {
-      filenames += file.get_file_path();
-    }
-    nlohmann::json result;
-    result["code"] = 0;
-    result["msg"] = "";
-    nlohmann::json data;
-    data["src"] = "http://purecpp.org" + filenames.substr(1);
-    result["data"] = data;
-    res.render_json(result);
+    // assert(req.get_content_type() == content_type::multipart);
+    // std::string filenames = "";
+    // auto& files = req.get_upload_files();
+    // for (auto& file : files) {
+    //   filenames += file.get_file_path();
+    // }
+    // nlohmann::json result;
+    // result["code"] = 0;
+    // result["msg"] = "";
+    // nlohmann::json data;
+    // data["src"] = "http://purecpp.org" + filenames.substr(1);
+    // result["data"] = data;
+
+    // res.set_content_type<resp_content_type::json>();
+    // res.set_status_and_content(status_type::ok, result.dump());
   }
 
   void detail(request& req, response& res) {
@@ -196,7 +205,7 @@ class purecpp_controller {
     post.post_content = sv2s(post_content);
     post.post_status = /*role == "0" ? "waiting" : */ "publish";
 
-    size_t pos = post_content.find_first_of(u8"\r\n");
+    size_t pos = post_content.find_first_of("\r\n");
     auto substr = utf8substr(
         post_content,
         pos < 200 ? pos
@@ -303,7 +312,7 @@ class purecpp_controller {
     post.post_content = std::string(post_content.data(), post_content.length());
     post.post_status = /*role == "0" ? "waiting" :*/ "publish";
 
-    size_t pos = post_content.find_first_of(u8"\r\n");
+    size_t pos = post_content.find_first_of("\r\n");
     auto substr = utf8substr(
         post_content,
         pos < 200 ? pos
@@ -446,10 +455,9 @@ class purecpp_controller {
   }
 
   void quit(request& req, response& res) {
-    auto ptr = req.get_session();
-    auto session = ptr.lock();
+    auto session = req.get_session(false);
     if (session) {
-      session->set_max_age(0);
+      session->set_session_timeout(0);
     }
 
     res.redirect("./home");
@@ -543,7 +551,8 @@ class purecpp_controller {
       nlohmann::json json;
       json["code"] = code;
       json["msg"] = "enrol argument should not be empty";
-      res.render_json(json);
+      res.set_content_type<resp_content_type::json>();
+      res.set_status_and_content(status_type::ok, json.dump());
       return;
     }
 
@@ -572,7 +581,8 @@ class purecpp_controller {
     nlohmann::json json;
     json["code"] = 200;
     json["msg"] = "thanks for you enrolment!";
-    res.render_json(json);
+    res.set_content_type<resp_content_type::json>();
+    res.set_status_and_content(status_type::ok, json.dump());
   }
 
   void cncppcon_query_page2018(request& req, response& res) {
@@ -838,16 +848,16 @@ class purecpp_controller {
   void init_session(request& req, response& res, const std::string& user_id,
                     const std::string& user_role,
                     const std::string& user_name) {
-    auto session = req.get_session().lock();
+    auto session = req.get_session(false);
     if (session == nullptr) {
-      auto new_session = res.start_session();
+      auto new_session = req.get_session();
       new_session->set_data("user_name", user_name);
       new_session->set_data("userid", user_id);
       new_session->set_data("user_role", user_role);
-      new_session->set_max_age(-1);
+      new_session->set_session_timeout();
     }
     else {
-      if (session->get_data<std::string>("user_name").empty()) {
+      if (!session->get_data<std::string>("user_name").has_value()) {
         session->set_data("user_name", user_name);
         session->set_data("userid", user_id);
         session->set_data("user_role", user_role);
@@ -856,12 +866,12 @@ class purecpp_controller {
   }
 
   void visit_count() {
-    std::this_thread::sleep_for(std::chrono::minutes(60));
-    int count = response::get_counter();
-    response::reset_counter();
-    visit_counter counter{0, cur_time(), count};
-    Dao dao;
-    dao.add_object(counter);
+    // std::this_thread::sleep_for(std::chrono::minutes(60));
+    // int count = response::get_counter();
+    // response::reset_counter();
+    // visit_counter counter{0, cur_time(), count};
+    // Dao dao;
+    // dao.add_object(counter);
   }
 
  private:
