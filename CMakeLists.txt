@@ -64,8 +64,6 @@ set(SOURCE_FILES
 
 if (MSVC)
   	add_compile_options(/bigobj)
-else ()
-  	add_compile_options(-Wa,-mbig-obj)
 endif ()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
