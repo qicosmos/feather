@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(feather)
 
-#for mac
-#SET(CMAKE_C_COMPILER "/usr/local/bin/gcc-8")
-#SET(CMAKE_CXX_COMPILER "/usr/local/bin/g++-8")
-#set(CMAKE_BUILD_TYPE Release)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "CXX Standard: ${CMAKE_CXX_STANDARD}")

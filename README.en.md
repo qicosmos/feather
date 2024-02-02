@@ -100,13 +100,9 @@ git clone https://github.com/qicosmos/feather.git
 
 git submodule update --init
 
-mkdir build
+cmake -B build
 
-cd build
-
-cmake ..
-
-make -j
+cmake --build build
 ```
 
 # Example
