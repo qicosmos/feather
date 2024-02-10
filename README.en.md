@@ -96,17 +96,11 @@ If you want to use SSL, you also need to install a SSL library. This is not nece
 **Build**
 
 ```
-git clone https://github.com/qicosmos/feather.git
+git clone --recurse-submodules https://github.com/qicosmos/feather.git
 
-git submodule update --init
+cmake -B build
 
-mkdir build
-
-cd build
-
-cmake ..
-
-make -j
+cmake --build build
 ```
 
 # Example

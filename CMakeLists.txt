@@ -1,19 +1,15 @@
 cmake_minimum_required(VERSION 3.15)
 project(feather)
 
-#for mac
-#SET(CMAKE_C_COMPILER "/usr/local/bin/gcc-8")
-#SET(CMAKE_CXX_COMPILER "/usr/local/bin/g++-8")
-#set(CMAKE_BUILD_TYPE Release)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "CXX Standard: ${CMAKE_CXX_STANDARD}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++20")
-SET(ENABLE_MYSQL OFF)
+SET(ENABLE_MYSQL ON)
+
 SET(ENABLE_PG OFF)
-SET(ENABLE_SQLITE3 ON)
+SET(ENABLE_SQLITE3 OFF)
 
 SET(ENABLE_GZIP OFF)
 
@@ -63,23 +59,28 @@ set(SOURCE_FILES
         main.cpp
 )
 
+if (MSVC)
+  	add_compile_options(/bigobj)
+endif ()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines -pthread -std=c++20")
     #-ftree-slp-vectorize with coroutine cause link error. disable it util gcc fix.
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-tree-slp-vectorize")
 endif()
 
 add_subdirectory(ormpp)
 
-add_executable(feather ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 include_directories("cinatra/include" ${OPENSSL_INCLUDE_DIR})
 
-target_link_libraries(feather ${Boost_LIBRARIES} uuid -lstdc++fs)
-
 if (ENABLE_MYSQL)
-	target_link_libraries(feather ${MYSQL_LIBRARY})
-	target_include_directories(feather PRIVATE ${MYSQL_INCLUDE_DIR} ormpp)
+	target_link_libraries(${PROJECT_NAME} ${MYSQL_LIBRARY})
+	target_include_directories(${PROJECT_NAME} PRIVATE ${MYSQL_INCLUDE_DIR} ormpp)
+	if (MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+		set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/MD")
+	endif()
 endif()
 
 if (ENABLE_SQLITE3)
@@ -88,20 +89,20 @@ if (ENABLE_SQLITE3)
 endif()
 
 if (ENABLE_PG)
-	target_link_libraries(feather ${PGSQL_LIBRARY})
-	target_include_directories(feather PRIVATE ${PGSQL_INCLUDE_DIR} ormpp)
+	target_link_libraries(${PROJECT_NAME} ${PGSQL_LIBRARY})
+	target_include_directories(${PROJECT_NAME} PRIVATE ${PGSQL_INCLUDE_DIR} ormpp)
 endif()
 
 if (ENABLE_SSL)
-	target_link_libraries(feather ${OPENSSL_LIBRARIES} pthread -ldl)
+	target_link_libraries(${PROJECT_NAME} ${OPENSSL_LIBRARIES} pthread -ldl)
 endif()
 
 if (ENABLE_CLIENT_SSL)
-	target_link_libraries(feather ${OPENSSL_LIBRARIES} pthread -ldl)
+	target_link_libraries(${PROJECT_NAME} ${OPENSSL_LIBRARIES} pthread -ldl)
 endif()
 
 if (ENABLE_GZIP)
-	target_link_libraries(feather ${ZLIB_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
 endif()
 
 install(TARGETS feather DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
