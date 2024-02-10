@@ -30,7 +30,7 @@ bool len_more_than(T... args) {
   return r;
 }
 
-struct check_login : public base_aspect {
+struct check_login {
   bool before(request& req, response& res) {
     auto v = get_user_info(req);
     if (v.empty() || v[0].empty()) {
@@ -42,7 +42,7 @@ struct check_login : public base_aspect {
   }
 };
 
-struct check_comment_input : public base_aspect {
+struct check_comment_input {
   bool before(request& req, response& res) {
     auto post_id = req.get_query_value("post_id");
     if (!is_integer(post_id)) {
@@ -84,13 +84,13 @@ inline bool check_integers(request& req, response& res, T... key) {
   return r;
 }
 
-struct check_remove_comment_input : public base_aspect {
+struct check_remove_comment_input {
   bool before(request& req, response& res) {
     return check_integers(req, res, "id", "post_id");
   }
 };
 
-struct check_detail_input : public base_aspect {
+struct check_detail_input {
   bool before(request& req, response& res) {
     return check_integer(req, res, "id");
   }
@@ -112,7 +112,7 @@ inline bool set_start_end(request& req, response& res, std::string& s,
   return true;
 }
 
-struct check_category_input : public base_aspect {
+struct check_category_input {
   bool before(request& req, response& res) {
     std::string s = "0";
     std::string lens = "10";
@@ -130,7 +130,7 @@ struct check_category_input : public base_aspect {
   }
 };
 
-struct check_search_input : public base_aspect {
+struct check_search_input {
   bool before(request& req, response& res) {
     std::string s = "0";
     std::string lens = "10";
@@ -160,7 +160,7 @@ struct check_search_input : public base_aspect {
   }
 };
 
-struct check_start_end_input : public base_aspect {
+struct check_start_end_input {
   bool before(request& req, response& res) {
     std::string s = "0";
     std::string lens = "10";
@@ -196,7 +196,7 @@ inline bool check_input(response& res, T... args) {
   return r;
 }
 
-struct check_login_input : public base_aspect {
+struct check_login_input {
   bool before(request& req, response& res) {
     auto user_name = req.get_query_value("user_name");
     auto password = req.get_query_value("password");
@@ -215,7 +215,7 @@ struct check_login_input : public base_aspect {
   }
 };
 
-struct check_sign_out_input : public base_aspect {
+struct check_sign_out_input {
   bool before(request& req, response& res) {
     auto user_name = req.get_query_value("user_name");
     auto email = req.get_query_value("email");
@@ -247,7 +247,7 @@ struct check_sign_out_input : public base_aspect {
   }
 };
 
-struct check_book_course : public base_aspect {
+struct check_book_course {
   bool before(request& req, response& res) {
     // std::string result;
     // for (size_t i = 0; i < req.get_form_url_map().size(); i++) {
@@ -270,7 +270,7 @@ struct check_book_course : public base_aspect {
   }
 };
 
-struct check_join_cncppcon2018 : public base_aspect {
+struct check_join_cncppcon2018 {
   bool before(request& req, response& res) {
     auto user_name = req.get_query_value("user_name");
     auto email = req.get_query_value("user_email");
@@ -310,7 +310,7 @@ struct check_join_cncppcon2018 : public base_aspect {
   }
 };
 
-struct check_query_cncppcon2018 : public base_aspect {
+struct check_query_cncppcon2018 {
   bool before(request& req, response& res) {
     auto phone = req.get_query_value("user_phone");
     auto answer = req.get_query_value("user_answer");
@@ -337,7 +337,7 @@ struct check_query_cncppcon2018 : public base_aspect {
   }
 };
 
-struct check_member_edit_input : public base_aspect {
+struct check_member_edit_input {
   bool before(request& req, response& res) {
     auto old_password = req.get_query_value("old_password");
     auto new_pwd = req.get_query_value("new_password");
@@ -361,7 +361,7 @@ struct check_member_edit_input : public base_aspect {
   }
 };
 
-struct check_edit_post_input : public base_aspect {
+struct check_edit_post_input {
   bool before(request& req, response& res) {
     if (!check_integer(req, res, "id")) {
       return false;
