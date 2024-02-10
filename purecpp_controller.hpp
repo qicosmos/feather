@@ -15,7 +15,15 @@ using namespace ormpp;
 using namespace cinatra;
 
 namespace feather {
+#ifdef ORMPP_ENABLE_MYSQL
 using Dao = dao_t<dbng<mysql>>;
+#endif
+#ifdef ORMPP_ENABLE_SQLITE3
+using Dao = dao_t<dbng<sqlite>>;
+#endif
+#ifdef ORMPP_ENABLE_PG
+using Dao = dao_t<dbng<postgresql>>;
+#endif
 class purecpp_controller {
  public:
   purecpp_controller() {

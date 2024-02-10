@@ -11,9 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "CXX Standard: ${CMAKE_CXX_STANDARD}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++20")
-SET(ENABLE_MYSQL ON)
+SET(ENABLE_MYSQL OFF)
 SET(ENABLE_PG OFF)
-SET(ENABLE_SQLITE3 OFF)
+SET(ENABLE_SQLITE3 ON)
 
 SET(ENABLE_GZIP OFF)
 
@@ -83,7 +83,7 @@ if (ENABLE_MYSQL)
 endif()
 
 if (ENABLE_SQLITE3)
-	target_link_libraries(feather sqlite3)
+	target_link_libraries(feather sqlite3 -ldl)
 	target_include_directories(feather PRIVATE ormpp)
 endif()
 
