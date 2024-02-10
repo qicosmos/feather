@@ -8,15 +8,27 @@ namespace feather {
 
 inline std::vector<std::string> get_user_info(request& req) {
   auto session = req.get_session();
-  return {session->get_data<std::string>("user_name").value(),
-          session->get_data<std::string>("userid").value(),
-          session->get_data<std::string>("user_role").value()};
+  std::vector<std::string> v;
+  if (auto opt = session->get_data<std::string>("user_name"); opt) {
+    v.push_back(opt.value());
+  }
+  if (auto opt = session->get_data<std::string>("userid"); opt) {
+    v.push_back(opt.value());
+  }
+  if (auto opt = session->get_data<std::string>("user_role"); opt) {
+    v.push_back(opt.value());
+  }
+  return v;
 }
 
 inline std::string get_value_from_session(request& req,
                                           const std::string& key) {
   auto session = req.get_session();
-  return session->get_data<std::string>(key).value();
+  auto result = session->get_data<std::string>(key);
+  if (result) {
+    return result.value();
+  }
+  return "";
 }
 
 inline std::string get_user_name_from_session(request& req) {

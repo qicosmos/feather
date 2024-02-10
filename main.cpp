@@ -69,7 +69,7 @@ int main() {
   init(cfg);
 
   cinatra::http_server server(cfg.thread_num, atoi(cfg.port.data()));
-  server.set_static_res_dir("", "static");
+  server.set_static_res_dir("", "");
   server.set_max_size_of_cache_files(1024 * 1024);
 
   purecpp_controller purecpp_ctl;

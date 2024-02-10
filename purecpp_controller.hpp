@@ -69,6 +69,7 @@ class purecpp_controller {
     if (!session || !session->get_data<std::string>("user_name").has_value()) {
       auto new_session = req.get_session();
       new_session->set_session_timeout();
+      session = new_session;
     }
 
     size_t cur_page = atoi(s.data()) / 10 + 1;
