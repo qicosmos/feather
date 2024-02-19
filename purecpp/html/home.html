@@ -13,12 +13,12 @@ $inline {{
   }}
   <!-- 主体（一般只改变这里的内容） -->
   <div class="blog-body">
-      <span style="position: absolute; top:15%;color:white;width:100%;text-align:center">
-        <a class="blog-logo" href="/">
-            <font color="yellow" size="5">
-				<b>Newer is Better</b>
-            </font>
-        </a>
+    <span style="position: absolute; top:15%;color:white;width:100%;text-align:center">
+      <a class="blog-logo" href="/">
+        <font color="yellow" size="5">
+          <b>Newer is Better</b>
+        </font>
+      </a>
     </span>
     </span>
     <!-- canvas -->
@@ -37,31 +37,31 @@ $inline {{
     <div class="blog-container">
       <div class="blog-main">
         <!-- 网站公告提示 -->
-		$inline {{
-		./purecpp/html/notice.html
-		}}
+        $inline {{
+        ./purecpp/html/notice.html
+        }}
         <!--左边文章列表-->
         <div class="blog-main-left">
-		<div class="article shadow">
-			<ul>
-			  <li>
-				<h2>
-					<a class="layui-badge">公告</a>
-					<a class="layui-text" href="./detail?id=2115">C++ 工作机会 - Q2 2019</a>
-				<h2>
-				<h2>
-					<a class="layui-badge">公告</a>
-					<a class="layui-text" href="./detail?id=2118">C++分布式基础设施技术分享报名开始了！！</a>
-				<h2>
-			  </li>
-			  <li>
-				<h2>
-					<a class="layui-badge">致谢</a>
-					<a class="layui-text" href="">感谢北京聚高科技有限公司给社区提供云主机</a>
-				<h2>
-			  </li>
-			</ul>
-		  </div>	  
+          <div class="article shadow">
+            <ul>
+              <li>
+                <h2>
+                  <a class="layui-badge">公告</a>
+                  <a class="layui-text" href="./detail?id=2115">C++ 工作机会 - Q2 2019</a>
+                  <h2>
+                    <h2>
+                      <a class="layui-badge">公告</a>
+                      <a class="layui-text" href="./detail?id=2118">C++分布式基础设施技术分享报名开始了！！</a>
+                      <h2>
+              </li>
+              <li>
+                <h2>
+                  <a class="layui-badge">致谢</a>
+                  <a class="layui-text" href="">感谢北京聚高科技有限公司给社区提供云主机</a>
+                  <h2>
+              </li>
+            </ul>
+          </div>
           $for item in article_list{{
           <div class="article shadow">
             <div class="article-left">
@@ -85,39 +85,40 @@ $inline {{
                 <i class="fa fa-tag"></i>&nbsp;&nbsp;
                 ${item.category}
               </span>
-			  $if item.is_owner{{
-			  <span>
+              <span class="fa">总访问量: ${item.visit_count}</span>
+              $if item.is_owner{{
+              <span>
                 <i class="fa fa-tag"></i><a href="./edit_post_page?id=${item.ID}">编辑</a>
-			  </span>
-			  }}
-			  $if item.is_admin{{
-			  <span>
+              </span>
+              }}
+              $if item.is_admin{{
+              <span>
                 <i class="fa fa-tag"></i><a href="./edit_post_page?id=${item.ID}">编辑</a>
-			  </span>
-			  <span>
+              </span>
+              <span>
                 <i class="fa fa-tag"></i><a href="./remove_post?id=${item.ID}">删除</a>
-			  </span>
-			  <span>
+              </span>
+              <span>
                 <i class="fa fa-tag"></i><a href="./pass_post?id=${item.ID}">通过</a>
-			  </span>
-			  }}
+              </span>
+              }}
             </div>
           </div>
           }}
-		  <div id="test1" class="article-right"></div>
+          <div id="test1" class="article-right"></div>
         </div>
         <!--右边小栏目-->
         $inline {{
-		./purecpp/html/righter.html
-		}}
+        ./purecpp/html/righter.html
+        }}
         <div class="clear"></div>
       </div>
     </div>
   </div>
   <!-- 底部 -->
-$inline {{
-	./purecpp/html/footer.html
-}}
+  $inline {{
+  ./purecpp/html/footer.html
+  }}
   <!--遮罩-->
   <div class="blog-mask animated layui-hide"></div>
   <!-- layui.js -->
@@ -128,33 +129,34 @@ $inline {{
   <script src="./purecpp/js/home.js"></script>
 </body>
 <script>
-    layui.use('form', function () {
-        var form = layui.form;
-        form.on('submit(formSearch)', function(data){
-			data.form.submit();
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        });
-        //各种基于事件的操作，下面会有进一步介绍
+  layui.use('form', function () {
+    var form = layui.form;
+    form.on('submit(formSearch)', function (data) {
+      data.form.submit();
+      return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
     });
+    //各种基于事件的操作，下面会有进一步介绍
+  });
 </script>
 <script>
-layui.use('laypage', function(){
-  var laypage = layui.laypage;
-  
-  //执行一个laypage实例
-  laypage.render({
-    elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
-    ,count: ${total} //数据总数，从服务端得到
-	 ,curr: ${current_page}
-	  ,jump: function(obj, first){
-    
-    //首次不执行
-    if(!first){
-      //do something
-	   window.location.href=  "/?start="+(obj.curr-1)*10+"&len="+obj.limit;
-    }
-  }
+  layui.use('laypage', function () {
+    var laypage = layui.laypage;
+
+    //执行一个laypage实例
+    laypage.render({
+      elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+      , count: ${ total } //数据总数，从服务端得到
+      , curr: ${ current_page }
+      , jump: function (obj, first) {
+
+        //首次不执行
+        if (!first) {
+          //do something
+          window.location.href = "/?start=" + (obj.curr - 1) * 10 + "&len=" + obj.limit;
+        }
+      }
   });
 });
 </script>
+
 </html>

@@ -2,9 +2,14 @@
 
 1. 安装依赖库
 
-    ```text
-    mysql
-    ```
+```text
+  如果使用mysql需要安装mysql服务器和mysql client
+
+  安装mysql client:
+  Ubuntu: apt-get install libmysqlclient-dev
+  Centos: yum install mysql-devel
+  Mac: brew install mysql-client
+```
 	
 2. 编译
 
