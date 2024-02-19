@@ -19,10 +19,11 @@ struct pp_posts {
   int comment_count;
   std::string category;
   std::string raw_content;
+  int visit_count;
 };
 REFLECTION(pp_posts, ID, post_author, post_date, post_title, post_content,
            post_status, post_modified, content_abstract, url, comment_count,
-           category, raw_content);
+           category, raw_content, visit_count);
 
 struct pp_user {
   int ID;

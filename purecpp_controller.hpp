@@ -145,6 +145,10 @@ class purecpp_controller {
     nlohmann::json article;
     article["comment_list"] = std::move(comment_list);
     auto& post = std::get<0>(v[0]);
+    post.visit_count++;
+    int rows = dao.execute(
+        "update pp_posts set visit_count=" + std::to_string(post.visit_count) +
+        " where ID=" + std::to_string(post.ID));
     article["post_id"] = post_id;
     article["post_title"] = post.post_title;
     article["post_modified"] = post.post_modified;
@@ -155,6 +159,7 @@ class purecpp_controller {
     article["has_login"] = !login_user_name.empty();
     article["login_user_name"] = login_user_name;
     article["category"] = "all";
+    article["visit_count"] = post.visit_count;
     res.add_header("Content-Type", "text/html; charset=utf-8");
     res.set_status_and_content(
         status_type::ok,
@@ -818,6 +823,7 @@ class purecpp_controller {
       item["post_title"] = post.post_title;
       item["category"] = category_map_[post.category];
       item["comment_count"] = post.comment_count;
+      item["visit_count"] = post.visit_count;
 
       std::string user_login = std::get<1>(o);
       item["user_login"] = user_login;

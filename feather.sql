@@ -167,6 +167,7 @@ CREATE TABLE `pp_posts` (
   `content_abstract` text NOT NULL,
   `url` varchar(255) NOT NULL,
   `comment_count` bigint(20) NOT NULL,
+  `visit_count` bigint(20) NOT NULL,
   `category` varchar(255) NOT NULL,
   `raw_content` text NOT NULL,
   PRIMARY KEY (`ID`)
@@ -179,7 +180,7 @@ CREATE TABLE `pp_posts` (
 
 LOCK TABLES `pp_posts` WRITE;
 /*!40000 ALTER TABLE `pp_posts` DISABLE KEYS */;
-INSERT INTO `pp_posts` VALUES (2058,2535,'2018-12-12 10:16:44','1','# 初始数据放这里','publish','2018-12-12 10:16:44','# 初始数据放这里...','',0,'3','');
+INSERT INTO `pp_posts` VALUES (2058,2535,'2018-12-12 10:16:44','1','# 初始数据放这里','publish','2018-12-12 10:16:44','# 初始数据放这里...','',0,0,'3','');
 /*!40000 ALTER TABLE `pp_posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
