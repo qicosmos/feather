@@ -1,5 +1,6 @@
 #pragma once
 #include "cinatra/coro_http_router.hpp"
+#include "cinatra/url_encode_decode.hpp"
 #include "feather.h"
 #include "util.hpp"
 using namespace cinatra;
@@ -230,7 +231,8 @@ struct check_login_input {
 struct check_sign_out_input {
   bool before(request& req, response& res) {
     auto user_name = req.get_query_value("user_name");
-    auto email = req.get_query_value("email");
+    auto mail = req.get_query_value("email");
+    auto email = code_utils::url_decode(mail);
     auto answer = req.get_query_value("answer");
     auto pwd = req.get_query_value("user_pwd");
 
