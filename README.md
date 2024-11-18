@@ -75,6 +75,6 @@ Feather社区网站由我和网友[XMH](https://github.com/xmh0511/)共同开发
 
 purecpp@163.com
 
-[http://purecpp.org/](http://purecpp.org/ "purecpp")
+[http://purecpp.org/](http://purecpp.cn/ "purecpp")
 
 [https://github.com/qicosmos/feather](https://github.com/qicosmos/feather "feather")
