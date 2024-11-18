@@ -55,7 +55,7 @@ Feather内部的三个核心组件是松耦合的，Feather只是把它们像搭
 
 TODO
 
-我们用Feather开发了一个社区网站，地址在这里：http://purecpp.org/
+我们用Feather开发了一个社区网站，地址在这里：http://purecpp.cn/
 
 Feather社区：
 ![Feather社区](https://github.com/qicosmos/feather/blob/master/demo.png)
